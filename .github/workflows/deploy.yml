@@ -49,7 +49,7 @@ jobs:
 
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }} # 设置部署环境的 URL
+      # url: ${{ steps.deployment.outputs.page_url }} # 设置部署环境的 URL
 
     runs-on: ubuntu-latest
     steps:
