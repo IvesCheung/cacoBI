@@ -1,0 +1,57 @@
+# 工作流名称
+name: Deploy Vue site to GitHub Pages
+
+# 触发条件：当推送到 'main' 分支时
+on:
+  push:
+    branches: [ "main" ] # 如果你的主分支叫 master，请改成 "master"
+  workflow_dispatch: # 也允许手动触发
+
+# 任务权限设置
+permissions:
+  contents: read
+  pages: write      # 允许写入 pages
+  id-token: write   # 允许身份验证
+
+# 任务
+jobs:
+  # 构建任务
+  build:
+    runs-on: ubuntu-latest # 在 Ubuntu 虚拟机上运行
+    steps:
+      - name: Checkout # 1. 检出代码
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js # 2. 设置 Node.js 环境 (例如 18.x)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies # 3. 安装依赖 (使用 npm ci 更快更稳定)
+        run: npm ci
+
+      - name: Build # 4. 运行构建命令 (即 'npm run build')
+        run: npm run build
+
+      - name: Upload artifact # 5. 上传构建产物 (dist 文件夹)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist' # vite 默认的打包输出目录
+
+  # 部署任务
+  deploy:
+    needs: build # 依赖 'build' 任务成功
+    
+    # 部署任务也需要权限
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }} # 设置部署环境的 URL
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages # 部署步骤
+        uses: actions/deploy-pages@v4 # 使用官方的部署 Action
