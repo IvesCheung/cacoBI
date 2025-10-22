@@ -113,7 +113,7 @@ const handleChange = (val) => {
 }
 
 :deep(.el-input-number) {
-  background: rgba(15, 27, 46, 0.8);
+  background: rgba(30, 41, 59, 0.95);
   border: 2px solid rgba(59, 130, 246, 0.4);
   border-radius: 8px;
   transition: all 0.3s ease;
@@ -127,26 +127,34 @@ const handleChange = (val) => {
 
 :deep(.el-input-number.is-controls-right .el-input-number__decrease),
 :deep(.el-input-number.is-controls-right .el-input-number__increase) {
-  background: rgba(37, 99, 235, 0.1);
+  background: rgba(37, 99, 235, 0.15);
   border-left: 1px solid rgba(59, 130, 246, 0.3);
-  color: #BABABA;
+  color: #cbd5e1;
   transition: all 0.2s ease;
 }
 
 :deep(.el-input-number.is-controls-right .el-input-number__decrease:hover),
 :deep(.el-input-number.is-controls-right .el-input-number__increase:hover) {
-  color: #2563EB;
-  background: rgba(37, 99, 235, 0.2);
+  color: #3b82f6;
+  background: rgba(37, 99, 235, 0.25);
+}
+
+:deep(.el-input__wrapper) {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  justify-content: center;
 }
 
 :deep(.el-input__inner) {
-  background: transparent;
-  border: none;
-  color: #fff;
+  background: transparent !important;
+  border: none !important;
+  color: #ffffff !important;
   text-align: center;
   font-size: 15px;
-  font-weight: 600;
-  padding-left: 8px;
-  padding-right: 0;
+  font-weight: 500;
+  padding-left: 0 !important;
+  padding-right: 32px !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 </style>
