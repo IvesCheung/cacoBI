@@ -15,16 +15,17 @@
         :max="max"
         :step="step"
         :precision="precision"
-        size="small"
+        size="default"
         class="value-input"
         @change="handleChange"
+        :controls-position="'right'"
       />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps({
   label: {
@@ -55,10 +56,9 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-const value = ref(props.modelValue)
-
-watch(() => props.modelValue, (newVal) => {
-  value.value = newVal
+const value = computed({
+  get: () => props.modelValue,
+  set: (val) => emit('update:modelValue', val)
 })
 
 const handleChange = (val) => {
@@ -90,7 +90,8 @@ const handleChange = (val) => {
 }
 
 .value-input {
-  width: 80px;
+  width: 100px;
+  flex-shrink: 0;
 }
 
 :deep(.el-slider__runway) {
@@ -112,21 +113,30 @@ const handleChange = (val) => {
 }
 
 :deep(.el-input-number) {
-  background: rgba(15, 27, 46, 0.6);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  border-radius: 6px;
+  background: rgba(15, 27, 46, 0.8);
+  border: 2px solid rgba(59, 130, 246, 0.4);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-:deep(.el-input-number__decrease),
-:deep(.el-input-number__increase) {
-  background: transparent;
+:deep(.el-input-number:hover) {
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+:deep(.el-input-number.is-controls-right .el-input-number__decrease),
+:deep(.el-input-number.is-controls-right .el-input-number__increase) {
+  background: rgba(37, 99, 235, 0.1);
   border-left: 1px solid rgba(59, 130, 246, 0.3);
   color: #BABABA;
+  transition: all 0.2s ease;
 }
 
-:deep(.el-input-number__decrease:hover),
-:deep(.el-input-number__increase:hover) {
+:deep(.el-input-number.is-controls-right .el-input-number__decrease:hover),
+:deep(.el-input-number.is-controls-right .el-input-number__increase:hover) {
   color: #2563EB;
+  background: rgba(37, 99, 235, 0.2);
 }
 
 :deep(.el-input__inner) {
@@ -134,5 +144,9 @@ const handleChange = (val) => {
   border: none;
   color: #fff;
   text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  padding-left: 8px;
+  padding-right: 0;
 }
 </style>

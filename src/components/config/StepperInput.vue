@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps({
   label: {
@@ -40,10 +40,9 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-const value = ref(props.modelValue)
-
-watch(() => props.modelValue, (newVal) => {
-  value.value = newVal
+const value = computed({
+  get: () => props.modelValue,
+  set: (val) => emit('update:modelValue', val)
 })
 
 const handleChange = (val) => {
