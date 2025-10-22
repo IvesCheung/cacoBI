@@ -58,7 +58,7 @@
 import { reactive, watch } from 'vue'
 import ModelSelector from './ModelSelector.vue'
 import StepperInput from './StepperInput.vue'
-import { LLM_MODELS } from '@/constants/config'
+import { LLM_MODELS, DEFAULT_LONG_CHAIN_CONFIG } from '@/constants/config'
 
 const props = defineProps({
   modelValue: {
@@ -72,13 +72,13 @@ const emit = defineEmits(['update:modelValue'])
 const llmModels = LLM_MODELS
 
 const config = reactive({
-  questionDecomposeModel: props.modelValue.questionDecomposeModel || '',
-  tableRerankModel: props.modelValue.tableRerankModel || '',
-  metricConfigModel: props.modelValue.metricConfigModel || '',
-  dimensionConfigModel: props.modelValue.dimensionConfigModel || '',
-  filterConfigModel: props.modelValue.filterConfigModel || '',
-  tableRecallTopK: props.modelValue.tableRecallTopK || 30,
-  columnRecallTopK: props.modelValue.columnRecallTopK || 100
+  questionDecomposeModel: props.modelValue.questionDecomposeModel || DEFAULT_LONG_CHAIN_CONFIG.questionDecomposeModel,
+  tableRerankModel: props.modelValue.tableRerankModel || DEFAULT_LONG_CHAIN_CONFIG.tableRerankModel,
+  metricConfigModel: props.modelValue.metricConfigModel || DEFAULT_LONG_CHAIN_CONFIG.metricConfigModel,
+  dimensionConfigModel: props.modelValue.dimensionConfigModel || DEFAULT_LONG_CHAIN_CONFIG.dimensionConfigModel,
+  filterConfigModel: props.modelValue.filterConfigModel || DEFAULT_LONG_CHAIN_CONFIG.filterConfigModel,
+  tableRecallTopK: props.modelValue.tableRecallTopK || DEFAULT_LONG_CHAIN_CONFIG.tableRecallTopK,
+  columnRecallTopK: props.modelValue.columnRecallTopK || DEFAULT_LONG_CHAIN_CONFIG.columnRecallTopK
 })
 
 watch(config, (newVal) => {

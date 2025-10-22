@@ -46,7 +46,7 @@ import { reactive, watch } from 'vue'
 import ModelSelector from './ModelSelector.vue'
 import SliderInput from './SliderInput.vue'
 import StepperInput from './StepperInput.vue'
-import { DSL_MODELS, LLM_MODELS } from '@/constants/config'
+import { DSL_MODELS, LLM_MODELS, DEFAULT_SHORT_CHAIN_CONFIG } from '@/constants/config'
 
 const props = defineProps({
   modelValue: {
@@ -61,10 +61,10 @@ const dslModels = DSL_MODELS
 const encoderModels = LLM_MODELS
 
 const config = reactive({
-  dslModel: props.modelValue.dslModel || '',
-  encoder: props.modelValue.encoder || '',
-  templateRecallTopK: props.modelValue.templateRecallTopK || 3,
-  templateSimilarityThreshold: props.modelValue.templateSimilarityThreshold || 0.3
+  dslModel: props.modelValue.dslModel || DEFAULT_SHORT_CHAIN_CONFIG.dslModel,
+  encoder: props.modelValue.encoder || DEFAULT_SHORT_CHAIN_CONFIG.encoder,
+  templateRecallTopK: props.modelValue.templateRecallTopK || DEFAULT_SHORT_CHAIN_CONFIG.templateRecallTopK,
+  templateSimilarityThreshold: props.modelValue.templateSimilarityThreshold || DEFAULT_SHORT_CHAIN_CONFIG.templateSimilarityThreshold
 })
 
 watch(config, (newVal) => {
