@@ -5,42 +5,36 @@
     </div>
 
     <div class="config-content">
-      <!-- 问题拆解模型 -->
       <ModelSelector
         v-model="config.questionDecomposeModel"
         label="问题拆解模型"
         :models="llmModels"
       />
 
-      <!-- 表重排模型 -->
       <ModelSelector
         v-model="config.tableRerankModel"
         label="表重排模型"
         :models="llmModels"
       />
 
-      <!-- 指标配置模型 -->
       <ModelSelector
         v-model="config.metricConfigModel"
         label="指标配置模型"
         :models="llmModels"
       />
 
-      <!-- 维度配置模型 -->
       <ModelSelector
         v-model="config.dimensionConfigModel"
         label="维度配置模型"
         :models="llmModels"
       />
 
-      <!-- 筛选条件配置模型 -->
       <ModelSelector
         v-model="config.filterConfigModel"
         label="筛选条件配置模型"
         :models="llmModels"
       />
 
-      <!-- 表召回Top-k -->
       <StepperInput
         v-model="config.tableRecallTopK"
         label="表召回Top-k"
@@ -49,7 +43,6 @@
         :step="1"
       />
 
-      <!-- 列召回Top-k -->
       <StepperInput
         v-model="config.columnRecallTopK"
         label="列召回Top-k"
@@ -108,6 +101,8 @@ watch(() => props.modelValue, (newVal) => {
 
 .config-header {
   margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .config-header h3 {
@@ -120,6 +115,6 @@ watch(() => props.modelValue, (newVal) => {
 .config-content {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 12px;
 }
 </style>

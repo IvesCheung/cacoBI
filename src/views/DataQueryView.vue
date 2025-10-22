@@ -54,6 +54,11 @@
         />
       </div>
 
+      <!-- 查询结果展示 -->
+      <div class="result-section" v-if="queryResults">
+        <QueryResultPanel :results="queryResults" />
+      </div>
+
       <!-- 长链路配置 -->
       <div class="config-section" ref="longConfigRef">
         <h3 class="section-title">长链路配置</h3>
@@ -70,6 +75,7 @@ import { Search } from '@element-plus/icons-vue'
 import ChainFlow from '@/components/ChainFlow.vue'
 import ShortChainConfig from '@/components/config/ShortChainConfig.vue'
 import LongChainConfig from '@/components/config/LongChainConfig.vue'
+import QueryResultPanel from '@/components/QueryResultPanel.vue'
 import {
   DEFAULT_SHORT_CHAIN_CONFIG,
   DEFAULT_LONG_CHAIN_CONFIG,
@@ -82,6 +88,7 @@ const useCostAgent = ref(false)
 const querying = ref(false)
 const optimizedTime = ref(0)
 const traditionalTime = ref(0)
+const queryResults = ref(null)
 
 const shortConfigRef = ref(null)
 const longConfigRef = ref(null)
@@ -99,6 +106,7 @@ const handleQuery = async () => {
   }
 
   querying.value = true
+  queryResults.value = null
   const startTime = Date.now()
 
   try {
@@ -110,6 +118,18 @@ const handleQuery = async () => {
 
     const endTime = Date.now()
     const totalExecutionTime = ((endTime - startTime) / 1000).toFixed(2)
+
+    // 模拟查询结果
+    queryResults.value = {
+      analysis: '包含本体系统的个人分享次数的TOP3，按年份分组统计如下：\n\n2021年：总计 156 次分享\n  - 用户A：67次\n  - 用户B：52次\n  - 用户C：37次\n\n2022年：总计 243 次分享\n  - 用户D：89次\n  - 用户E：84次\n  - 用户F：70次\n\n总计：399次分享',
+      chart: [
+        { value: 45, name: '2021年' },
+        { value: 17, name: '2022年' },
+        { value: 15, name: '2023年' },
+        { value: 13, name: '2024年' },
+        { value: 10, name: '2025年' }
+      ]
+    }
 
     ElMessage.success(`查询成功，总耗时 ${totalExecutionTime}s`)
 
@@ -262,6 +282,10 @@ function handleStepClick({ chain, step }) {
 
 .cost-switch {
   --el-switch-on-color: #2563EB;
+}
+
+.result-section {
+  margin-bottom: 32px;
 }
 
 @media (max-width: 1200px) {

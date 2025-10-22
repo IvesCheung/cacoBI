@@ -76,6 +76,7 @@ const handleChange = (val) => {
   font-size: 14px;
   color: #BABABA;
   margin-bottom: 12px;
+  font-weight: 400;
 }
 
 .slider-container {
@@ -90,5 +91,48 @@ const handleChange = (val) => {
 
 .value-input {
   width: 80px;
+}
+
+:deep(.el-slider__runway) {
+  background: rgba(15, 27, 46, 0.8);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+:deep(.el-slider__bar) {
+  background: #2563EB;
+}
+
+:deep(.el-slider__button) {
+  border-color: #2563EB;
+  background: #fff;
+}
+
+:deep(.el-slider__button:hover) {
+  transform: scale(1.2);
+}
+
+:deep(.el-input-number) {
+  background: rgba(15, 27, 46, 0.6);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 6px;
+}
+
+:deep(.el-input-number__decrease),
+:deep(.el-input-number__increase) {
+  background: transparent;
+  border-left: 1px solid rgba(59, 130, 246, 0.3);
+  color: #BABABA;
+}
+
+:deep(.el-input-number__decrease:hover),
+:deep(.el-input-number__increase:hover) {
+  color: #2563EB;
+}
+
+:deep(.el-input__inner) {
+  background: transparent;
+  border: none;
+  color: #fff;
+  text-align: center;
 }
 </style>

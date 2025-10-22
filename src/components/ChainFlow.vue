@@ -152,4 +152,55 @@ function onLongStepClick(step) {
   color: #b0b8c9;
   font-size: 11px;
 }
+
+/* Element Plus Steps 样式覆盖 */
+:deep(.el-step__head) {
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+:deep(.el-step__head.is-process) {
+  color: #2563EB;
+  border-color: #2563EB;
+}
+
+:deep(.el-step__head.is-finish) {
+  color: #52c41a;
+  border-color: #52c41a;
+}
+
+:deep(.el-step__head.is-wait) {
+  color: rgba(138, 157, 181, 0.5);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+:deep(.el-step__icon) {
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+}
+
+:deep(.el-step__line) {
+  background-color: rgba(59, 130, 246, 0.2);
+}
+
+:deep(.el-step__line-inner) {
+  border-width: 2px !important;
+}
+
+:deep(.el-step.is-horizontal .el-step__line) {
+  top: 16px;
+}
+
+:deep(.el-step__main) {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+:deep(.el-step__main:hover) {
+  transform: translateY(-2px);
+}
+
+:deep(.el-step__main:hover .el-step__title) {
+  color: #2563EB !important;
+}
 </style>
