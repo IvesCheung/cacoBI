@@ -1,4 +1,4 @@
-﻿<script setup>
+<script setup>
 import { RouterView } from 'vue-router'
 </script>
 
@@ -14,7 +14,7 @@ import { RouterView } from 'vue-router'
 }
 
 body {
-  font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', 
+  font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
