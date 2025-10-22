@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BI数据分析平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            900: '#0f172a',
+                            800: '#1e293b',
+                            700: '#334155',
+                            600: '#475569',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #64748b;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #10b981;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(24px);
+        }
+
+        /* 隐藏未执行的步骤 */
+        .step-inactive {
+            opacity: 0.3;
+        }
+
+        .step-inactive .status-icon {
+            background-color: #64748b !important;
+        }
+
+        /* 连接点样式 */
+        .connector-inactive {
+            background-color: #64748b !important;
+        }
+
+        .connector-active {
+            background-color: #3b82f6 !important;
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-900 text-white min-h-screen p-6">
+    <div class="flex gap-6 h-[calc(100vh-3rem)]">
+        <!-- 左侧：处理链路展示区 - 宽度减少 -->
+        <div class="w-[45%] flex flex-col gap-6">
+            <!-- 优化链路（短链路） -->
+            <div class="bg-slate-800 rounded-lg p-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-green-400 font-bold">✅ 优化链路（短链路）</h2>
+                    <div class="flex items-center gap-2">
+                        <!-- 起始点 -->
+                        <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                        <!-- 进度条1 -->
+                        <div class="w-12 h-1 bg-gray-600 rounded-full flex">
+                            <div id="short-progress-1"
+                                class="w-0 h-1 bg-blue-500 rounded-full transition-all duration-300"></div>
+                        </div>
+                        <!-- 连接点1 -->
+                        <div id="short-connector-1" class="w-2 h-2 bg-gray-500 rounded-full connector-inactive"></div>
+                        <!-- 进度条2 -->
+                        <div class="w-12 h-1 bg-gray-600 rounded-full flex">
+                            <div id="short-progress-2"
+                                class="w-0 h-1 bg-blue-500 rounded-full transition-all duration-300"></div>
+                        </div>
+                        <!-- 连接点2 -->
+                        <div id="short-connector-2" class="w-2 h-2 bg-gray-500 rounded-full connector-inactive"></div>
+                        <!-- 进度条3 -->
+                        <div class="w-12 h-1 bg-gray-600 rounded-full flex">
+                            <div id="short-progress-3"
+                                class="w-0 h-1 bg-blue-500 rounded-full transition-all duration-300"></div>
+                        </div>
+                        <!-- 连接点3（结束点） -->
+                        <div id="short-connector-3" class="w-2 h-2 bg-gray-500 rounded-full connector-inactive"></div>
+                        <span class="text-sm bg-blue-600 px-2 py-1 rounded">链路耗时: <span id="short-time">0.00</span>
+                            秒</span>
+                    </div>
+                </div>
+
+                <!-- 短链路步骤 - 固定位置 -->
+                <div class="bg-slate-700 rounded-lg p-3 mb-2 step-inactive" id="short-step-1">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full flex items-center justify-center bg-gray-500 status-icon">
+                                <svg class="w-4 h-4 text-white opacity-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414l4 4a1 1 0 011.414 0l8-8a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <span>向量化用户问题</span>
+                        </div>
+                        <span class="text-xs text-gray-400">11:44:24</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-700 rounded-lg p-3 mb-2 step-inactive" id="short-step-2">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full flex items-center justify-center bg-gray-500 status-icon">
+                                <svg class="w-4 h-4 text-white opacity-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414l4 4a1 1 0 011.414 0l8-8a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <span>检索历史相关问题</span>
+                        </div>
+                        <span class="text-xs text-gray-400">11:44:25</span>
+                    </div>
+                    <div class="mt-2 pl-8 text-sm text-gray-300" id="short-step-2-details" style="display: none;">
+                        <div>1. 包含洗衣液关键词的笔记作者IP属地分布，近7天</div>
+                        <div>2. 内容为母婴用品的笔记作者ip属地分布，近30天</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-700 rounded-lg p-3 mb-2 step-inactive" id="short-step-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full flex items-center justify-center bg-gray-500 status-icon">
+                                <svg class="w-4 h-4 text-white opacity-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414l4 4a1 1 0 011.414 0l8-8a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <span>根据历史生成改写DSL</span>
+                        </div>
+                        <span class="text-xs text-gray-400">11:44:27</span>
+                    </div>
+                    <div class="mt-2 pl-8 text-sm text-gray-300" id="short-step-3-details" style="display: none;">
+                        <div>维度: [笔记id, 笔记作者username, 笔记作者IP属地]</div>
+                        <div>筛选条件: [笔记内容=洗衣液成分, 笔记创建时间>=近30天]</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 传统链路（长链路） -->
+            <div class="bg-slate-800 rounded-lg p-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-orange-400 font-bold">🟠 传统链路（长链路）</h2>
+                    <div class="flex items-center gap-2">
+                        <!-- 起始点 -->
+                        <div class="w-2 h-2 bg-orange-400 rounded-full"></div>
+                        <!-- 进度条1 -->
+                        <div class="w-12 h-1 bg-gray-600 rounded-full flex">
+                            <div id="long-progress-1"
+                                class="w-0 h-1 bg-blue-500 rounded-full transition-all duration-300"></div>
+                        </div>
+                        <!-- 连接点1 -->
+                        <div id="long-connector-1" class="w-2 h-2 bg-gray-500 rounded-full connector-inactive"></div>
+                        <!-- 进度条2 -->
+                        <div class="w-12 h-1 bg-gray-600 rounded-full flex">
+                            <div id="long-progress-2"
+                                class="w-0 h-1 bg-blue-500 rounded-full transition-all duration-300"></div>
+                        </div>
+                        <!-- 连接点2 -->
+                        <div id="long-connector-2" class="w-2 h-2 bg-gray-500 rounded-full connector-inactive"></div>
+                        <!-- 进度条3 -->
+                        <div class="w-12 h-1 bg-gray-600 rounded-full flex">
+                            <div id="long-progress-3"
+                                class="w-0 h-1 bg-blue-500 rounded-full transition-all duration-300"></div>
+                        </div>
+                        <!-- 连接点3 -->
+                        <div id="long-connector-3" class="w-2 h-2 bg-gray-500 rounded-full connector-inactive"></div>
+                        <!-- 进度条4 -->
+                        <div class="w-12 h-1 bg-gray-600 rounded-full flex">
+                            <div id="long-progress-4"
+                                class="w-0 h-1 bg-blue-500 rounded-full transition-all duration-300"></div>
+                        </div>
+                        <!-- 连接点4 -->
+                        <div id="long-connector-4" class="w-2 h-2 bg-gray-500 rounded-full connector-inactive"></div>
+                        <!-- 进度条5 -->
+                        <div class="w-12 h-1 bg-gray-600 rounded-full flex">
+                            <div id="long-progress-5"
+                                class="w-0 h-1 bg-blue-500 rounded-full transition-all duration-300"></div>
+                        </div>
+                        <!-- 连接点5（结束点） -->
+                        <div id="long-connector-5" class="w-2 h-2 bg-gray-500 rounded-full connector-inactive"></div>
+                        <span class="text-sm bg-blue-600 px-2 py-1 rounded">链路耗时: <span id="long-time">0.00</span>
+                            秒</span>
+                    </div>
+                </div>
+
+                <!-- 长链路步骤 - 固定位置 -->
+                <div class="bg-slate-700 rounded-lg p-3 mb-2 step-inactive" id="long-step-1">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full flex items-center justify-center bg-gray-500 status-icon">
+                                <svg class="w-4 h-4 text-white opacity-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414l4 4a1 1 0 011.414 0l8-8a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <span>拆解用户问题</span>
+                        </div>
+                        <span class="text-xs text-gray-400">11:44:25</span>
+                    </div>
+                    <div class="mt-2 pl-8 text-sm text-gray-300" id="long-step-1-details" style="display: none;">
+                        <div>指标: 笔记数据; 维度: 笔记关键词; 筛选条件: 笔记内容=洗衣液成分;</div>
+                        <div>时间范围: 近30天; 图表类型: 饼图; 字段: [笔记关键词, 笔记内容, 创建时间]</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-700 rounded-lg p-3 mb-2 step-inactive" id="long-step-2">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full flex items-center justify-center bg-gray-500 status-icon">
+                                <svg class="w-4 h-4 text-white opacity-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414l4 4a1 1 0 011.414 0l8-8a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <span>召回相关表</span>
+                        </div>
+                        <span class="text-xs text-gray-400">11:44:27</span>
+                    </div>
+                    <div class="mt-2 pl-8 text-sm text-gray-300" id="long-step-2-details" style="display: none;">
+                        <div>[笔记指标汇总, 趋势笔记, 热门笔记, 笔记排行榜, 笔记作者总表, ...]</div>
+                        <div>共50张表</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-700 rounded-lg p-3 mb-2 step-inactive" id="long-step-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full flex items-center justify-center bg-gray-500 status-icon">
+                                <svg class="w-4 h-4 text-white opacity-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414l4 4a1 1 0 011.414 0l8-8a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <span>重排并选表</span>
+                        </div>
+                        <span class="text-xs text-gray-400">11:44:29</span>
+                    </div>
+                    <div class="mt-2 pl-8 text-sm text-gray-300" id="long-step-3-details" style="display: none;">
+                        <div>当前选中表: 笔记作者总表</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-700 rounded-lg p-3 mb-2 step-inactive" id="long-step-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full flex items-center justify-center bg-gray-500 status-icon">
+                                <svg class="w-4 h-4 text-white opacity-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414l4 4a1 1 0 011.414 0l8-8a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <span>召回表内相关列</span>
+                        </div>
+                        <span class="text-xs text-gray-400">11:44:32</span>
+                    </div>
+                    <div class="mt-2 pl-8 text-sm text-gray-300" id="long-step-4-details" style="display: none;">
+                        <div>[笔记作者username, 笔记作者id, 笔记作者登录设备, 笔记作者IP属地, ...]</div>
+                        <div>共30列</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-700 rounded-lg p-3 mb-2 step-inactive" id="long-step-5">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full flex items-center justify-center bg-gray-500 status-icon">
+                                <svg class="w-4 h-4 text-white opacity-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414l4 4a1 1 0 011.414 0l8-8a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <span>生成DSL</span>
+                        </div>
+                        <span class="text-xs text-gray-400">11:44:33</span>
+                    </div>
+                    <div class="mt-2 pl-8">
+                        <div class="flex items-center gap-2 mt-1 step-inactive" id="long-substep-5-1">
+                            <div class="w-4 h-4 rounded-full flex items-center justify-center bg-gray-500 status-icon">
+                                <svg class="w-3 h-3 text-white opacity-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414l4 4a1 1 0 011.414 0l8-8a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <span class="text-xs">指标配置</span>
+                            <span class="text-xs text-gray-400 ml-2" id="long-substep-5-1-details">[ ]</span>
+                        </div>
+                        <div class="flex items-center gap-2 mt-1 step-inactive" id="long-substep-5-2">
+                            <div class="w-4 h-4 rounded-full flex items-center justify-center bg-gray-500 status-icon">
+                                <svg class="w-3 h-3 text-white opacity-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414l4 4a1 1 0 011.414 0l8-8a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <span class="text-xs">维度配置</span>
+                            <span class="text-xs text-gray-400 ml-2" id="long-substep-5-2-details">[笔记id, 笔记作者username,
+                                笔记作者IP属地]</span>
+                        </div>
+                        <div class="flex items-center gap-2 mt-1 step-inactive" id="long-substep-5-3">
+                            <div class="w-4 h-4 rounded-full flex items-center justify-center bg-gray-500 status-icon">
+                                <svg class="w-3 h-3 text-white opacity-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414l4 4a1 1 0 011.414 0l8-8a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <span class="text-xs">筛选条件配置</span>
+                            <span class="text-xs text-gray-400 ml-2" id="long-substep-5-3-details">[笔记内容=洗衣液成分,
+                                笔记创建时间>=近30天]</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 中间：配置面板 - 宽度保持不变 -->
+        <div class="w-80 space-y-6">
+            <!-- 短链路配置 -->
+            <div class="bg-slate-800 rounded-lg p-4">
+                <h3 class="text-blue-400 font-semibold mb-3">短链路配置</h3>
+
+                <div class="mb-4">
+                    <label class="block text-sm mb-1">Encoder</label>
+                    <select id="encoder-select"
+                        class="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-sm">
+                        <option value="Qwen3-embedding-0.6B">Qwen3-embedding-0.6B</option>
+                        <option value="Qwen3-embedding-4B">Qwen3-embedding-4B</option>
+                        <option value="Entity-agnostic Qwen3-0.6B" selected>Entity-agnostic Qwen3-0.6B</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm mb-1">模板召回Top-k</label>
+                    <div class="flex items-center gap-2">
+                        <button id="template-dec"
+                            class="bg-slate-700 hover:bg-slate-600 w-8 h-8 rounded flex items-center justify-center">-</button>
+                        <span id="template-value" class="text-sm w-8 text-center">5</span>
+                        <button id="template-inc"
+                            class="bg-slate-700 hover:bg-slate-600 w-8 h-8 rounded flex items-center justify-center">+</button>
+                        <input type="range" id="similarity-slider" min="1" max="100" value="70" class="flex-1 mx-2">
+                        <span class="text-xs">模板相似度阈值</span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm mb-1">DSL改写模型</label>
+                    <select id="dsl-model-select"
+                        class="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-sm">
+                        <option value="Qwen2.5-instruct-72B" selected>Qwen2.5-instruct-72B</option>
+                        <option value="Qwen3-32B">Qwen3-32B</option>
+                        <option value="Deepseek-v3">Deepseek-v3</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 长链路配置 -->
+            <div class="bg-slate-800 rounded-lg p-4">
+                <h3 class="text-blue-400 font-semibold mb-3">长链路配置</h3>
+
+                <div class="mb-4">
+                    <label class="block text-sm mb-1">问题拆解模型</label>
+                    <select id="question-model-select"
+                        class="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-sm">
+                        <option value="Qwen2.5-instruct-72B">Qwen2.5-instruct-72B</option>
+                        <option value="Qwen3-32B" selected>Qwen3-32B</option>
+                        <option value="Deepseek-v3">Deepseek-v3</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm mb-1">表召回Top-k</label>
+                    <div class="flex items-center gap-2">
+                        <button id="table-dec"
+                            class="bg-slate-700 hover:bg-slate-600 w-8 h-8 rounded flex items-center justify-center">-</button>
+                        <span id="table-value" class="text-sm w-8 text-center">105</span>
+                        <button id="table-inc"
+                            class="bg-slate-700 hover:bg-slate-600 w-8 h-8 rounded flex items-center justify-center">+</button>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm mb-1">表重排模型</label>
+                    <select id="table-rerank-select"
+                        class="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-sm">
+                        <option value="Qwen2.5-instruct-72B">Qwen2.5-instruct-72B</option>
+                        <option value="Qwen3-32B">Qwen3-32B</option>
+                        <option value="Deepseek-v3" selected>Deepseek-v3</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm mb-1">列召回Top-k</label>
+                    <div class="flex items-center gap-2">
+                        <button id="column-dec"
+                            class="bg-slate-700 hover:bg-slate-600 w-8 h-8 rounded flex items-center justify-center">-</button>
+                        <span id="column-value" class="text-sm w-8 text-center">35</span>
+                        <button id="column-inc"
+                            class="bg-slate-700 hover:bg-slate-600 w-8 h-8 rounded flex items-center justify-center">+</button>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm mb-1">指标配置模型</label>
+                    <select id="metric-model-select"
+                        class="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-sm">
+                        <option value="Qwen2.5-instruct-72B">Qwen2.5-instruct-72B</option>
+                        <option value="Qwen3-32B">Qwen3-32B</option>
+                        <option value="Deepseek-v3" selected>Deepseek-v3</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm mb-1">维度配置模型</label>
+                    <select id="dimension-model-select"
+                        class="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-sm">
+                        <option value="Qwen2.5-instruct-72B">Qwen2.5-instruct-72B</option>
+                        <option value="Qwen3-32B">Qwen3-32B</option>
+                        <option value="Deepseek-v3" selected>Deepseek-v3</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm mb-1">筛选条件配置模型</label>
+                    <select id="filter-model-select"
+                        class="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-sm">
+                        <option value="Qwen2.5-instruct-72B">Qwen2.5-instruct-72B</option>
+                        <option value="Qwen3-32B">Qwen3-32B</option>
+                        <option value="Deepseek-v3" selected>Deepseek-v3</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧：BI取数区 - 宽度加倍 -->
+        <div class="w-[30%]">
+            <div class="bg-slate-800 rounded-lg p-4">
+                <h2 class="text-blue-400 font-bold mb-4">BI取数</h2>
+
+                <div class="mb-4">
+                    <label class="block text-sm mb-2">数据查询</label>
+                    <textarea id="query-input"
+                        class="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-sm h-24 resize-none">包含洗衣液成分关键词的笔记作者ip属地分布，近30天</textarea>
+                </div>
+
+                <div class="flex items-center gap-4 mb-4">
+                    <button id="execute-btn"
+                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded font-medium transition-colors">▶
+                        执行查询</button>
+
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <div class="switch">
+                            <input type="checkbox" id="cost-agent-toggle">
+                            <span class="slider"></span>
+                        </div>
+                        <span class="text-sm">开启Cost Agent</span>
+                    </label>
+                </div>
+
+                <!-- 执行日志 -->
+                <div class="bg-slate-700 rounded-lg p-3 mb-4" id="execution-logs"></div>
+
+                <!-- 输出分析结果 - 短链路结果 -->
+                <div class="bg-slate-700 rounded-lg p-3 mb-4" id="short-result-container" style="display: none;">
+                    <h3 class="text-sm font-semibold mb-2 text-green-400">✅ 优化链路结果</h3>
+                    <div class="bg-white rounded-lg p-3">
+                        <div class="flex justify-center">
+                            <div class="relative w-32 h-32">
+                                <svg viewBox="0 0 100 100" class="w-full h-full">
+                                    <circle cx="50" cy="50" r="40" fill="#f3f4f6" />
+                                    <path d="M50,50 L50,10 A40,40 0 0,1 80.6,50 Z" fill="#10b981" />
+                                    <path d="M50,50 L80.6,50 A40,40 0 0,1 70.6,80.6 Z" fill="#f59e0b" />
+                                    <path d="M50,50 L70.6,80.6 A40,40 0 0,1 50,90 Z" fill="#3b82f6" />
+                                    <path d="M50,50 L50,90 A40,40 0 0,1 30,80.6 Z" fill="#ef4444" />
+                                    <path d="M50,50 L30,80.6 A40,40 0 0,1 50,50 Z" fill="#8b5cf6" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-xs flex justify-center gap-3">
+                            <div class="flex items-center gap-1">
+                                <div class="w-3 h-3 bg-green-500 rounded"></div>
+                                <span>青岛</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <div class="w-3 h-3 bg-yellow-500 rounded"></div>
+                                <span>杭州</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <div class="w-3 h-3 bg-blue-500 rounded"></div>
+                                <span>天津</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <div class="w-3 h-3 bg-red-500 rounded"></div>
+                                <span>上海</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <div class="w-3 h-3 bg-purple-500 rounded"></div>
+                                <span>北京</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 输出分析结果 - 长链路结果 -->
+                <div class="bg-slate-700 rounded-lg p-3" id="long-result-container" style="display: none;">
+                    <h3 class="text-sm font-semibold mb-2 text-orange-400">🟠 传统链路结果</h3>
+                    <div class="bg-white rounded-lg p-3">
+                        <div class="flex justify-center">
+                            <div class="relative w-32 h-32">
+                                <svg viewBox="0 0 100 100" class="w-full h-full">
+                                    <circle cx="50" cy="50" r="40" fill="#f3f4f6" />
+                                    <path d="M50,50 L50,10 A40,40 0 0,1 80.6,50 Z" fill="#10b981" />
+                                    <path d="M50,50 L80.6,50 A40,40 0 0,1 70.6,80.6 Z" fill="#f59e0b" />
+                                    <path d="M50,50 L70.6,80.6 A40,40 0 0,1 50,90 Z" fill="#3b82f6" />
+                                    <path d="M50,50 L50,90 A40,40 0 0,1 30,80.6 Z" fill="#ef4444" />
+                                    <path d="M50,50 L30,80.6 A40,40 0 0,1 50,50 Z" fill="#8b5cf6" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-xs flex justify-center gap-3">
+                            <div class="flex items-center gap-1">
+                                <div class="w-3 h-3 bg-green-500 rounded"></div>
+                                <span>青岛</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <div class="w-3 h-3 bg-yellow-500 rounded"></div>
+                                <span>杭州</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <div class="w-3 h-3 bg-blue-500 rounded"></div>
+                                <span>天津</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <div class="w-3 h-3 bg-red-500 rounded"></div>
+                                <span>上海</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <div class="w-3 h-3 bg-purple-500 rounded"></div>
+                                <span>北京</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 状态管理
+        let isExecuting = false;
+        let costAgentEnabled = false;
+        let shortChainTime = 0;
+        let longChainTime = 0;
+        let shortTimer = null;
+        let longTimer = null;
+        let shortCompleted = false;
+        let longCompleted = false;
+
+        // DOM元素
+        const executeBtn = document.getElementById('execute-btn');
+        const executionLogsEl = document.getElementById('execution-logs');
+        const shortResultContainer = document.getElementById('short-result-container');
+        const longResultContainer = document.getElementById('long-result-container');
+        const queryInput = document.getElementById('query-input');
+        const shortTimeEl = document.getElementById('short-time');
+        const longTimeEl = document.getElementById('long-time');
+
+        // 按钮事件
+        document.getElementById('template-inc').addEventListener('click', () => {
+            const el = document.getElementById('template-value');
+            el.textContent = Math.min(10, parseInt(el.textContent) + 1);
+        });
+        document.getElementById('template-dec').addEventListener('click', () => {
+            const el = document.getElementById('template-value');
+            el.textContent = Math.max(1, parseInt(el.textContent) - 1);
+        });
+        document.getElementById('table-inc').addEventListener('click', () => {
+            const el = document.getElementById('table-value');
+            el.textContent = Math.max(1, parseInt(el.textContent) + 1);
+        });
+        document.getElementById('table-dec').addEventListener('click', () => {
+            const el = document.getElementById('table-value');
+            el.textContent = Math.max(1, parseInt(el.textContent) - 1);
+        });
+        document.getElementById('column-inc').addEventListener('click', () => {
+            const el = document.getElementById('column-value');
+            el.textContent = Math.max(1, parseInt(el.textContent) + 1);
+        });
+        document.getElementById('column-dec').addEventListener('click', () => {
+            const el = document.getElementById('column-value');
+            el.textContent = Math.max(1, parseInt(el.textContent) - 1);
+        });
+
+        document.getElementById('cost-agent-toggle').addEventListener('change', (e) => {
+            costAgentEnabled = e.target.checked;
+        });
+
+        // 执行查询
+        executeBtn.addEventListener('click', () => {
+            if (isExecuting) return;
+
+            isExecuting = true;
+            executeBtn.textContent = '执行中...';
+            executeBtn.disabled = true;
+            executeBtn.classList.add('bg-blue-400');
+            executeBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+
+            // 重置状态
+            shortCompleted = false;
+            longCompleted = false;
+
+            // 重置时间和进度
+            shortChainTime = 0;
+            longChainTime = 0;
+            shortTimeEl.textContent = '0.00';
+            longTimeEl.textContent = '0.00';
+
+            // 隐藏结果容器
+            shortResultContainer.style.display = 'none';
+            longResultContainer.style.display = 'none';
+
+            // 重置所有进度条和连接点
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`short-progress-${i}`).style.width = '0%';
+                document.getElementById(`short-connector-${i}`).className = 'w-2 h-2 bg-gray-500 rounded-full connector-inactive';
+            }
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`long-progress-${i}`).style.width = '0%';
+                document.getElementById(`long-connector-${i}`).className = 'w-2 h-2 bg-gray-500 rounded-full connector-inactive';
+            }
+
+            // 清空之前的步骤状态
+            const shortSteps = [
+                document.getElementById('short-step-1'),
+                document.getElementById('short-step-2'),
+                document.getElementById('short-step-3')
+            ];
+            const longSteps = [
+                document.getElementById('long-step-1'),
+                document.getElementById('long-step-2'),
+                document.getElementById('long-step-3'),
+                document.getElementById('long-step-4'),
+                document.getElementById('long-step-5')
+            ];
+            const longSubSteps = [
+                document.getElementById('long-substep-5-1'),
+                document.getElementById('long-substep-5-2'),
+                document.getElementById('long-substep-5-3')
+            ];
+
+            shortSteps.forEach(step => {
+                step.classList.add('step-inactive');
+                step.querySelector('.status-icon svg').classList.add('opacity-0');
+            });
+            longSteps.forEach(step => {
+                step.classList.add('step-inactive');
+                step.querySelector('.status-icon svg').classList.add('opacity-0');
+            });
+            longSubSteps.forEach(step => {
+                step.classList.add('step-inactive');
+                step.querySelector('.status-icon svg').classList.add('opacity-0');
+            });
+
+            // 显示执行日志
+            const now = new Date();
+            executionLogsEl.innerHTML = `
+                <div class="text-sm text-gray-300 mb-1">
+                    <span class="text-xs text-gray-500 mr-2">${now.toLocaleTimeString()}</span>
+                    正在检索相关数据...
+                </div>
+                <div class="text-sm text-gray-300 mb-1">
+                    <span class="text-xs text-gray-500 mr-2">${now.toLocaleTimeString()}</span>
+                    正在分析数据并生成报表...
+                </div>
+            `;
+
+            // 开始计时器
+            shortTimer = setInterval(() => {
+                shortChainTime += 0.01;
+                shortTimeEl.textContent = shortChainTime.toFixed(2);
+            }, 10);
+
+            longTimer = setInterval(() => {
+                longChainTime += 0.01;
+                longTimeEl.textContent = longChainTime.toFixed(2);
+            }, 10);
+
+            // 激活短链路步骤
+            setTimeout(() => {
+                // 步骤1 - 向量化用户问题 (耗时约1.5秒)
+                animateProgressBar('short-progress-1', 1500, () => {
+                    document.getElementById('short-step-1').classList.remove('step-inactive');
+                    document.querySelector('#short-step-1 .status-icon svg').classList.remove('opacity-0');
+                    // 激活连接点1
+                    document.getElementById('short-connector-1').className = 'w-2 h-2 bg-blue-500 rounded-full connector-active';
+                });
+
+                // 步骤2 - 检索历史相关问题 (耗时约2秒)
+                setTimeout(() => {
+                    animateProgressBar('short-progress-2', 2000, () => {
+                        document.getElementById('short-step-2').classList.remove('step-inactive');
+                        document.querySelector('#short-step-2 .status-icon svg').classList.remove('opacity-0');
+                        document.getElementById('short-step-2-details').style.display = 'block';
+                        // 激活连接点2
+                        document.getElementById('short-connector-2').className = 'w-2 h-2 bg-blue-500 rounded-full connector-active';
+                    });
+                }, 1500);
+
+                // 步骤3 - 根据历史生成改写DSL (耗时约1.54秒)
+                setTimeout(() => {
+                    animateProgressBar('short-progress-3', 1540, () => {
+                        document.getElementById('short-step-3').classList.remove('step-inactive');
+                        document.querySelector('#short-step-3 .status-icon svg').classList.remove('opacity-0');
+                        document.getElementById('short-step-3-details').style.display = 'block';
+                        // 激活连接点3（结束点）
+                        document.getElementById('short-connector-3').className = 'w-2 h-2 bg-blue-500 rounded-full connector-active';
+
+                        // 停止短链路计时器
+                        clearInterval(shortTimer);
+                        shortChainTime = 5.04;
+                        shortTimeEl.textContent = '5.04';
+                        shortCompleted = true;
+
+                        // 显示短链路结果
+                        shortResultContainer.style.display = 'block';
+
+                        // 检查是否两个链路都完成了
+                        checkCompletion();
+                    });
+                }, 3500);
+
+                // 激活长链路步骤
+                setTimeout(() => {
+                    // 步骤1 - 拆解用户问题 (耗时约2秒)
+                    animateProgressBar('long-progress-1', 2000, () => {
+                        document.getElementById('long-step-1').classList.remove('step-inactive');
+                        document.querySelector('#long-step-1 .status-icon svg').classList.remove('opacity-0');
+                        document.getElementById('long-step-1-details').style.display = 'block';
+                        // 激活连接点1
+                        document.getElementById('long-connector-1').className = 'w-2 h-2 bg-blue-500 rounded-full connector-active';
+                    });
+
+                    // 步骤2 - 召回相关表 (耗时约2秒)
+                    setTimeout(() => {
+                        animateProgressBar('long-progress-2', 2000, () => {
+                            document.getElementById('long-step-2').classList.remove('step-inactive');
+                            document.querySelector('#long-step-2 .status-icon svg').classList.remove('opacity-0');
+                            document.getElementById('long-step-2-details').style.display = 'block';
+                            // 激活连接点2
+                            document.getElementById('long-connector-2').className = 'w-2 h-2 bg-blue-500 rounded-full connector-active';
+                        });
+                    }, 2000);
+
+                    // 步骤3 - 重排并选表 (耗时约2秒)
+                    setTimeout(() => {
+                        animateProgressBar('long-progress-3', 2000, () => {
+                            document.getElementById('long-step-3').classList.remove('step-inactive');
+                            document.querySelector('#long-step-3 .status-icon svg').classList.remove('opacity-0');
+                            document.getElementById('long-step-3-details').style.display = 'block';
+                            // 激活连接点3
+                            document.getElementById('long-connector-3').className = 'w-2 h-2 bg-blue-500 rounded-full connector-active';
+                        });
+                    }, 4000);
+
+                    // 步骤4 - 召回表内相关列 (耗时约3秒)
+                    setTimeout(() => {
+                        animateProgressBar('long-progress-4', 3000, () => {
+                            document.getElementById('long-step-4').classList.remove('step-inactive');
+                            document.querySelector('#long-step-4 .status-icon svg').classList.remove('opacity-0');
+                            document.getElementById('long-step-4-details').style.display = 'block';
+                            // 激活连接点4
+                            document.getElementById('long-connector-4').className = 'w-2 h-2 bg-blue-500 rounded-full connector-active';
+                        });
+                    }, 6000);
+
+                    // 步骤5 - 生成DSL (耗时约4.5秒)
+                    setTimeout(() => {
+                        animateProgressBar('long-progress-5', 4500, () => {
+                            document.getElementById('long-step-5').classList.remove('step-inactive');
+                            document.querySelector('#long-step-5 .status-icon svg').classList.remove('opacity-0');
+                            // 激活连接点5（结束点）
+                            document.getElementById('long-connector-5').className = 'w-2 h-2 bg-blue-500 rounded-full connector-active';
+
+                            // 子步骤
+                            setTimeout(() => {
+                                document.getElementById('long-substep-5-1').classList.remove('step-inactive');
+                                document.querySelector('#long-substep-5-1 .status-icon svg').classList.remove('opacity-0');
+                            }, 200);
+
+                            setTimeout(() => {
+                                document.getElementById('long-substep-5-2').classList.remove('step-inactive');
+                                document.querySelector('#long-substep-5-2 .status-icon svg').classList.remove('opacity-0');
+                            }, 400);
+
+                            setTimeout(() => {
+                                document.getElementById('long-substep-5-3').classList.remove('step-inactive');
+                                document.querySelector('#long-substep-5-3 .status-icon svg').classList.remove('opacity-0');
+
+                                // 停止长链路计时器
+                                clearInterval(longTimer);
+                                longChainTime = 23.5;
+                                longTimeEl.textContent = '23.50';
+                                longCompleted = true;
+
+                                // 显示长链路结果
+                                longResultContainer.style.display = 'block';
+
+                                // 检查是否两个链路都完成了
+                                checkCompletion();
+                            }, 600);
+                        });
+                    }, 9000);
+                }, 2000);
+            }, 1000);
+        });
+
+        function checkCompletion() {
+            if (shortCompleted && longCompleted) {
+                // 重置按钮
+                isExecuting = false;
+                executeBtn.textContent = '▶ 执行查询';
+                executeBtn.disabled = false;
+                executeBtn.classList.remove('bg-blue-400');
+                executeBtn.classList.add('bg-blue-600');
+            }
+        }
+
+        function animateProgressBar(progressId, duration, onComplete) {
+            const progressBar = document.getElementById(progressId);
+            let startTime = null;
+            const totalWidth = 100; // 100%
+
+            function animate(currentTime) {
+                if (!startTime) startTime = currentTime;
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const width = progress * totalWidth;
+                progressBar.style.width = `${width}%`;
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    if (onComplete) onComplete();
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+    </script>
+</body>
+
+</html>
