@@ -1,18 +1,57 @@
 @import './base.css';
 
+/* Element Plus 暗色主题变量覆盖 */
+:root {
+  --el-bg-color: #1e293b;
+  --el-bg-color-overlay: #334155;
+  --el-text-color-primary: #e2e8f0;
+  --el-text-color-regular: #cbd5e1;
+  --el-text-color-secondary: #94a3b8;
+  --el-text-color-placeholder: #64748b;
+  --el-border-color: #475569;
+  --el-border-color-light: #334155;
+  --el-border-color-lighter: #1e293b;
+  --el-fill-color-blank: #334155;
+}
+
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  background: #0f172a;
 }
 
 #app {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;
   margin: 0;
   padding: 0;
   font-weight: normal;
-  overflow: hidden;
+  background: #0f172a;
+}
+
+/* 全局滚动条样式 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(71, 85, 105, 0.8) rgba(30, 41, 59, 0.5);
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.5);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(71, 85, 105, 0.8);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.9);
 }
 
 a,
