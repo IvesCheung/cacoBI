@@ -40,7 +40,7 @@ export function useBIQuery() {
     {
       id: 1,
       title: '向量化用户问题',
-      time: '11:44:24',
+      time: '',
       active: false,
       completed: false,
       details: null,
@@ -48,7 +48,7 @@ export function useBIQuery() {
     {
       id: 2,
       title: '检索历史相关问题',
-      time: '11:44:25',
+      time: '',
       active: false,
       completed: false,
       details: [
@@ -59,7 +59,7 @@ export function useBIQuery() {
     {
       id: 3,
       title: '根据历史生成改写DSL',
-      time: '11:44:27',
+      time: '',
       active: false,
       completed: false,
       details: [
@@ -74,7 +74,7 @@ export function useBIQuery() {
     {
       id: 1,
       title: '拆解用户问题',
-      time: '11:44:25',
+      time: '',
       active: false,
       completed: false,
       details: [
@@ -85,7 +85,7 @@ export function useBIQuery() {
     {
       id: 2,
       title: '召回相关表',
-      time: '11:44:27',
+      time: '',
       active: false,
       completed: false,
       details: ['[笔记指标汇总, 趋势笔记, 热门笔记, 笔记排行榜, 笔记作者总表, ...]', '共50张表'],
@@ -93,7 +93,7 @@ export function useBIQuery() {
     {
       id: 3,
       title: '重排并选表',
-      time: '11:44:29',
+      time: '',
       active: false,
       completed: false,
       details: ['当前选中表: 笔记作者总表'],
@@ -101,7 +101,7 @@ export function useBIQuery() {
     {
       id: 4,
       title: '召回表内相关列',
-      time: '11:44:32',
+      time: '',
       active: false,
       completed: false,
       details: ['[笔记作者username, 笔记作者id, 笔记作者登录设备, 笔记作者IP属地, ...]', '共30列'],
@@ -109,7 +109,7 @@ export function useBIQuery() {
     {
       id: 5,
       title: '生成DSL',
-      time: '11:44:33',
+      time: '',
       active: false,
       completed: false,
       subSteps: [
@@ -136,6 +136,15 @@ export function useBIQuery() {
   const shortProgress = reactive([0, 0, 0])
   const longProgress = reactive([0, 0, 0, 0, 0])
 
+  // 获取当前时间字符串 (HH:MM:SS)
+  const getCurrentTime = () => {
+    const now = new Date()
+    const hours = String(now.getHours()).padStart(2, '0')
+    const minutes = String(now.getMinutes()).padStart(2, '0')
+    const seconds = String(now.getSeconds()).padStart(2, '0')
+    return `${hours}:${minutes}:${seconds}`
+  }
+
   // 重置所有状态
   const resetAll = () => {
     isExecuting.value = false
@@ -148,12 +157,14 @@ export function useBIQuery() {
     shortSteps.forEach((step) => {
       step.active = false
       step.completed = false
+      step.time = ''
     })
 
     // 重置长链路步骤
     longSteps.forEach((step) => {
       step.active = false
       step.completed = false
+      step.time = ''
       if (step.subSteps) {
         step.subSteps.forEach((sub) => {
           sub.active = false
@@ -196,6 +207,9 @@ export function useBIQuery() {
     }, 10)
 
     // 步骤1
+    setTimeout(() => {
+      shortSteps[0].time = getCurrentTime()
+    }, 0)
     animateProgress(shortProgress, 0, 1500, () => {
       shortSteps[0].active = true
       shortSteps[0].completed = true
@@ -203,6 +217,7 @@ export function useBIQuery() {
 
     // 步骤2
     setTimeout(() => {
+      shortSteps[1].time = getCurrentTime()
       animateProgress(shortProgress, 1, 2000, () => {
         shortSteps[1].active = true
         shortSteps[1].completed = true
@@ -211,6 +226,7 @@ export function useBIQuery() {
 
     // 步骤3
     setTimeout(() => {
+      shortSteps[2].time = getCurrentTime()
       animateProgress(shortProgress, 2, 1540, () => {
         shortSteps[2].active = true
         shortSteps[2].completed = true
@@ -229,6 +245,7 @@ export function useBIQuery() {
 
     // 步骤1
     setTimeout(() => {
+      longSteps[0].time = getCurrentTime()
       animateProgress(longProgress, 0, 2000, () => {
         longSteps[0].active = true
         longSteps[0].completed = true
@@ -237,6 +254,7 @@ export function useBIQuery() {
 
     // 步骤2
     setTimeout(() => {
+      longSteps[1].time = getCurrentTime()
       animateProgress(longProgress, 1, 2000, () => {
         longSteps[1].active = true
         longSteps[1].completed = true
@@ -245,6 +263,7 @@ export function useBIQuery() {
 
     // 步骤3
     setTimeout(() => {
+      longSteps[2].time = getCurrentTime()
       animateProgress(longProgress, 2, 2000, () => {
         longSteps[2].active = true
         longSteps[2].completed = true
@@ -253,6 +272,7 @@ export function useBIQuery() {
 
     // 步骤4
     setTimeout(() => {
+      longSteps[3].time = getCurrentTime()
       animateProgress(longProgress, 3, 3000, () => {
         longSteps[3].active = true
         longSteps[3].completed = true
@@ -261,6 +281,7 @@ export function useBIQuery() {
 
     // 步骤5
     setTimeout(() => {
+      longSteps[4].time = getCurrentTime()
       animateProgress(longProgress, 4, 4500, () => {
         longSteps[4].active = true
         longSteps[4].completed = true
