@@ -1,13 +1,43 @@
 <template>
   <div class="data-query-view">
-    <div class="query-header">
-      <h1>BI取数</h1>
-      <div class="header-actions">
+    <!-- 左侧: 链路流程 -->
+    <div class="left-panel">
+      <ChainFlow />
+    </div>
+
+    <!-- 右侧: 配置面板 -->
+    <div class="right-panel">
+      <!-- 标题 -->
+      <div class="panel-header">
+        <h1>BI取数</h1>
+      </div>
+
+      <!-- 短链路配置 -->
+      <div class="config-section">
+        <h3 class="section-title">短链路配置</h3>
+        <ShortChainConfig v-model="shortChainConfig" />
+      </div>
+
+      <!-- 数据查询输入 -->
+      <div class="query-section">
+        <h3 class="section-title">数据查询</h3>
+        <el-input
+          v-model="queryText"
+          type="textarea"
+          :rows="3"
+          placeholder="包含本体系统的个人分享次数的TOP3，还按年份分组，还把年份分组的总和也列出来, 这些数据中 实际开始时间 在 2021-06-19 到 2029-07-30 之间"
+          class="query-textarea"
+        />
+      </div>
+
+      <!-- 操作按钮 -->
+      <div class="action-section">
         <el-button
           type="primary"
           size="large"
           @click="handleQuery"
           :loading="querying"
+          class="query-button"
         >
           <el-icon><Search /></el-icon>
           执行查询
@@ -15,40 +45,15 @@
         <el-switch
           v-model="useCostAgent"
           active-text="开启Cost Agent"
-          inactive-text="关闭"
           size="large"
-        />
-      </div>
-    </div>
-
-    <div class="query-content">
-      <!-- 数据查询输入框 -->
-      <div class="query-input-section">
-        <div class="input-label">数据查询</div>
-        <el-input
-          v-model="queryText"
-          type="textarea"
-          :rows="4"
-          placeholder="包含本体系统的个人分享次数的TOP3，还按年份分组，还把年份分组的总和也列出来, 这些数据中 实际开始时间 在 2021-06-19 到 2029-07-30 之间"
-          class="query-textarea"
+          class="cost-switch"
         />
       </div>
 
-      <!-- 配置区域 -->
+      <!-- 长链路配置 -->
       <div class="config-section">
-        <div class="config-panel short-chain">
-          <ShortChainConfig v-model="shortChainConfig" />
-        </div>
-
-        <div class="config-panel long-chain">
-          <LongChainConfig v-model="longChainConfig" />
-        </div>
-      </div>
-
-      <!-- 执行时间显示 -->
-      <div class="execution-time" v-if="executionTime">
-        <el-icon><Clock /></el-icon>
-        <span>验证耗时: {{ executionTime }} 秒</span>
+        <h3 class="section-title">长链路配置</h3>
+        <LongChainConfig v-model="longChainConfig" />
       </div>
     </div>
   </div>
@@ -57,13 +62,14 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Search, Clock } from '@element-plus/icons-vue'
+import { Search } from '@element-plus/icons-vue'
+import ChainFlow from '@/components/ChainFlow.vue'
 import ShortChainConfig from '@/components/config/ShortChainConfig.vue'
 import LongChainConfig from '@/components/config/LongChainConfig.vue'
 import {
   DEFAULT_SHORT_CHAIN_CONFIG,
   DEFAULT_LONG_CHAIN_CONFIG,
-  EXAMPLE_QUERIES
+  EXAMPLE_QUERIES,
 } from '@/constants/config'
 
 const queryText = ref(EXAMPLE_QUERIES[0])
@@ -108,52 +114,77 @@ const handleQuery = async () => {
 
 <style scoped>
 .data-query-view {
-  min-height: 100vh;
+  display: flex;
+  height: 100vh;
   background: #0A0E1A;
-  padding: 32px;
   color: #fff;
+  overflow: hidden;
 }
 
-.query-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* 左侧面板 - 链路流程 */
+.left-panel {
+  flex: 0 0 40%;
+  max-width: 600px;
+  min-width: 400px;
+  padding: 24px;
+  overflow-y: auto;
+  background: #0A0E1A;
+  border-right: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.left-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.left-panel::-webkit-scrollbar-thumb {
+  background: rgba(37, 99, 235, 0.3);
+  border-radius: 3px;
+}
+
+/* 右侧面板 - 配置 */
+.right-panel {
+  flex: 1;
+  padding: 24px 32px;
+  overflow-y: auto;
+  background: #0F1522;
+}
+
+.right-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.right-panel::-webkit-scrollbar-thumb {
+  background: rgba(37, 99, 235, 0.3);
+  border-radius: 3px;
+}
+
+.panel-header {
+  text-align: right;
   margin-bottom: 32px;
-  padding-bottom: 24px;
+  padding-bottom: 20px;
   border-bottom: 1px solid rgba(59, 130, 246, 0.2);
 }
 
-.query-header h1 {
+.panel-header h1 {
   font-size: 32px;
   font-weight: 600;
   color: #2563EB;
   margin: 0;
 }
 
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.query-content {
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.query-input-section {
+.config-section {
   margin-bottom: 32px;
 }
 
-.input-label {
+.section-title {
   font-size: 16px;
-  color: #C0C0C0;
-  margin-bottom: 12px;
   font-weight: 500;
+  color: #2563EB;
+  margin-bottom: 16px;
 }
 
-.query-textarea {
-  font-size: 14px;
+.query-section {
+  margin-bottom: 24px;
 }
 
 .query-textarea :deep(.el-textarea__inner) {
@@ -163,43 +194,64 @@ const handleQuery = async () => {
   color: #fff;
   font-size: 14px;
   line-height: 1.6;
+  padding: 12px;
+}
+
+.query-textarea :deep(.el-textarea__inner::placeholder) {
+  color: rgba(192, 192, 192, 0.5);
 }
 
 .query-textarea :deep(.el-textarea__inner:focus) {
   border-color: #2563EB;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
 }
 
-.config-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  margin-bottom: 24px;
+.action-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 32px;
 }
 
-.config-panel {
-  min-height: 500px;
-}
-
-.execution-time {
+.query-button {
+  background: #2563EB;
+  border: none;
+  padding: 12px 32px;
+  font-size: 15px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
-  color: #BABABA;
-  padding: 12px 20px;
-  background: rgba(37, 99, 235, 0.1);
-  border-radius: 8px;
-  border: 1px solid rgba(37, 99, 235, 0.3);
-  width: fit-content;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  transition: all 0.3s ease;
 }
 
-.execution-time .el-icon {
-  font-size: 16px;
+.query-button:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+}
+
+.cost-switch {
+  --el-switch-on-color: #2563EB;
 }
 
 @media (max-width: 1200px) {
-  .config-section {
-    grid-template-columns: 1fr;
+  .data-query-view {
+    flex-direction: column;
+  }
+
+  .left-panel {
+    flex: 0 0 auto;
+    max-width: none;
+    min-width: 0;
+    max-height: 400px;
+    border-right: none;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+  }
+
+  .right-panel {
+    flex: 1;
   }
 }
 </style>
