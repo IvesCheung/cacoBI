@@ -50,14 +50,14 @@ const handleChange = (value) => {
 
 <style scoped>
 .model-selector {
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .config-label {
   display: block;
-  font-size: 14px;
+  font-size: 13px;
   color: #BABABA;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   font-weight: 400;
 }
 

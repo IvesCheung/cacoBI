@@ -93,20 +93,20 @@ watch(() => props.modelValue, (newVal) => {
 <style scoped>
 .long-chain-config {
   background: linear-gradient(180deg, #1E3A5F 0%, #0F1B2E 100%);
-  border-radius: 12px;
+  border-radius: 8px;
   border: 1px solid rgba(59, 130, 246, 0.3);
-  padding: 24px;
+  padding: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .config-header {
-  margin-bottom: 24px;
-  padding-bottom: 16px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
   border-bottom: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .config-header h3 {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 500;
   color: #2563EB;
   margin: 0;
@@ -115,6 +115,6 @@ watch(() => props.modelValue, (newVal) => {
 .config-content {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 </style>

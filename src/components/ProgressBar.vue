@@ -53,12 +53,12 @@ defineProps({
 .progress-container {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
 }
 
 .progress-dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -77,13 +77,13 @@ defineProps({
 }
 
 .progress-wrapper {
-  width: 48px;
+  width: 40px;
   flex-shrink: 0;
 }
 
 .progress-bg {
   width: 100%;
-  height: 4px;
+  height: 3px;
   background: #475569;
   border-radius: 2px;
   overflow: hidden;
@@ -99,11 +99,11 @@ defineProps({
 .time-badge {
   background: #2563eb;
   color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-size: 11px;
   white-space: nowrap;
-  margin-left: 8px;
+  margin-left: 6px;
 }
 
 .time-value {

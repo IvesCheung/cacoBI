@@ -115,23 +115,32 @@ const handleExecute = () => {
 <style scoped>
 .query-panel {
   background: #1e293b;
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 8px;
+  padding: 12px;
   height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+
+.query-panel > * {
+  flex-shrink: 0;
+}
+
+.query-panel > .execution-logs,
+.query-panel > .result-container {
   overflow-y: auto;
 }
 
 .panel-title {
   color: #3b82f6;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
-  margin: 0 0 16px 0;
+  margin: 0 0 12px 0;
 }
 
 .query-input-section {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .input-label {
@@ -148,8 +157,8 @@ const handleExecute = () => {
 .query-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: 12px;
+  margin-bottom: 12px;
   flex-wrap: wrap;
 }
 
@@ -171,9 +180,9 @@ const handleExecute = () => {
 
 .execution-logs {
   background: #334155;
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 16px;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 12px;
 }
 
 .log-item {
@@ -200,9 +209,9 @@ const handleExecute = () => {
 
 .result-container {
   background: #334155;
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 16px;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 12px;
 }
 
 .result-container:last-child {

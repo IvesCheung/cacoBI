@@ -69,9 +69,9 @@ defineProps({
 <style scoped>
 .chain-step {
   background: #334155;
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 8px;
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 4px;
   transition: all 0.3s;
 }
 
@@ -88,18 +88,19 @@ defineProps({
 .step-left {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .status-icon {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #64748b;
   transition: all 0.3s;
+  flex-shrink: 0;
 }
 
 .status-completed {
@@ -112,61 +113,62 @@ defineProps({
 
 .check-icon {
   color: white;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .step-title {
   color: white;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .step-time {
   color: #94a3b8;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .step-details {
-  margin-top: 8px;
-  padding-left: 32px;
+  margin-top: 6px;
+  padding-left: 26px;
 }
 
 .detail-item {
   color: #cbd5e1;
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .sub-steps {
-  margin-top: 8px;
-  padding-left: 32px;
+  margin-top: 6px;
+  padding-left: 26px;
 }
 
 .sub-step {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 4px;
+  gap: 6px;
+  margin-top: 3px;
   transition: all 0.3s;
 }
 
 .sub-icon {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
 }
 
 .sub-icon .check-icon {
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .sub-title {
-  font-size: 12px;
+  font-size: 11px;
   color: white;
 }
 
 .sub-detail {
-  font-size: 12px;
+  font-size: 11px;
   color: #94a3b8;
-  margin-left: 8px;
+  margin-left: 4px;
 }
 </style>
 

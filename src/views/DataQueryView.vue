@@ -47,7 +47,6 @@
 </template>
 
 <script setup>
-import { toRefs } from 'vue'
 import ShortChainPanel from '@/components/ShortChainPanel.vue'
 import LongChainPanel from '@/components/LongChainPanel.vue'
 import ShortChainConfig from '@/components/config/ShortChainConfig.vue'
@@ -81,15 +80,16 @@ const handleExecute = async () => {
 
 <style scoped>
 .data-query-view {
-  min-height: 100vh;
+  height: 100vh;
   background: #0f172a;
-  padding: 24px;
+  padding: 12px;
+  overflow: hidden;
 }
 
 .container {
   display: flex;
-  gap: 24px;
-  height: calc(100vh - 48px);
+  gap: 12px;
+  height: 100%;
   max-width: 1920px;
   margin: 0 auto;
 }
@@ -99,58 +99,58 @@ const handleExecute = async () => {
   flex: 0 0 45%;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  overflow-y: auto;
+  gap: 10px;
+  min-height: 0;
 }
 
 .chain-panel-wrapper {
-  flex-shrink: 0;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 /* 中间：配置面板 */
 .middle-section {
-  flex: 0 0 320px;
+  flex: 0 0 300px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  overflow-y: auto;
+  gap: 10px;
+  min-height: 0;
 }
 
 .config-wrapper {
-  flex-shrink: 0;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 /* 右侧：查询面板 */
 .right-section {
   flex: 1;
   min-width: 0;
-  overflow-y: auto;
+  min-height: 0;
 }
 
 /* 滚动条样式 */
-.left-section::-webkit-scrollbar,
-.middle-section::-webkit-scrollbar,
-.right-section::-webkit-scrollbar {
-  width: 6px;
+.chain-panel-wrapper::-webkit-scrollbar,
+.config-wrapper::-webkit-scrollbar {
+  width: 4px;
 }
 
-.left-section::-webkit-scrollbar-track,
-.middle-section::-webkit-scrollbar-track,
-.right-section::-webkit-scrollbar-track {
+.chain-panel-wrapper::-webkit-scrollbar-track,
+.config-wrapper::-webkit-scrollbar-track {
   background: rgba(30, 41, 59, 0.5);
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
-.left-section::-webkit-scrollbar-thumb,
-.middle-section::-webkit-scrollbar-thumb,
-.right-section::-webkit-scrollbar-thumb {
+.chain-panel-wrapper::-webkit-scrollbar-thumb,
+.config-wrapper::-webkit-scrollbar-thumb {
   background: rgba(71, 85, 105, 0.8);
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
-.left-section::-webkit-scrollbar-thumb:hover,
-.middle-section::-webkit-scrollbar-thumb:hover,
-.right-section::-webkit-scrollbar-thumb:hover {
+.chain-panel-wrapper::-webkit-scrollbar-thumb:hover,
+.config-wrapper::-webkit-scrollbar-thumb:hover {
   background: rgba(100, 116, 139, 0.9);
 }
 
