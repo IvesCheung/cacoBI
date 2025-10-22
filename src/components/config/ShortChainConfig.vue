@@ -99,6 +99,6 @@ watch(() => props.modelValue, (newVal) => {
 .config-content {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 </style>

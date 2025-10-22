@@ -68,7 +68,7 @@ const handleChange = (val) => {
 
 <style scoped>
 .slider-input {
-  margin-bottom: 12px;
+  margin-bottom: 0;
 }
 
 .config-label {

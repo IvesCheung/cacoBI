@@ -115,13 +115,11 @@ const handleExecute = async () => {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 0;
+  overflow-y: auto;
 }
 
 .config-wrapper {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
+  flex-shrink: 0;
 }
 
 /* 右侧：查询面板 */
@@ -133,24 +131,24 @@ const handleExecute = async () => {
 
 /* 滚动条样式 */
 .chain-panel-wrapper::-webkit-scrollbar,
-.config-wrapper::-webkit-scrollbar {
+.middle-section::-webkit-scrollbar {
   width: 4px;
 }
 
 .chain-panel-wrapper::-webkit-scrollbar-track,
-.config-wrapper::-webkit-scrollbar-track {
+.middle-section::-webkit-scrollbar-track {
   background: rgba(30, 41, 59, 0.5);
   border-radius: 2px;
 }
 
 .chain-panel-wrapper::-webkit-scrollbar-thumb,
-.config-wrapper::-webkit-scrollbar-thumb {
+.middle-section::-webkit-scrollbar-thumb {
   background: rgba(71, 85, 105, 0.8);
   border-radius: 2px;
 }
 
 .chain-panel-wrapper::-webkit-scrollbar-thumb:hover,
-.config-wrapper::-webkit-scrollbar-thumb:hover {
+.middle-section::-webkit-scrollbar-thumb:hover {
   background: rgba(100, 116, 139, 0.9);
 }
 

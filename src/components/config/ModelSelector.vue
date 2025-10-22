@@ -50,7 +50,7 @@ const handleChange = (value) => {
 
 <style scoped>
 .model-selector {
-  margin-bottom: 12px;
+  margin-bottom: 0;
 }
 
 .config-label {

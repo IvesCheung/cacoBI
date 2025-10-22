@@ -54,7 +54,7 @@ const handleChange = (val) => {
 
 <style scoped>
 .stepper-input {
-  margin-bottom: 12px;
+  margin-bottom: 0;
 }
 
 .config-label {
