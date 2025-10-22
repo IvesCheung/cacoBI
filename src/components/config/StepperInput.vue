@@ -7,7 +7,6 @@
       :max="max"
       :step="step"
       size="large"
-      controls-position="right"
       @change="handleChange"
     />
   </div>
@@ -69,34 +68,61 @@ const handleChange = (val) => {
   width: 100%;
 }
 
+/* 主容器样式 */
 :deep(.el-input-number) {
-  background: rgba(15, 27, 46, 0.6);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  border-radius: 6px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(71, 85, 105, 0.5);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 :deep(.el-input-number:hover) {
-  border-color: rgba(59, 130, 246, 0.5);
+  border-color: rgba(100, 116, 139, 0.7);
 }
 
-:deep(.el-input-number.is-controls-right .el-input-number__decrease),
-:deep(.el-input-number.is-controls-right .el-input-number__increase) {
+:deep(.el-input-number:focus-within) {
+  border-color: rgba(59, 130, 246, 0.6);
+}
+
+/* 按钮通用样式 */
+:deep(.el-input-number__decrease),
+:deep(.el-input-number__increase) {
+  background: rgba(51, 65, 85, 0.6);
+  border: none;
+  color: #94a3b8;
+  width: 40px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+:deep(.el-input-number__decrease:hover),
+:deep(.el-input-number__increase:hover) {
+  background: rgba(71, 85, 105, 0.8);
+  color: #e2e8f0;
+}
+
+:deep(.el-input-number__decrease:active),
+:deep(.el-input-number__increase:active) {
+  background: rgba(51, 65, 85, 0.9);
+}
+
+/* 输入框样式 */
+:deep(.el-input__wrapper) {
   background: transparent;
-  border-left: 1px solid rgba(59, 130, 246, 0.3);
-  color: #BABABA;
-}
-
-:deep(.el-input-number.is-controls-right .el-input-number__decrease:hover),
-:deep(.el-input-number.is-controls-right .el-input-number__increase:hover) {
-  color: #2563EB;
-  background: rgba(37, 99, 235, 0.1);
+  border: none;
+  box-shadow: none;
+  padding: 0;
 }
 
 :deep(.el-input__inner) {
   background: transparent;
   border: none;
   color: #fff;
-  text-align: left;
-  padding-left: 15px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  height: 40px;
+  line-height: 40px;
 }
 </style>
