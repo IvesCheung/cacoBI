@@ -11,6 +11,7 @@
         :rows="4"
         placeholder="请输入查询内容..."
         class="query-textarea"
+        :autosize="{ minRows: 4, maxRows: 8 }"
       />
     </div>
 
@@ -28,13 +29,15 @@
         {{ isExecuting ? '执行中...' : '执行查询' }}
       </el-button>
 
-      <div class="cost-agent-switch">
-        <el-switch
-          v-model="costAgentEnabled"
-          :disabled="isExecuting"
-        />
-        <span class="switch-label">开启Cost Agent</span>
-      </div>
+      <el-button
+        :type="costAgentEnabled ? 'success' : 'info'"
+        :disabled="isExecuting"
+        @click="toggleCostAgent"
+        size="large"
+        class="cost-agent-btn"
+      >
+        Cost Agent
+      </el-button>
     </div>
 
     <!-- 执行日志 -->
@@ -110,6 +113,10 @@ const currentTime = computed(() => {
 const handleExecute = () => {
   emit('execute')
 }
+
+const toggleCostAgent = () => {
+  costAgentEnabled.value = !costAgentEnabled.value
+}
 </script>
 
 <style scoped>
@@ -166,16 +173,8 @@ const handleExecute = () => {
   flex-shrink: 0;
 }
 
-.cost-agent-switch {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.switch-label {
-  color: #e2e8f0;
-  font-size: 13px;
-  white-space: nowrap;
+.cost-agent-btn {
+  flex-shrink: 0;
 }
 
 .execution-logs {
@@ -234,16 +233,29 @@ const handleExecute = () => {
 
 :deep(.el-textarea__inner) {
   background: #334155;
-  border-color: #475569;
+  border: 2px solid #475569;
+  border-radius: 8px;
   color: #e2e8f0;
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 :deep(.el-textarea__inner::placeholder) {
   color: #64748b;
 }
 
+:deep(.el-textarea__inner:hover) {
+  border-color: #64748b;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
 :deep(.el-textarea__inner:focus) {
   border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  background: #3a4556;
 }
 
 :deep(.el-button--primary) {
@@ -259,6 +271,36 @@ const handleExecute = () => {
 :deep(.el-button--primary.is-disabled) {
   background: #60a5fa;
   border-color: #60a5fa;
+}
+
+:deep(.el-button--success) {
+  background: #10b981;
+  border-color: #10b981;
+}
+
+:deep(.el-button--success:hover) {
+  background: #059669;
+  border-color: #059669;
+}
+
+:deep(.el-button--success.is-disabled) {
+  background: #6ee7b7;
+  border-color: #6ee7b7;
+}
+
+:deep(.el-button--info) {
+  background: #64748b;
+  border-color: #64748b;
+}
+
+:deep(.el-button--info:hover) {
+  background: #475569;
+  border-color: #475569;
+}
+
+:deep(.el-button--info.is-disabled) {
+  background: #94a3b8;
+  border-color: #94a3b8;
 }
 </style>
 
