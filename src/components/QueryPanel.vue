@@ -52,13 +52,13 @@
     <!-- 短链路结果 -->
     <div v-if="shortCompleted" class="result-container short-result">
       <h3 class="result-title short-title">✅ 优化链路结果</h3>
-      <ResultChart />
+      <ResultChart key="short-chart" />
     </div>
 
     <!-- 长链路结果 -->
     <div v-if="longCompleted" class="result-container long-result">
       <h3 class="result-title long-title">🟠 传统链路结果</h3>
-      <ResultChart />
+      <ResultChart key="long-chart" />
     </div>
   </div>
 </template>

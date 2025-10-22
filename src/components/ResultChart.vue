@@ -1,95 +1,237 @@
 <template>
   <div class="result-chart">
-    <div class="chart-container">
-      <svg viewBox="0 0 100 100" class="pie-chart">
-        <circle cx="50" cy="50" r="40" fill="#f3f4f6" />
-        <!-- 青岛 -->
-        <path
-          d="M50,50 L50,10 A40,40 0 0,1 80.6,50 Z"
-          fill="#10b981"
-        />
-        <!-- 杭州 -->
-        <path
-          d="M50,50 L80.6,50 A40,40 0 0,1 70.6,80.6 Z"
-          fill="#f59e0b"
-        />
-        <!-- 天津 -->
-        <path
-          d="M50,50 L70.6,80.6 A40,40 0 0,1 50,90 Z"
-          fill="#3b82f6"
-        />
-        <!-- 上海 -->
-        <path
-          d="M50,50 L50,90 A40,40 0 0,1 30,80.6 Z"
-          fill="#ef4444"
-        />
-        <!-- 北京 -->
-        <path
-          d="M50,50 L30,80.6 A40,40 0 0,1 50,10 Z"
-          fill="#8b5cf6"
-        />
-      </svg>
-    </div>
-
-    <div class="legend">
-      <div v-for="item in legendItems" :key="item.label" class="legend-item">
-        <div class="legend-color" :style="{ backgroundColor: item.color }"></div>
-        <span class="legend-label">{{ item.label }}</span>
-      </div>
-    </div>
+    <div ref="chartRef" class="chart-container"></div>
   </div>
 </template>
 
 <script setup>
-const legendItems = [
-  { label: '青岛', color: '#10b981' },
-  { label: '杭州', color: '#f59e0b' },
-  { label: '天津', color: '#3b82f6' },
-  { label: '上海', color: '#ef4444' },
-  { label: '北京', color: '#8b5cf6' }
-]
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import * as echarts from 'echarts'
+
+const props = defineProps({
+  data: {
+    type: Array,
+    default: () => [
+      { name: '青岛', value: 335 },
+      { name: '杭州', value: 234 },
+      { name: '天津', value: 154 },
+      { name: '上海', value: 135 },
+      { name: '北京', value: 548 }
+    ]
+  }
+})
+
+const chartRef = ref(null)
+let chartInstance = null
+
+const initChart = () => {
+  if (!chartRef.value) return
+
+  // 销毁已存在的实例
+  if (chartInstance) {
+    chartInstance.dispose()
+  }
+
+  // 初始化 echarts 实例
+  chartInstance = echarts.init(chartRef.value)
+
+  // 配置项
+  const option = {
+    tooltip: {
+      trigger: 'item',
+      formatter: '{a} <br/>{b}: {c} ({d}%)',
+      backgroundColor: 'rgba(50, 50, 50, 0.9)',
+      borderColor: 'transparent',
+      textStyle: {
+        color: '#fff',
+        fontSize: 14
+      },
+      extraCssText: 'box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); border-radius: 8px; padding: 12px;'
+    },
+    legend: {
+      orient: 'horizontal',
+      bottom: '5%',
+      left: 'center',
+      icon: 'circle',
+      itemWidth: 12,
+      itemHeight: 12,
+      itemGap: 20,
+      textStyle: {
+        color: '#e2e8f0',
+        fontSize: 13,
+        fontWeight: 500
+      }
+    },
+    series: [
+      {
+        name: '数据分布',
+        type: 'pie',
+        radius: ['45%', '70%'],
+        center: ['50%', '45%'],
+        avoidLabelOverlap: true,
+        itemStyle: {
+          borderRadius: 8,
+          borderColor: '#fff',
+          borderWidth: 3,
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowOffsetY: 2,
+          shadowColor: 'rgba(0, 0, 0, 0.1)'
+        },
+        label: {
+          show: true,
+          position: 'outside',
+          formatter: '{b}\n{d}%',
+          fontSize: 13,
+          fontWeight: 'bold',
+          color: '#e2e8f0',
+          lineHeight: 18
+        },
+        emphasis: {
+          label: {
+            show: true,
+            fontSize: 15,
+            fontWeight: 'bold'
+          },
+          itemStyle: {
+            shadowBlur: 20,
+            shadowOffsetX: 0,
+            shadowOffsetY: 4,
+            shadowColor: 'rgba(0, 0, 0, 0.2)',
+            scale: true,
+            scaleSize: 10
+          }
+        },
+        labelLine: {
+          show: true,
+          length: 15,
+          length2: 10,
+          smooth: true,
+          lineStyle: {
+            width: 2
+          }
+        },
+        data: props.data,
+        animationType: 'scale',
+        animationEasing: 'elasticOut',
+        animationDelay: (idx) => idx * 100,
+        color: [
+          {
+            type: 'linear',
+            x: 0, y: 0, x2: 0, y2: 1,
+            colorStops: [
+              { offset: 0, color: '#4ade80' },
+              { offset: 1, color: '#10b981' }
+            ]
+          },
+          {
+            type: 'linear',
+            x: 0, y: 0, x2: 0, y2: 1,
+            colorStops: [
+              { offset: 0, color: '#fbbf24' },
+              { offset: 1, color: '#f59e0b' }
+            ]
+          },
+          {
+            type: 'linear',
+            x: 0, y: 0, x2: 0, y2: 1,
+            colorStops: [
+              { offset: 0, color: '#60a5fa' },
+              { offset: 1, color: '#3b82f6' }
+            ]
+          },
+          {
+            type: 'linear',
+            x: 0, y: 0, x2: 0, y2: 1,
+            colorStops: [
+              { offset: 0, color: '#f87171' },
+              { offset: 1, color: '#ef4444' }
+            ]
+          },
+          {
+            type: 'linear',
+            x: 0, y: 0, x2: 0, y2: 1,
+            colorStops: [
+              { offset: 0, color: '#a78bfa' },
+              { offset: 1, color: '#8b5cf6' }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+
+  // 设置配置项
+  chartInstance.setOption(option)
+
+  // 自动轮播高亮效果
+  let currentIndex = -1
+  const autoHighlight = () => {
+    // 取消之前的高亮
+    chartInstance.dispatchAction({
+      type: 'downplay',
+      seriesIndex: 0,
+      dataIndex: currentIndex
+    })
+
+    // 高亮当前
+    currentIndex = (currentIndex + 1) % props.data.length
+    chartInstance.dispatchAction({
+      type: 'highlight',
+      seriesIndex: 0,
+      dataIndex: currentIndex
+    })
+  }
+
+  // 每3秒轮播一次
+  const highlightTimer = setInterval(autoHighlight, 3000)
+
+  // 保存定时器引用，便于清理
+  chartInstance._highlightTimer = highlightTimer
+}
+
+// 监听窗口大小变化
+const handleResize = () => {
+  if (chartInstance) {
+    chartInstance.resize()
+  }
+}
+
+// 监听数据变化
+watch(() => props.data, () => {
+  initChart()
+}, { deep: true })
+
+onMounted(() => {
+  console.log('🎨 ResultChart 组件已挂载 - 新版本 ECharts')
+  initChart()
+  window.addEventListener('resize', handleResize)
+})
+
+onBeforeUnmount(() => {
+  if (chartInstance) {
+    if (chartInstance._highlightTimer) {
+      clearInterval(chartInstance._highlightTimer)
+    }
+    chartInstance.dispose()
+  }
+  window.removeEventListener('resize', handleResize)
+})
 </script>
 
 <style scoped>
 .result-chart {
-  background: white;
+  width: 100%;
+  height: 100%;
+  background: transparent;
   border-radius: 8px;
-  padding: 16px;
+  overflow: hidden;
 }
 
 .chart-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 12px;
-}
-
-.pie-chart {
-  width: 128px;
-  height: 128px;
-}
-
-.legend {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.legend-color {
-  width: 12px;
-  height: 12px;
-  border-radius: 2px;
-}
-
-.legend-label {
-  font-size: 12px;
-  color: #1f2937;
+  width: 100%;
+  height: 280px;
+  min-height: 250px;
 }
 </style>
 
