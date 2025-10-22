@@ -2,7 +2,11 @@
   <div class="data-query-view">
     <!-- 左侧: 链路流程 -->
     <div class="left-panel">
-      <ChainFlow />
+      <ChainFlow
+        :optimized-time="optimizedTime"
+        :traditional-time="traditionalTime"
+        @step-click="handleStepClick"
+      />
     </div>
 
     <!-- 右侧: 配置面板 -->
@@ -13,7 +17,7 @@
       </div>
 
       <!-- 短链路配置 -->
-      <div class="config-section">
+      <div class="config-section" ref="shortConfigRef">
         <h3 class="section-title">短链路配置</h3>
         <ShortChainConfig v-model="shortChainConfig" />
       </div>
@@ -51,7 +55,7 @@
       </div>
 
       <!-- 长链路配置 -->
-      <div class="config-section">
+      <div class="config-section" ref="longConfigRef">
         <h3 class="section-title">长链路配置</h3>
         <LongChainConfig v-model="longChainConfig" />
       </div>
@@ -71,14 +75,22 @@ import {
   DEFAULT_LONG_CHAIN_CONFIG,
   EXAMPLE_QUERIES,
 } from '@/constants/config'
+import { useChainStore } from '@/composables/useChainStore'
 
 const queryText = ref(EXAMPLE_QUERIES[0])
 const useCostAgent = ref(false)
 const querying = ref(false)
-const executionTime = ref(0)
+const optimizedTime = ref(0)
+const traditionalTime = ref(0)
+
+const shortConfigRef = ref(null)
+const longConfigRef = ref(null)
 
 const shortChainConfig = reactive({ ...DEFAULT_SHORT_CHAIN_CONFIG })
 const longChainConfig = reactive({ ...DEFAULT_LONG_CHAIN_CONFIG })
+
+const chainStore = useChainStore()
+
 
 const handleQuery = async () => {
   if (!queryText.value.trim()) {
@@ -90,25 +102,41 @@ const handleQuery = async () => {
   const startTime = Date.now()
 
   try {
-    // 模拟API调用
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    // 使用链路模拟：并行执行两个链路步骤动画
+    // 并行模拟两个链路的步骤执行
+    await chainStore.runBoth(250, 350)
+    optimizedTime.value = chainStore.state.optimizedTime
+    traditionalTime.value = chainStore.state.traditionalTime
 
     const endTime = Date.now()
-    executionTime.value = ((endTime - startTime) / 1000).toFixed(2)
+    const totalExecutionTime = ((endTime - startTime) / 1000).toFixed(2)
 
-    ElMessage.success('查询成功')
+    ElMessage.success(`查询成功，总耗时 ${totalExecutionTime}s`)
 
     console.log('查询配置:', {
       query: queryText.value,
       useCostAgent: useCostAgent.value,
       shortChain: shortChainConfig,
-      longChain: longChainConfig
+      longChain: longChainConfig,
+      optimizedTime: optimizedTime.value,
+      traditionalTime: traditionalTime.value
     })
   } catch (error) {
     ElMessage.error('查询失败: ' + error.message)
   } finally {
     querying.value = false
   }
+}
+
+function handleStepClick({ chain, step }) {
+  // 滚动到对应配置区块
+  if (chain === 'short' && shortConfigRef.value) {
+    shortConfigRef.value.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  } else if (chain === 'long' && longConfigRef.value) {
+    longConfigRef.value.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
+  // 控制台辅助日志
+  console.log(`[链路点击] ${chain} -> step(${step.id}): ${step.name}`)
 }
 </script>
 

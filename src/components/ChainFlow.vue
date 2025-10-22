@@ -11,10 +11,11 @@
       <div class="chain-steps">
         <div class="timeline-line"></div>
         <div
-          v-for="step in optimizedSteps"
+          v-for="step in store.state.shortSteps"
           :key="step.id"
           class="step-item"
           :class="{ active: step.active }"
+          @click="onShortStepClick(step)"
         >
           <div class="step-indicator">
             <div class="step-dot"></div>
@@ -37,10 +38,11 @@
       <div class="chain-steps">
         <div class="timeline-line"></div>
         <div
-          v-for="step in traditionalSteps"
+          v-for="step in store.state.longSteps"
           :key="step.id"
           class="step-item"
           :class="{ active: step.active }"
+          @click="onLongStepClick(step)"
         >
           <div class="step-indicator">
             <div class="step-dot"></div>
@@ -55,25 +57,31 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed } from 'vue'
 import { SuccessFilled, WarningFilled } from '@element-plus/icons-vue'
+import { useChainStore } from '@/composables/useChainStore'
 
-const optimizedTime = ref(0)
-const traditionalTime = ref(0)
+const props = defineProps({
+  optimizedTime: { type: Number, default: 0 },
+  traditionalTime: { type: Number, default: 0 }
+})
 
-const optimizedSteps = ref([
-  { id: 1, name: '向量化用户问题', active: false },
-  { id: 2, name: '检索向量相关问题', active: false },
-  { id: 3, name: '根据历史生成答案DSL', active: false }
-])
+const emit = defineEmits(['step-click'])
 
-const traditionalSteps = ref([
-  { id: 1, name: '拆解用户问题', active: false },
-  { id: 2, name: '召回相关表', active: false },
-  { id: 3, name: '重排过滤表', active: false },
-  { id: 4, name: '召回表内相关字段', active: false },
-  { id: 5, name: '生成DSL', active: false }
-])
+const store = useChainStore()
+
+const optimizedTime = computed(() => props.optimizedTime ?? store.state.optimizedTime)
+const traditionalTime = computed(() => props.traditionalTime ?? store.state.traditionalTime)
+
+function onShortStepClick(step) {
+  store.activateShortStep(step.id)
+  emit('step-click', { chain: 'short', step })
+}
+
+function onLongStepClick(step) {
+  store.activateLongStep(step.id)
+  emit('step-click', { chain: 'long', step })
+}
 </script>
 
 <style scoped>
