@@ -11,7 +11,7 @@ import {
 import { ElMessage } from 'element-plus'
 
 // 数据查询输入
-const queryInput = ref('包含流失液成分关键词的笔记IP地址，近30天')
+const queryInput = ref('包含洗衣液成分关键词的笔记IP地址，近30天')
 
 // 优化链路节点
 const optimizedNodes = [
