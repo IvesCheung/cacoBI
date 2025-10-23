@@ -10,21 +10,16 @@
     </div>
 
     <div class="panel-body">
-      <ChainStep
-        v-for="step in steps"
-        :key="step.id"
-        :title="step.title"
-        :time="step.time"
-        :active="step.active"
-        :completed="step.completed"
-        :details="step.details"
+      <ChainFlowChart
+        :steps="steps"
+        color="#10b981"
       />
     </div>
   </div>
 </template>
 
 <script setup>
-import ChainStep from './ChainStep.vue'
+import ChainFlowChart from './ChainFlowChart.vue'
 import ProgressBar from './ProgressBar.vue'
 
 defineProps({
@@ -41,9 +36,7 @@ defineProps({
     default: 0
   }
 })
-</script>
-
-<style scoped>
+</script><style scoped>
 .chain-panel {
   background: #1e293b;
   border-radius: 8px;

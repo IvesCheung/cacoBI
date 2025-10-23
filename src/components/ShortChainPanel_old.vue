@@ -1,25 +1,30 @@
 <template>
   <div class="chain-panel">
     <div class="panel-header">
-      <h2 class="panel-title long-title">🟠 传统链路（长链路）</h2>
+      <h2 class="panel-title short-title">✅ 优化链路（短链路）</h2>
       <ProgressBar
         :progress-array="progress"
         :time="time"
-        start-color="#f59e0b"
+        start-color="#10b981"
       />
     </div>
 
     <div class="panel-body">
-      <ChainFlowChart
-        :steps="steps"
-        color="#f59e0b"
+      <ChainStep
+        v-for="step in steps"
+        :key="step.id"
+        :title="step.title"
+        :time="step.time"
+        :active="step.active"
+        :completed="step.completed"
+        :details="step.details"
       />
     </div>
   </div>
 </template>
 
 <script setup>
-import ChainFlowChart from './ChainFlowChart.vue'
+import ChainStep from './ChainStep.vue'
 import ProgressBar from './ProgressBar.vue'
 
 defineProps({
@@ -36,7 +41,9 @@ defineProps({
     default: 0
   }
 })
-</script><style scoped>
+</script>
+
+<style scoped>
 .chain-panel {
   background: #1e293b;
   border-radius: 8px;
@@ -63,8 +70,8 @@ defineProps({
   margin: 0;
 }
 
-.long-title {
-  color: #f59e0b;
+.short-title {
+  color: #10b981;
 }
 
 .panel-body {
