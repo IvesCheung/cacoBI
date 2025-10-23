@@ -87,6 +87,8 @@ watch(() => props.modelValue, (newVal) => {
 
 .config-header {
   margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .config-header h3 {

@@ -58,7 +58,7 @@ export function useBIQuery() {
     },
     {
       id: 3,
-      title: '根据历史生成改写DSL',
+      title: '生成DSL',
       time: '',
       active: false,
       completed: false,

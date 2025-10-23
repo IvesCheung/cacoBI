@@ -113,22 +113,22 @@ const updateChart = () => {
     const nodes = props.steps.map((step, index) => {
       const status = step.completed ? 'completed' : step.active ? 'active' : 'inactive'
 
-      // 为不同状态定义渐变色
+      // 为不同状态定义渐变色 - 调整为更柔和的色调
       let gradientColor
       if (status === 'completed') {
         gradientColor = new echarts.graphic.LinearGradient(0, 0, 1, 1, [
-          { offset: 0, color: props.color },
-          { offset: 1, color: adjustColorBrightness(props.color, 20) }
+          { offset: 0, color: adjustColorBrightness(props.color, -30) },
+          { offset: 1, color: adjustColorBrightness(props.color, -15) }
         ])
       } else if (status === 'active') {
         gradientColor = new echarts.graphic.LinearGradient(0, 0, 1, 1, [
-          { offset: 0, color: '#3b82f6' },
-          { offset: 1, color: '#60a5fa' }
+          { offset: 0, color: '#2563eb' },
+          { offset: 1, color: '#3b82f6' }
         ])
       } else {
         gradientColor = new echarts.graphic.LinearGradient(0, 0, 1, 1, [
-          { offset: 0, color: '#475569' },
-          { offset: 1, color: '#334155' }
+          { offset: 0, color: '#3f4b5e' },
+          { offset: 1, color: '#2d3748' }
         ])
       }
 
@@ -137,44 +137,52 @@ const updateChart = () => {
         id: String(step.id),
         x: startX + index * spacing,
         y: centerY,
-        symbolSize: status === 'active' ? 55 : 50,
-        symbol: 'circle',
+        symbolSize: status === 'active' ? [140, 70] : [130, 65],
+        symbol: 'roundRect',
         itemStyle: {
           color: gradientColor,
-          borderColor: status === 'completed' ? props.color :
-                       status === 'active' ? '#60a5fa' : '#64748b',
-          borderWidth: status === 'active' ? 4 : 3,
-          shadowBlur: status === 'completed' ? 20 : status === 'active' ? 25 : 8,
-          shadowColor: status === 'completed' ? props.color :
-                       status === 'active' ? 'rgba(59, 130, 246, 0.6)' : 'rgba(0, 0, 0, 0.3)',
+          borderColor: status === 'completed' ? adjustColorBrightness(props.color, -20) :
+                       status === 'active' ? '#4f7adb' : '#52606e',
+          borderWidth: status === 'active' ? 3 : 2,
+          borderRadius: 12,
+          shadowBlur: status === 'completed' ? 15 : status === 'active' ? 18 : 6,
+          shadowColor: status === 'completed' ? 'rgba(16, 185, 129, 0.3)' :
+                       status === 'active' ? 'rgba(37, 99, 235, 0.4)' : 'rgba(0, 0, 0, 0.25)',
           shadowOffsetX: 0,
           shadowOffsetY: status === 'completed' || status === 'active' ? 2 : 0
         },
         label: {
           show: true,
-          position: 'bottom',
-          distance: 15,
-          fontSize: 12,
-          color: status === 'inactive' ? '#64748b' : '#f1f5f9',
+          position: 'inside',
+          fontSize: 13,
+          color: status === 'inactive' ? '#94a3b8' : '#e8f0fe',
           fontWeight: status === 'completed' || status === 'active' ? '600' : 'normal',
           fontFamily: 'PingFang SC, Microsoft YaHei, sans-serif',
+          lineHeight: 18,
+          width: 110,
+          overflow: 'truncate',
+          ellipsis: '...',
           formatter: (params) => {
-            const maxLen = 10
-            if (params.name.length > maxLen) {
-              return params.name.slice(0, maxLen) + '...'
+            // 自动换行处理
+            const maxLen = 12
+            const text = params.name
+            if (text.length <= maxLen) {
+              return text
             }
-            return params.name
+            // 超过长度则尝试分两行
+            const half = Math.ceil(text.length / 2)
+            return text.slice(0, half) + '\n' + text.slice(half)
           }
         },
         emphasis: {
           disabled: false,
-          scale: 1.2,
+          scale: 1.15,
           itemStyle: {
-            borderWidth: 5,
-            shadowBlur: 30
+            borderWidth: 4,
+            shadowBlur: 20
           },
           label: {
-            fontSize: 13,
+            fontSize: 14,
             fontWeight: 'bold'
           }
         },
@@ -188,24 +196,24 @@ const updateChart = () => {
       const nextStep = props.steps[i + 1]
       const isCompleted = currentStep.completed
 
-      // 连接线渐变色
+      // 连接线渐变色 - 调整为更柔和的色调
       const lineColor = isCompleted
         ? new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-            { offset: 0, color: props.color },
-            { offset: 1, color: nextStep.completed ? props.color : adjustColorBrightness(props.color, -20) }
+            { offset: 0, color: adjustColorBrightness(props.color, -25) },
+            { offset: 1, color: nextStep.completed ? adjustColorBrightness(props.color, -25) : adjustColorBrightness(props.color, -40) }
           ])
-        : '#475569'
+        : '#3f4b5e'
 
       links.push({
         source: String(currentStep.id),
         target: String(nextStep.id),
         lineStyle: {
           color: lineColor,
-          width: isCompleted ? 4 : 2,
+          width: isCompleted ? 3 : 2,
           curveness: 0,
-          opacity: isCompleted ? 1 : 0.3,
-          shadowBlur: isCompleted ? 10 : 0,
-          shadowColor: isCompleted ? props.color : 'transparent'
+          opacity: isCompleted ? 0.85 : 0.3,
+          shadowBlur: isCompleted ? 6 : 0,
+          shadowColor: isCompleted ? 'rgba(16, 185, 129, 0.25)' : 'transparent'
         },
         emphasis: {
           lineStyle: {
