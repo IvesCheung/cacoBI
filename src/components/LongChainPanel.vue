@@ -41,7 +41,6 @@ defineProps({
   background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
   border-radius: 12px;
   padding: 14px;
-  height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -50,6 +49,7 @@ defineProps({
     0 4px 16px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   position: relative;
+  height: 100%;
 }
 
 .chain-panel::before {
@@ -92,9 +92,9 @@ defineProps({
 .panel-body {
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  overflow: visible;
   flex: 1;
-  min-height: 0;
+  min-height: 220px;
 }
 
 /* 美化滚动条 */

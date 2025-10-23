@@ -83,6 +83,9 @@ watch(() => props.modelValue, (newVal) => {
   border: 1px solid rgba(59, 130, 246, 0.3);
   padding: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .config-header {
@@ -102,5 +105,6 @@ watch(() => props.modelValue, (newVal) => {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex: 1;
 }
 </style>

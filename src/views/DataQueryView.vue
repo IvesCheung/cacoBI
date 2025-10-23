@@ -87,46 +87,50 @@ const handleExecute = async () => {
 }
 
 .container {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 300px 1fr;
+  grid-template-rows: auto auto;
   gap: 12px;
   height: 100%;
   max-width: 1920px;
   margin: 0 auto;
+  grid-template-areas:
+    "short-chain short-config query"
+    "long-chain long-config query";
 }
 
 /* 左侧：链路展示区 */
 .left-section {
-  flex: 0 0 45%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-height: 0;
+  display: contents;
 }
 
-.chain-panel-wrapper {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
+.chain-panel-wrapper:first-child {
+  grid-area: short-chain;
+}
+
+.chain-panel-wrapper:last-child {
+  grid-area: long-chain;
 }
 
 /* 中间：配置面板 */
 .middle-section {
-  flex: 0 0 300px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  overflow-y: auto;
+  display: contents;
 }
 
-.config-wrapper {
-  flex-shrink: 0;
+.config-wrapper:first-child {
+  grid-area: short-config;
+}
+
+.config-wrapper:last-child {
+  grid-area: long-config;
 }
 
 /* 右侧：查询面板 */
 .right-section {
-  flex: 1;
+  grid-area: query;
   min-width: 0;
   min-height: 0;
+  overflow: auto;
 }
 
 /* 滚动条样式 */
