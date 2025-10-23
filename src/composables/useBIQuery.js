@@ -44,6 +44,8 @@ export function useBIQuery() {
       active: false,
       completed: false,
       details: null,
+      tokens: 0,
+      duration: 0,
     },
     {
       id: 2,
@@ -55,6 +57,8 @@ export function useBIQuery() {
         '1. 包含洗衣液关键词的笔记作者IP属地分布，近7天',
         '2. 内容为母婴用品的笔记作者ip属地分布，近30天',
       ],
+      tokens: 0,
+      duration: 0,
     },
     {
       id: 3,
@@ -66,6 +70,8 @@ export function useBIQuery() {
         '维度: [笔记id, 笔记作者username, 笔记作者IP属地]',
         '筛选条件: [笔记内容=洗衣液成分, 笔记创建时间>=近30天]',
       ],
+      tokens: 0,
+      duration: 0,
     },
   ])
 
@@ -81,6 +87,8 @@ export function useBIQuery() {
         '指标: 笔记数据; 维度: 笔记关键词; 筛选条件: 笔记内容=洗衣液成分;',
         '时间范围: 近30天; 图表类型: 饼图; 字段: [笔记关键词, 笔记内容, 创建时间]',
       ],
+      tokens: 0,
+      duration: 0,
     },
     {
       id: 2,
@@ -89,6 +97,8 @@ export function useBIQuery() {
       active: false,
       completed: false,
       details: ['[笔记指标汇总, 趋势笔记, 热门笔记, 笔记排行榜, 笔记作者总表, ...]', '共50张表'],
+      tokens: 0,
+      duration: 0,
     },
     {
       id: 3,
@@ -97,6 +107,8 @@ export function useBIQuery() {
       active: false,
       completed: false,
       details: ['当前选中表: 笔记作者总表'],
+      tokens: 0,
+      duration: 0,
     },
     {
       id: 4,
@@ -105,6 +117,8 @@ export function useBIQuery() {
       active: false,
       completed: false,
       details: ['[笔记作者username, 笔记作者id, 笔记作者登录设备, 笔记作者IP属地, ...]', '共30列'],
+      tokens: 0,
+      duration: 0,
     },
     {
       id: 5,
@@ -129,6 +143,8 @@ export function useBIQuery() {
           completed: false,
         },
       ],
+      tokens: 0,
+      duration: 0,
     },
   ])
 
@@ -145,6 +161,10 @@ export function useBIQuery() {
     return `${hours}:${minutes}:${seconds}`
   }
 
+  // Token消耗统计
+  const shortChainTokens = ref(0)
+  const longChainTokens = ref(0)
+
   // 重置所有状态
   const resetAll = () => {
     isExecuting.value = false
@@ -152,12 +172,16 @@ export function useBIQuery() {
     longCompleted.value = false
     shortChainTime.value = 0
     longChainTime.value = 0
+    shortChainTokens.value = 0
+    longChainTokens.value = 0
 
     // 重置短链路步骤
     shortSteps.forEach((step) => {
       step.active = false
       step.completed = false
       step.time = ''
+      step.tokens = 0
+      step.duration = 0
     })
 
     // 重置长链路步骤
@@ -165,6 +189,8 @@ export function useBIQuery() {
       step.active = false
       step.completed = false
       step.time = ''
+      step.tokens = 0
+      step.duration = 0
       if (step.subSteps) {
         step.subSteps.forEach((sub) => {
           sub.active = false
@@ -206,30 +232,42 @@ export function useBIQuery() {
       shortChainTime.value += 0.01
     }, 10)
 
-    // 步骤1
+    // 步骤1 - 向量化用户问题
     setTimeout(() => {
       shortSteps[0].time = getCurrentTime()
+      shortSteps[0].active = true
     }, 0)
     animateProgress(shortProgress, 0, 1500, () => {
-      shortSteps[0].active = true
       shortSteps[0].completed = true
+      shortSteps[0].tokens = 120
+      shortSteps[0].duration = 1.5
+      // 立即增加token消耗
+      shortChainTokens.value += 120
     })
 
-    // 步骤2
+    // 步骤2 - 检索历史相关问题
     setTimeout(() => {
       shortSteps[1].time = getCurrentTime()
+      shortSteps[1].active = true
       animateProgress(shortProgress, 1, 2000, () => {
-        shortSteps[1].active = true
         shortSteps[1].completed = true
+        shortSteps[1].tokens = 450
+        shortSteps[1].duration = 2.0
+        // 立即增加token消耗
+        shortChainTokens.value += 450
       })
     }, 1500)
 
-    // 步骤3
+    // 步骤3 - 生成DSL
     setTimeout(() => {
       shortSteps[2].time = getCurrentTime()
+      shortSteps[2].active = true
       animateProgress(shortProgress, 2, 1540, () => {
-        shortSteps[2].active = true
         shortSteps[2].completed = true
+        shortSteps[2].tokens = 1280
+        shortSteps[2].duration = 1.54
+        // 立即增加token消耗
+        shortChainTokens.value += 1280
         clearInterval(timer)
         shortChainTime.value = 5.04
         shortCompleted.value = true
@@ -243,48 +281,68 @@ export function useBIQuery() {
       longChainTime.value += 0.01
     }, 10)
 
-    // 步骤1
+    // 步骤1 - 拆解用户问题
     setTimeout(() => {
       longSteps[0].time = getCurrentTime()
+      longSteps[0].active = true
       animateProgress(longProgress, 0, 2000, () => {
-        longSteps[0].active = true
         longSteps[0].completed = true
+        longSteps[0].tokens = 850
+        longSteps[0].duration = 4.0
+        // 立即增加token消耗
+        longChainTokens.value += 850
       })
     }, 1000)
 
-    // 步骤2
+    // 步骤2 - 召回相关表
     setTimeout(() => {
       longSteps[1].time = getCurrentTime()
+      longSteps[1].active = true
       animateProgress(longProgress, 1, 2000, () => {
-        longSteps[1].active = true
         longSteps[1].completed = true
+        longSteps[1].tokens = 620
+        longSteps[1].duration = 4.5
+        // 立即增加token消耗
+        longChainTokens.value += 620
       })
     }, 3000)
 
-    // 步骤3
+    // 步骤3 - 重排并选表
     setTimeout(() => {
       longSteps[2].time = getCurrentTime()
+      longSteps[2].active = true
       animateProgress(longProgress, 2, 2000, () => {
-        longSteps[2].active = true
         longSteps[2].completed = true
+        longSteps[2].tokens = 2340
+        longSteps[2].duration = 5.0
+        // 立即增加token消耗
+        longChainTokens.value += 2340
       })
     }, 5000)
 
-    // 步骤4
+    // 步骤4 - 召回表内相关列
     setTimeout(() => {
       longSteps[3].time = getCurrentTime()
+      longSteps[3].active = true
       animateProgress(longProgress, 3, 3000, () => {
-        longSteps[3].active = true
         longSteps[3].completed = true
+        longSteps[3].tokens = 1560
+        longSteps[3].duration = 5.0
+        // 立即增加token消耗
+        longChainTokens.value += 1560
       })
     }, 7000)
 
-    // 步骤5
+    // 步骤5 - 生成DSL
     setTimeout(() => {
       longSteps[4].time = getCurrentTime()
+      longSteps[4].active = true
       animateProgress(longProgress, 4, 4500, () => {
-        longSteps[4].active = true
         longSteps[4].completed = true
+        longSteps[4].tokens = 3890
+        longSteps[4].duration = 5.0
+        // 立即增加token消耗
+        longChainTokens.value += 3890
 
         // 子步骤
         setTimeout(() => {
@@ -332,6 +390,8 @@ export function useBIQuery() {
     shortCompleted,
     longCompleted,
     queryText,
+    shortChainTokens,
+    longChainTokens,
 
     // 配置
     shortChainConfig,

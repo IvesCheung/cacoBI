@@ -5,6 +5,7 @@
       <ProgressBar
         :progress-array="progress"
         :time="time"
+        :total-tokens="totalTokens"
         start-color="#f59e0b"
       />
     </div>
@@ -32,6 +33,10 @@ defineProps({
     required: true
   },
   time: {
+    type: Number,
+    default: 0
+  },
+  totalTokens: {
     type: Number,
     default: 0
   }

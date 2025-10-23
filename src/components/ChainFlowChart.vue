@@ -15,6 +15,23 @@
           </el-icon>
         </div>
         <div class="detail-content">
+          <!-- Token消耗和耗时信息 -->
+          <div v-if="selectedNode.tokens || selectedNode.duration" class="detail-stats">
+            <div class="stat-item">
+              <el-icon class="stat-icon"><Coin /></el-icon>
+              <div class="stat-content">
+                <span class="stat-label">Token消耗</span>
+                <span class="stat-value">{{ selectedNode.tokens || 0 }}</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <el-icon class="stat-icon"><Timer /></el-icon>
+              <div class="stat-content">
+                <span class="stat-label">耗时</span>
+                <span class="stat-value">{{ selectedNode.duration || 0 }}s</span>
+              </div>
+            </div>
+          </div>
           <div v-if="selectedNode.time" class="detail-time">
             <el-icon><Clock /></el-icon>
             <span>{{ selectedNode.time }}</span>
@@ -47,7 +64,7 @@
 <script setup>
 import { ref, onMounted, watch, nextTick } from 'vue'
 import * as echarts from 'echarts'
-import { Close, Clock, Document, Check, Loading } from '@element-plus/icons-vue'
+import { Close, Clock, Document, Check, Loading, Timer, Coin } from '@element-plus/icons-vue'
 
 const props = defineProps({
   steps: {
@@ -154,24 +171,40 @@ const updateChart = () => {
         label: {
           show: true,
           position: 'inside',
-          fontSize: 13,
+          fontSize: 12,
           color: status === 'inactive' ? '#94a3b8' : '#e8f0fe',
           fontWeight: status === 'completed' || status === 'active' ? '600' : 'normal',
           fontFamily: 'PingFang SC, Microsoft YaHei, sans-serif',
-          lineHeight: 18,
+          lineHeight: 16,
           width: 110,
           overflow: 'truncate',
           ellipsis: '...',
           formatter: (params) => {
+            const step = params.data.data
             // 自动换行处理
             const maxLen = 12
             const text = params.name
-            if (text.length <= maxLen) {
-              return text
+            let displayText = text
+            if (text.length > maxLen) {
+              const half = Math.ceil(text.length / 2)
+              displayText = text.slice(0, half) + '\n' + text.slice(half)
             }
-            // 超过长度则尝试分两行
-            const half = Math.ceil(text.length / 2)
-            return text.slice(0, half) + '\n' + text.slice(half)
+
+            // 如果节点已完成或正在执行，显示tokens和耗时
+            if (step && (step.completed || step.active) && step.tokens > 0) {
+              const tokenInfo = `${step.tokens} tokens`
+              const timeInfo = `${step.duration}s`
+              return `${displayText}\n{small|${tokenInfo} | ${timeInfo}}`
+            }
+
+            return displayText
+          },
+          rich: {
+            small: {
+              fontSize: 10,
+              color: '#a5b4fc',
+              fontWeight: 'normal'
+            }
           }
         },
         emphasis: {
@@ -512,6 +545,58 @@ onMounted(() => {
   max-height: 350px;
   overflow-y: auto;
   padding-right: 4px;
+}
+
+/* Token消耗和耗时统计 */
+.detail-stats {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%);
+  border-radius: 10px;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%);
+  border-color: rgba(99, 102, 241, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+.stat-icon {
+  font-size: 20px;
+  color: #818cf8;
+  flex-shrink: 0;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #a5b4fc;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 15px;
+  color: #f1f5f9;
+  font-weight: 700;
 }
 
 .detail-time {

@@ -29,6 +29,11 @@
     <div class="time-badge">
       链路耗时: <span class="time-value">{{ time.toFixed(2) }}</span> 秒
     </div>
+
+    <!-- Token消耗显示 -->
+    <div class="token-badge">
+      总Token: <span class="token-value">{{ totalTokens }}</span>
+    </div>
   </div>
 </template>
 
@@ -43,6 +48,10 @@ defineProps({
     required: true
   },
   time: {
+    type: Number,
+    default: 0
+  },
+  totalTokens: {
     type: Number,
     default: 0
   }
@@ -107,6 +116,20 @@ defineProps({
 }
 
 .time-value {
+  font-weight: 600;
+}
+
+.token-badge {
+  background: #2563eb;
+  color: white;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  white-space: nowrap;
+  margin-left: 3px;
+}
+
+.token-value {
   font-weight: 600;
 }
 </style>

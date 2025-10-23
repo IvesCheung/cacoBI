@@ -7,6 +7,7 @@
           :steps="shortSteps"
           :progress="shortProgress"
           :time="shortChainTime"
+          :total-tokens="shortChainTokens"
           class="chain-panel-wrapper"
         />
 
@@ -14,6 +15,7 @@
           :steps="longSteps"
           :progress="longProgress"
           :time="longChainTime"
+          :total-tokens="longChainTokens"
           class="chain-panel-wrapper"
         />
       </div>
@@ -69,6 +71,8 @@ const {
   longSteps,
   shortProgress,
   longProgress,
+  shortChainTokens,
+  longChainTokens,
   executeQuery
 } = useBIQuery()
 
