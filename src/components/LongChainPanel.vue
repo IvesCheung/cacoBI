@@ -2,34 +2,29 @@
   <div class="chain-panel">
     <div class="panel-header">
       <h2 class="panel-title long-title">🟠 传统链路（长链路）</h2>
-      <ProgressBar
-        :progress-array="progress"
-        :time="time"
-        :total-tokens="totalTokens"
-        start-color="#f59e0b"
-      />
+      <div class="header-stats">
+        <div class="time-badge">
+          链路耗时: <span class="time-value">{{ time.toFixed(2) }}</span> 秒
+        </div>
+        <div class="token-badge">
+          总Token: <span class="token-value">{{ totalTokens }}</span>
+        </div>
+      </div>
     </div>
 
     <div class="panel-body">
-      <ChainFlowChart
-        :steps="steps"
-        color="#f59e0b"
-      />
+      <ParallelChainFlow :stages="computedStages" />
     </div>
   </div>
 </template>
 
 <script setup>
-import ChainFlowChart from './ChainFlowChart.vue'
-import ProgressBar from './ProgressBar.vue'
+import { computed } from 'vue'
+import ParallelChainFlow from './ParallelChainFlow.vue'
 
-defineProps({
+const props = defineProps({
   steps: {
-    type: Array,
-    required: true
-  },
-  progress: {
-    type: Array,
+    type: Object,
     required: true
   },
   time: {
@@ -40,6 +35,13 @@ defineProps({
     type: Number,
     default: 0
   }
+})
+
+// 将steps对象转换为stages数组
+const computedStages = computed(() => {
+  return Object.keys(props.steps).map(stageKey => {
+    return props.steps[stageKey]
+  })
 })
 </script><style scoped>
 .chain-panel {
@@ -74,8 +76,46 @@ defineProps({
   align-items: center;
   margin-bottom: 12px;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
   flex-shrink: 0;
+}
+
+.header-stats {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.time-badge {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.time-value {
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.token-badge {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);
+}
+
+.token-value {
+  font-weight: 700;
+  font-size: 13px;
 }
 
 .panel-title {

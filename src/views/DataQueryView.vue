@@ -13,7 +13,6 @@
 
         <LongChainPanel
           :steps="longSteps"
-          :progress="longProgress"
           :time="longChainTime"
           :total-tokens="longChainTokens"
           class="chain-panel-wrapper"
@@ -70,7 +69,6 @@ const {
   shortSteps,
   longSteps,
   shortProgress,
-  longProgress,
   shortChainTokens,
   longChainTokens,
   executeQuery

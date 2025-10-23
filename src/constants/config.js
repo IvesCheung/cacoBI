@@ -2,31 +2,34 @@
 export const DSL_MODELS = [
   'Qwen3-embedding-0.6B',
   'Qwen3-embedding-4B',
-  'Entity-agnostic Qwen3-0.6B'
+  'Entity-agnostic Qwen3-0.6B',
 ]
 
-export const LLM_MODELS = [
-  'Qwen2.5-instruct-72B',
-  'Qwen3-32B',
-  'Deepseek-v3'
-]
+export const LLM_MODELS = ['Qwen2.5-instruct-72B', 'Qwen3-32B', 'Deepseek-v3']
 
 // 默认配置
 export const DEFAULT_SHORT_CHAIN_CONFIG = {
   dslModel: 'Qwen3-embedding-0.6B',
   encoder: 'Qwen2.5-instruct-72B',
   templateRecallTopK: 3,
-  templateSimilarityThreshold: 0.3
+  templateSimilarityThreshold: 0.3,
 }
 
 export const DEFAULT_LONG_CHAIN_CONFIG = {
-  questionDecomposeModel: 'Qwen2.5-instruct-72B',
-  tableRerankModel: 'Qwen2.5-instruct-72B',
-  metricConfigModel: 'Qwen2.5-instruct-72B',
-  dimensionConfigModel: 'Qwen2.5-instruct-72B',
-  filterConfigModel: 'Qwen2.5-instruct-72B',
-  tableRecallTopK: 30,
-  columnRecallTopK: 100
+  // 配置解析阶段
+  entityRecognitionModel: 'Qwen2.5-instruct-72B',
+  questionRewriteModel: 'Qwen2.5-instruct-72B',
+  questionClarifyModel: 'Qwen2.5-instruct-72B',
+  // 表召回与选择
+  tableRecallTopK: 50,
+  tableSelectionModel: 'Deepseek-v3',
+  // Rerank
+  segmentRerankModel: 'Deepseek-v3',
+  dimensionRerankModel: 'Deepseek-v3',
+  // DSL配置
+  metricParseModel: 'Deepseek-v3',
+  dimensionParseModel: 'Deepseek-v3',
+  filterParseModel: 'Deepseek-v3',
 }
 
 // 示例查询
@@ -35,7 +38,7 @@ export const EXAMPLE_QUERIES = [
   '查询最近30天的用户活跃度',
   '统计各部门的销售额，按月份分组',
   '分析产品A和产品B的销售对比',
-  '查询客户满意度评分Top10'
+  '查询客户满意度评分Top10',
 ]
 
 // 配置项说明
@@ -50,5 +53,5 @@ export const CONFIG_DESCRIPTIONS = {
   dimensionConfigModel: '配置数据维度的模型',
   filterConfigModel: '配置筛选条件的模型',
   tableRecallTopK: '召回相关数据表的数量',
-  columnRecallTopK: '召回相关列的数量'
+  columnRecallTopK: '召回相关列的数量',
 }
