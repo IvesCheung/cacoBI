@@ -43,6 +43,7 @@
 
     <!-- 执行日志 -->
     <div v-if="isExecuting || shortCompleted || longCompleted" class="execution-logs">
+      <!-- 常规日志 -->
       <div class="log-item">
         <span class="log-time">{{ currentTime }}</span>
         <span class="log-text">正在检索相关数据...</span>
@@ -51,6 +52,22 @@
         <span class="log-time">{{ currentTime }}</span>
         <span class="log-text">正在分析数据并生成报表...</span>
       </div>
+      <!-- Cost Agent 日志 -->
+      <template v-if="costAgentEnabled">
+        <div class="log-item cost-agent-log">
+          <span class="log-time">{{ currentTime }}</span>
+          <span class="log-text">✨ 正在使用 Cost Agent 对问题进行智能分析...</span>
+        </div>
+        <div v-if="skippedStepsInfo.length > 0" class="log-item cost-agent-log">
+          <span class="log-time">{{ currentTime }}</span>
+          <span class="log-text">
+            🎯 经过分析，智能跳过:
+            <span v-for="(step, index) in skippedStepsInfo" :key="step.id" class="skipped-step-name">
+              {{ step.title }}<span v-if="index < skippedStepsInfo.length - 1">、</span>
+            </span>
+          </span>
+        </div>
+      </template>
     </div>
 
     <!-- 短链路结果 -->
@@ -92,10 +109,14 @@ const props = defineProps({
   longCompleted: {
     type: Boolean,
     default: false
+  },
+  skippedStepsInfo: {
+    type: Array,
+    default: () => []
   }
 })
 
-const emit = defineEmits(['update:queryText', 'update:costAgentEnabled', 'execute'])
+const emit = defineEmits(['update:queryText', 'update:costAgentEnabled', 'execute', 'clearLogs'])
 
 const queryText = computed({
   get: () => props.queryText,
@@ -116,6 +137,10 @@ const handleExecute = () => {
 }
 
 const toggleCostAgent = () => {
+  // 如果不在执行中，切换前先清除日志
+  if (!props.isExecuting) {
+    emit('clearLogs')
+  }
   costAgentEnabled.value = !costAgentEnabled.value
 }
 </script>
@@ -205,6 +230,27 @@ const toggleCostAgent = () => {
 
 .log-text {
   color: #cbd5e1;
+}
+
+.cost-agent-log {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%);
+  padding: 6px 10px;
+  border-radius: 6px;
+  border-left: 3px solid #10b981;
+  margin-left: -8px;
+  padding-left: 8px;
+  margin-bottom: 6px;
+}
+
+.cost-agent-log .log-text {
+  color: #6ee7b7;
+  font-weight: 500;
+}
+
+.skipped-step-name {
+  color: #fcd34d;
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(252, 211, 77, 0.3);
 }
 
 .result-container {

@@ -13,6 +13,9 @@ export function useBIQuery() {
   const shortCompleted = ref(false)
   const longCompleted = ref(false)
 
+  // Cost Agent 跳过的步骤信息
+  const skippedStepsInfo = ref([])
+
   // 查询输入
   const queryText = ref('包含洗衣液成分关键词的笔记作者ip属地分布，近30天')
 
@@ -308,6 +311,7 @@ export function useBIQuery() {
     // const numToSkip = Math.random() < 0.5 ? 1 : 2
     const numToSkip = 3
     const skipped = []
+    const skippedInfo = []
 
     for (let i = 0; i < numToSkip; i++) {
       // 随机选择一个阶段
@@ -318,15 +322,23 @@ export function useBIQuery() {
       if (stage && stage.steps.length > 0) {
         // 随机选择该阶段中的一个步骤
         const randomStepIndex = Math.floor(Math.random() * stage.steps.length)
-        const stepId = stage.steps[randomStepIndex].id
+        const step = stage.steps[randomStepIndex]
+        const stepId = step.id
 
         // 避免重复
         if (!skipped.includes(stepId)) {
           skipped.push(stepId)
+          skippedInfo.push({
+            id: stepId,
+            title: step.title,
+            stage: stage.title
+          })
         }
       }
     }
 
+    // 保存跳过步骤的详细信息
+    skippedStepsInfo.value = skippedInfo
     return skipped
   }
 
@@ -339,6 +351,7 @@ export function useBIQuery() {
     longChainTime.value = 0
     shortChainTokens.value = 0
     longChainTokens.value = 0
+    skippedStepsInfo.value = []
 
     // 重置短链路步骤
     shortSteps.forEach((step) => {
@@ -385,6 +398,15 @@ export function useBIQuery() {
         }
       }, 100)
     })
+  }
+
+  // 清除执行日志（在完成状态下切换选项时使用）
+  const clearLogs = () => {
+    if (!isExecuting.value) {
+      shortCompleted.value = false
+      longCompleted.value = false
+      skippedStepsInfo.value = []
+    }
   }
 
   // 模拟短链路执行
@@ -725,6 +747,7 @@ export function useBIQuery() {
     queryText,
     shortChainTokens,
     longChainTokens,
+    skippedStepsInfo,
 
     // 配置
     shortChainConfig,
@@ -741,5 +764,6 @@ export function useBIQuery() {
     // 方法
     executeQuery,
     resetAll,
+    clearLogs,
   }
 }

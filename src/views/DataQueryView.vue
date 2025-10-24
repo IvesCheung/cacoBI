@@ -41,7 +41,9 @@
           :is-executing="isExecuting"
           :short-completed="shortCompleted"
           :long-completed="longCompleted"
+          :skipped-steps-info="skippedStepsInfo"
           @execute="handleExecute"
+          @clear-logs="clearLogs"
         />
       </div>
     </div>
@@ -73,7 +75,9 @@ const {
   longProgress,
   shortChainTokens,
   longChainTokens,
-  executeQuery
+  skippedStepsInfo,
+  executeQuery,
+  clearLogs
 } = useBIQuery()
 
 // 执行查询
