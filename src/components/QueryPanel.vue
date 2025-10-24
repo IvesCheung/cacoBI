@@ -44,11 +44,11 @@
     <!-- 执行日志 -->
     <div v-if="isExecuting || shortCompleted || longCompleted" class="execution-logs">
       <!-- 常规日志 -->
-      <div class="log-item">
+      <div class="log-item regular-log">
         <span class="log-time">{{ currentTime }}</span>
         <span class="log-text">正在检索相关数据...</span>
       </div>
-      <div class="log-item">
+      <div class="log-item regular-log">
         <span class="log-time">{{ currentTime }}</span>
         <span class="log-text">正在分析数据并生成报表...</span>
       </div>
@@ -230,6 +230,21 @@ const toggleCostAgent = () => {
 
 .log-text {
   color: #cbd5e1;
+}
+
+.regular-log {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
+  padding: 6px 10px;
+  border-radius: 6px;
+  border-left: 3px solid #3b82f6;
+  margin-left: -8px;
+  padding-left: 8px;
+  margin-bottom: 6px;
+}
+
+.regular-log .log-text {
+  color: #93c5fd;
+  font-weight: 500;
 }
 
 .cost-agent-log {
