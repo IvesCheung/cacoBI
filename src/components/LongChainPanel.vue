@@ -13,16 +13,15 @@
     </div>
 
     <div class="panel-body">
-      <ParallelChainFlow :stages="computedStages" />
+      <LongChainFlow :steps="steps" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import ParallelChainFlow from './ParallelChainFlow.vue'
+import LongChainFlow from './LongChainFlow.vue'
 
-const props = defineProps({
+defineProps({
   steps: {
     type: Object,
     required: true
@@ -35,13 +34,6 @@ const props = defineProps({
     type: Number,
     default: 0
   }
-})
-
-// 将steps对象转换为stages数组
-const computedStages = computed(() => {
-  return Object.keys(props.steps).map(stageKey => {
-    return props.steps[stageKey]
-  })
 })
 </script><style scoped>
 .chain-panel {
@@ -137,14 +129,15 @@ const computedStages = computed(() => {
 .panel-body {
   display: flex;
   flex-direction: column;
-  overflow: visible;
+  overflow-x: auto;
+  overflow-y: hidden;
   flex: 1;
   min-height: 220px;
 }
 
 /* 美化滚动条 */
 .panel-body::-webkit-scrollbar {
-  width: 6px;
+  height: 8px;
 }
 
 .panel-body::-webkit-scrollbar-track {
@@ -153,12 +146,12 @@ const computedStages = computed(() => {
 }
 
 .panel-body::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+  background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
   border-radius: 10px;
 }
 
 .panel-body::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+  background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
 }
 </style>
 

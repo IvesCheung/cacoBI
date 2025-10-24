@@ -76,7 +76,7 @@ export function useBIQuery() {
   ])
 
   // 长链路步骤 - 新的复杂流程结构
-  const longSteps = reactive({
+  const longSteps = ref({
     // 阶段1: 配置解析 (并行执行)
     stage1: {
       title: '配置解析',
@@ -318,8 +318,8 @@ export function useBIQuery() {
     })
 
     // 重置长链路步骤 - 遍历所有阶段
-    Object.keys(longSteps).forEach((stageKey) => {
-      const stage = longSteps[stageKey]
+    Object.keys(longSteps.value).forEach((stageKey) => {
+      const stage = longSteps.value[stageKey]
       stage.steps.forEach((step) => {
         step.status = 'inactive'
         step.tokens = 0
@@ -405,37 +405,46 @@ export function useBIQuery() {
 
   // 模拟长链路执行
   const simulateLongChain = () => {
+    console.log('开始执行长链路');
+
     let timer = setInterval(() => {
       longChainTime.value += 0.01
     }, 10)
 
-    let currentTime = 0
+    let accumulatedTime = 500 // 初始延迟
 
-    // 阶段1: 配置解析 (3个LLM步骤并行, 2.5秒)
+    // 阶段1: 配置解析 (3个LLM步骤并行, 2.7秒)
     setTimeout(() => {
-      const stage1Steps = longSteps.stage1.steps
+      console.log('阶段1开始: 配置解析');
+      const stage1Steps = longSteps.value.stage1.steps
       // 并行执行,同时开始
       stage1Steps.forEach((step, idx) => {
+        console.log(`阶段1-步骤${idx} 开始执行:`, step.id);
         step.status = 'active'
         const duration = 2500 + idx * 200 // 略有差异
         setTimeout(() => {
+          console.log(`阶段1-步骤${idx} 完成:`, step.id);
           step.status = 'completed'
           step.tokens = 650 + idx * 100
-          step.duration = (duration / 1000).toFixed(2)
+          step.duration = parseFloat((duration / 1000).toFixed(2))
           step.details = ['实体: 笔记内容, 作者IP属地', '时间范围: 近30天']
           longChainTokens.value += step.tokens
         }, duration)
       })
-      currentTime += 2700
-    }, 500)
+    }, accumulatedTime)
+    accumulatedTime += 2700
 
     // 阶段2: 表召回 (3个传统计算步骤并行, 瞬时完成)
     setTimeout(() => {
-      const stage2Steps = longSteps.stage2.steps
+      console.log('阶段2开始: 表召回');
+      const stage2Steps = longSteps.value.stage2.steps
       stage2Steps.forEach((step, idx) => {
+        console.log(`阶段2-步骤${idx} 开始执行:`, step.id);
         step.status = 'active'
         setTimeout(() => {
+          console.log(`阶段2-步骤${idx} 完成:`, step.id);
           step.status = 'completed'
+          step.duration = 0.1
           step.details = [
             idx === 0
               ? '召回50张主体相关表'
@@ -445,30 +454,37 @@ export function useBIQuery() {
           ]
         }, 100)
       })
-      currentTime += 100
-    }, currentTime)
+    }, accumulatedTime)
+    accumulatedTime += 100
 
     // 阶段3: 选表 (1个LLM步骤, 3秒)
     setTimeout(() => {
-      const step = longSteps.stage3.steps[0]
+      console.log('阶段3开始: 选表');
+      const step = longSteps.value.stage3.steps[0]
+      console.log('阶段3-步骤 开始执行:', step.id);
       step.status = 'active'
       setTimeout(() => {
+        console.log('阶段3-步骤 完成:', step.id);
         step.status = 'completed'
         step.tokens = 1850
         step.duration = 3.0
         step.details = ['选中表: 笔记作者总表', '置信度: 95%']
         longChainTokens.value += step.tokens
       }, 3000)
-      currentTime += 3000
-    }, currentTime)
+    }, accumulatedTime)
+    accumulatedTime += 3000
 
     // 阶段4: 单表知识召回 (4个传统计算步骤并行, 瞬时完成)
     setTimeout(() => {
-      const stage4Steps = longSteps.stage4.steps
+      console.log('阶段4开始: 单表知识召回');
+      const stage4Steps = longSteps.value.stage4.steps
       stage4Steps.forEach((step, idx) => {
+        console.log(`阶段4-步骤${idx} 开始执行:`, step.id);
         step.status = 'active'
         setTimeout(() => {
+          console.log(`阶段4-步骤${idx} 完成:`, step.id);
           step.status = 'completed'
+          step.duration = 0.1
           step.details = [
             idx === 0
               ? '召回学段信息: 小学, 初中, 高中'
@@ -480,36 +496,42 @@ export function useBIQuery() {
           ]
         }, 100)
       })
-      currentTime += 100
-    }, currentTime)
+    }, accumulatedTime)
+    accumulatedTime += 100
 
-    // 阶段5: Rerank (2个LLM步骤并行, 2.8秒)
+    // 阶段5: Rerank (2个LLM步骤并行, 3.1秒)
     setTimeout(() => {
-      const stage5Steps = longSteps.stage5.steps
+      console.log('阶段5开始: Rerank');
+      const stage5Steps = longSteps.value.stage5.steps
       stage5Steps.forEach((step, idx) => {
+        console.log(`阶段5-步骤${idx} 开始执行:`, step.id);
         step.status = 'active'
         const duration = 2800 + idx * 300
         setTimeout(() => {
+          console.log(`阶段5-步骤${idx} 完成:`, step.id);
           step.status = 'completed'
           step.tokens = 980 + idx * 120
-          step.duration = (duration / 1000).toFixed(2)
+          step.duration = parseFloat((duration / 1000).toFixed(2))
           step.details = [idx === 0 ? 'Rerank后: Top-5 学段' : 'Rerank后: Top-10 维值']
           longChainTokens.value += step.tokens
         }, duration)
       })
-      currentTime += 3100
-    }, currentTime)
+    }, accumulatedTime)
+    accumulatedTime += 3100
 
-    // 阶段6: 配置解析 (3个LLM步骤并行, 3.2秒)
+    // 阶段6: 配置解析 (3个LLM步骤并行, 3.45秒)
     setTimeout(() => {
-      const stage6Steps = longSteps.stage6.steps
+      console.log('阶段6开始: 配置解析');
+      const stage6Steps = longSteps.value.stage6.steps
       stage6Steps.forEach((step, idx) => {
+        console.log(`阶段6-步骤${idx} 开始执行:`, step.id);
         step.status = 'active'
         const duration = 3200 + idx * 250
         setTimeout(() => {
+          console.log(`阶段6-步骤${idx} 完成:`, step.id);
           step.status = 'completed'
           step.tokens = 1200 + idx * 180
-          step.duration = (duration / 1000).toFixed(2)
+          step.duration = parseFloat((duration / 1000).toFixed(2))
           step.details = [
             idx === 0
               ? '指标: 笔记数量, 作者数'
@@ -520,21 +542,26 @@ export function useBIQuery() {
           longChainTokens.value += step.tokens
         }, duration)
       })
-      currentTime += 3450
-    }, currentTime)
+    }, accumulatedTime)
+    accumulatedTime += 3450
 
     // 阶段7: DSL配置转换 (传统计算, 瞬时完成)
     setTimeout(() => {
-      const step = longSteps.stage7.steps[0]
+      console.log('阶段7开始: DSL配置转换');
+      const step = longSteps.value.stage7.steps[0]
+      console.log('阶段7-步骤 开始执行:', step.id);
       step.status = 'active'
       setTimeout(() => {
+        console.log('阶段7-步骤 完成:', step.id);
         step.status = 'completed'
+        step.duration = 0.1
         step.details = ['DSL生成成功', '包含2个指标, 2个维度, 2个筛选条件']
         clearInterval(timer)
-        longChainTime.value = parseFloat((currentTime / 1000).toFixed(2))
+        longChainTime.value = parseFloat((accumulatedTime / 1000).toFixed(2))
         longCompleted.value = true
+        console.log('长链路执行完成');
       }, 100)
-    }, currentTime)
+    }, accumulatedTime)
   }
 
   // 动画进度条
