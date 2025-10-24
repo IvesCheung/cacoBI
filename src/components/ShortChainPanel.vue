@@ -10,18 +10,15 @@
       />
     </div>
 
-    <div class="panel-body">
-      <ChainFlowChart
-        :steps="steps"
-        color="#10b981"
-      />
+    <div class="panel-body short-flow-wrapper">
+      <ShortChainFlow :steps="steps" />
     </div>
   </div>
 </template>
 
 <script setup>
-import ChainFlowChart from './ChainFlowChart.vue'
 import ProgressBar from './ProgressBar.vue'
+import ShortChainFlow from './ShortChainFlow.vue'
 
 defineProps({
   steps: {
@@ -100,6 +97,17 @@ defineProps({
   overflow: visible;
   flex: 1;
   min-height: 220px;
+  /* 为内部的短链路流提供垂直居中空间 */
+  position: relative;
+}
+
+.short-flow-wrapper {
+  /* 垂直 & 水平居中短链路内容 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 4px 0; /* 减少额外上下留白 */
 }
 
 /* 美化滚动条 */
