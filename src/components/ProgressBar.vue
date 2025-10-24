@@ -6,7 +6,7 @@
     <!-- 进度条组 -->
     <template v-for="(progress, index) in progressArray" :key="index">
       <!-- 进度条 -->
-      <div class="progress-wrapper">
+      <div class="progress-wrapper" :style="{ width: progressBarWidth }">
         <div class="progress-bg">
           <div
             class="progress-fill"
@@ -26,19 +26,21 @@
     </template>
 
     <!-- 时间显示 -->
-    <div class="time-badge">
+    <div class="time-badge" :style="badgeStyle">
       链路耗时: <span class="time-value">{{ time.toFixed(2) }}</span> 秒
     </div>
 
     <!-- Token消耗显示 -->
-    <div class="token-badge">
+    <div class="token-badge" :style="badgeStyle">
       总Token: <span class="token-value">{{ totalTokens }}</span>
     </div>
   </div>
 </template>
 
 <script setup>
-defineProps({
+import { computed } from 'vue'
+
+const props = defineProps({
   startColor: {
     type: String,
     default: '#10b981'
@@ -54,6 +56,20 @@ defineProps({
   totalTokens: {
     type: Number,
     default: 0
+  }
+})
+
+// 根据进度条数量动态计算宽度
+const progressBarWidth = computed(() => {
+  const count = props.progressArray.length
+  // 短链路3个: 40px, 长链路7个: 28px
+  return count <= 3 ? '40px' : '28px'
+})
+
+// 根据startColor计算badge样式
+const badgeStyle = computed(() => {
+  return {
+    background: props.startColor
   }
 })
 </script>
@@ -86,7 +102,6 @@ defineProps({
 }
 
 .progress-wrapper {
-  width: 40px;
   flex-shrink: 0;
 }
 
@@ -106,7 +121,6 @@ defineProps({
 }
 
 .time-badge {
-  background: #2563eb;
   color: white;
   padding: 3px 6px;
   border-radius: 3px;
@@ -120,7 +134,6 @@ defineProps({
 }
 
 .token-badge {
-  background: #2563eb;
   color: white;
   padding: 3px 6px;
   border-radius: 3px;

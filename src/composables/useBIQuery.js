@@ -283,7 +283,8 @@ export function useBIQuery() {
 
   // 进度状态
   const shortProgress = reactive([0, 0, 0])
-  // 长链路不再使用简单的进度数组,而是根据stages动态计算
+  // 长链路进度 (7个进度条，对应7个阶段)
+  const longProgress = reactive([0, 0, 0, 0, 0, 0, 0])
 
   // 获取当前时间字符串 (HH:MM:SS)
   const getCurrentTime = () => {
@@ -330,6 +331,7 @@ export function useBIQuery() {
 
     // 重置进度
     shortProgress.fill(0)
+    longProgress.fill(0)
   }
 
   // 执行查询
@@ -417,6 +419,10 @@ export function useBIQuery() {
     setTimeout(() => {
       console.log('阶段1开始: 配置解析');
       const stage1Steps = longSteps.value.stage1.steps
+      // 开始阶段1进度动画
+      animateProgress(longProgress, 0, 2700, () => {
+        console.log('阶段1进度完成');
+      })
       // 并行执行,同时开始
       stage1Steps.forEach((step, idx) => {
         console.log(`阶段1-步骤${idx} 开始执行:`, step.id);
@@ -438,6 +444,10 @@ export function useBIQuery() {
     setTimeout(() => {
       console.log('阶段2开始: 表召回');
       const stage2Steps = longSteps.value.stage2.steps
+      // 开始阶段2进度动画
+      animateProgress(longProgress, 1, 100, () => {
+        console.log('阶段2进度完成');
+      })
       stage2Steps.forEach((step, idx) => {
         console.log(`阶段2-步骤${idx} 开始执行:`, step.id);
         step.status = 'active'
@@ -461,6 +471,10 @@ export function useBIQuery() {
     setTimeout(() => {
       console.log('阶段3开始: 选表');
       const step = longSteps.value.stage3.steps[0]
+      // 开始阶段3进度动画
+      animateProgress(longProgress, 2, 3000, () => {
+        console.log('阶段3进度完成');
+      })
       console.log('阶段3-步骤 开始执行:', step.id);
       step.status = 'active'
       setTimeout(() => {
@@ -478,6 +492,10 @@ export function useBIQuery() {
     setTimeout(() => {
       console.log('阶段4开始: 单表知识召回');
       const stage4Steps = longSteps.value.stage4.steps
+      // 开始阶段4进度动画
+      animateProgress(longProgress, 3, 100, () => {
+        console.log('阶段4进度完成');
+      })
       stage4Steps.forEach((step, idx) => {
         console.log(`阶段4-步骤${idx} 开始执行:`, step.id);
         step.status = 'active'
@@ -503,6 +521,10 @@ export function useBIQuery() {
     setTimeout(() => {
       console.log('阶段5开始: Rerank');
       const stage5Steps = longSteps.value.stage5.steps
+      // 开始阶段5进度动画
+      animateProgress(longProgress, 4, 3100, () => {
+        console.log('阶段5进度完成');
+      })
       stage5Steps.forEach((step, idx) => {
         console.log(`阶段5-步骤${idx} 开始执行:`, step.id);
         step.status = 'active'
@@ -523,6 +545,10 @@ export function useBIQuery() {
     setTimeout(() => {
       console.log('阶段6开始: 配置解析');
       const stage6Steps = longSteps.value.stage6.steps
+      // 开始阶段6进度动画
+      animateProgress(longProgress, 5, 3450, () => {
+        console.log('阶段6进度完成');
+      })
       stage6Steps.forEach((step, idx) => {
         console.log(`阶段6-步骤${idx} 开始执行:`, step.id);
         step.status = 'active'
@@ -549,6 +575,10 @@ export function useBIQuery() {
     setTimeout(() => {
       console.log('阶段7开始: DSL配置转换');
       const step = longSteps.value.stage7.steps[0]
+      // 开始阶段7进度动画
+      animateProgress(longProgress, 6, 100, () => {
+        console.log('阶段7进度完成');
+      })
       console.log('阶段7-步骤 开始执行:', step.id);
       step.status = 'active'
       setTimeout(() => {
@@ -603,6 +633,7 @@ export function useBIQuery() {
 
     // 进度
     shortProgress,
+    longProgress,
 
     // 方法
     executeQuery,

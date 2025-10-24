@@ -2,14 +2,12 @@
   <div class="chain-panel">
     <div class="panel-header">
       <h2 class="panel-title long-title">🟠 传统链路（长链路）</h2>
-      <div class="header-stats">
-        <div class="time-badge">
-          链路耗时: <span class="time-value">{{ time.toFixed(2) }}</span> 秒
-        </div>
-        <div class="token-badge">
-          总Token: <span class="token-value">{{ totalTokens }}</span>
-        </div>
-      </div>
+      <ProgressBar
+        :progress-array="progress"
+        :time="time"
+        :total-tokens="totalTokens"
+        start-color="#f59e0b"
+      />
     </div>
 
     <div class="panel-body">
@@ -19,11 +17,16 @@
 </template>
 
 <script setup>
+import ProgressBar from './ProgressBar.vue'
 import LongChainFlow from './LongChainFlow.vue'
 
 defineProps({
   steps: {
     type: Object,
+    required: true
+  },
+  progress: {
+    type: Array,
     required: true
   },
   time: {
@@ -68,46 +71,8 @@ defineProps({
   align-items: center;
   margin-bottom: 12px;
   flex-wrap: wrap;
-  gap: 12px;
-  flex-shrink: 0;
-}
-
-.header-stats {
-  display: flex;
   gap: 8px;
-  align-items: center;
-}
-
-.time-badge {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  color: white;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
-}
-
-.time-value {
-  font-weight: 700;
-  font-size: 13px;
-}
-
-.token-badge {
-  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
-  color: white;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);
-}
-
-.token-value {
-  font-weight: 700;
-  font-size: 13px;
+  flex-shrink: 0;
 }
 
 .panel-title {
