@@ -1,76 +1,91 @@
 <template>
   <div
-    class="chain-step-node"
-    :class="[
-      `status-${node.status}`,
-      `type-${node.isLLM ? 'llm' : 'compute'}`,
-      { 'show-details': showDetails }
-    ]"
-    :data-node-id="node.id"
+    class="chain-step-node-wrapper"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
-    @click="handleClick"
+    ref="wrapperEl"
   >
-    <div class="node-header">
-      <div class="node-icon">
-        <el-icon v-if="node.status === 'completed'"><CircleCheck /></el-icon>
-        <el-icon v-else-if="node.status === 'running'" class="spinning"><Loading /></el-icon>
-        <el-icon v-else><Clock /></el-icon>
+    <div
+      class="chain-step-node"
+      :class="[
+        `status-${node.status}`,
+        `type-${node.isLLM ? 'llm' : 'compute'}`,
+        { 'show-details': showDetails }
+      ]"
+      :data-node-id="node.id"
+      @click="handleClick"
+    >
+      <div class="node-header">
+        <div class="node-icon">
+          <el-icon v-if="node.status === 'completed'"><CircleCheck /></el-icon>
+          <el-icon v-else-if="node.status === 'running'" class="spinning"><Loading /></el-icon>
+          <el-icon v-else><Clock /></el-icon>
+        </div>
+        <div class="node-title">{{ node.title }}</div>
       </div>
-      <div class="node-title">{{ node.title }}</div>
+
+      <!-- 显示耗时和token信息 -->
+      <div v-if="node.status !== 'pending'" class="node-stats">
+        <div v-if="node.time > 0" class="stat-item">
+          <el-icon class="stat-icon"><Timer /></el-icon>
+          <span>{{ node.time.toFixed(2) }}s</span>
+        </div>
+        <div v-if="node.tokens > 0" class="stat-item">
+          <el-icon class="stat-icon"><Coin /></el-icon>
+          <span>{{ node.tokens }}</span>
+        </div>
+      </div>
     </div>
 
-    <!-- 显示耗时和token信息 -->
-    <div v-if="node.status !== 'pending'" class="node-stats">
-      <div v-if="node.time > 0" class="stat-item">
-        <el-icon class="stat-icon"><Timer /></el-icon>
-        <span>{{ node.time.toFixed(2) }}s</span>
-      </div>
-      <div v-if="node.tokens > 0" class="stat-item">
-        <el-icon class="stat-icon"><Coin /></el-icon>
-        <span>{{ node.tokens }}</span>
-      </div>
-    </div>
-
-    <!-- 详情弹出层 -->
-    <transition name="detail-fade">
-      <div v-if="showDetails && (node.status === 'running' || node.status === 'completed')" class="node-detail-popup">
-        <div class="popup-header">
-          <span class="popup-title">{{ node.title }}</span>
-          <el-icon class="close-icon" @click.stop="closeDetail"><Close /></el-icon>
-        </div>
-
-        <div class="popup-stats">
-          <div v-if="node.time > 0" class="stat-item">
-            <el-icon><Timer /></el-icon>
-            <span class="stat-label">耗时</span>
-            <span class="stat-value">{{ node.time.toFixed(2) }}s</span>
+    <!-- 详情弹出层 (使用 Teleport 脱离潜在的裁剪容器) -->
+    <teleport to="body">
+      <transition name="detail-fade">
+        <div
+          v-if="showDetails && (node.status === 'running' || node.status === 'completed')"
+          class="node-detail-popup fixed-popup"
+          :class="{ 'placement-below': !popupPlacementAbove }"
+          @mouseenter="handlePopupEnter"
+          @mouseleave="handlePopupLeave"
+          :style="popupStyle"
+        >
+          <div class="popup-header">
+            <span class="popup-title">{{ node.title }}</span>
+            <el-icon class="close-icon" @click.stop="closeDetail"><Close /></el-icon>
           </div>
-          <div v-if="node.tokens > 0" class="stat-item">
-            <el-icon><Coin /></el-icon>
-            <span class="stat-label">Token消耗</span>
-            <span class="stat-value">{{ node.tokens }}</span>
+
+          <div class="popup-stats">
+            <div v-if="node.time > 0" class="stat-item">
+              <el-icon><Timer /></el-icon>
+              <span class="stat-label">耗时</span>
+              <span class="stat-value">{{ node.time.toFixed(2) }}s</span>
+            </div>
+            <div v-if="node.tokens > 0" class="stat-item">
+              <el-icon><Coin /></el-icon>
+              <span class="stat-label">Token消耗</span>
+              <span class="stat-value">{{ node.tokens }}</span>
+            </div>
+          </div>
+
+          <div v-if="node.details && node.details.length > 0" class="popup-details">
+            <div v-for="(detail, idx) in node.details" :key="idx" class="detail-line">
+              <el-icon class="detail-icon"><Document /></el-icon>
+              <span>{{ detail }}</span>
+            </div>
+          </div>
+
+          <div v-if="node.error" class="popup-error">
+            <el-icon class="error-icon"><WarningFilled /></el-icon>
+            <span>{{ node.error }}</span>
           </div>
         </div>
-
-        <div v-if="node.details && node.details.length > 0" class="popup-details">
-          <div v-for="(detail, idx) in node.details" :key="idx" class="detail-line">
-            <el-icon class="detail-icon"><Document /></el-icon>
-            <span>{{ detail }}</span>
-          </div>
-        </div>
-
-        <div v-if="node.error" class="popup-error">
-          <el-icon class="error-icon"><WarningFilled /></el-icon>
-          <span>{{ node.error }}</span>
-        </div>
-      </div>
-    </transition>
+      </transition>
+    </teleport>
   </div>
+
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, nextTick, computed } from 'vue'
 import { CircleCheck, Loading, Clock, Coin, Timer, Close, Document, WarningFilled } from '@element-plus/icons-vue'
 
 const props = defineProps({
@@ -93,14 +108,65 @@ const props = defineProps({
 
 const showDetails = ref(false)
 const isLocked = ref(false)
+let hideTimeout = null
+const wrapperEl = ref(null)
+const popupLeft = ref(0)
+const popupTop = ref(0)
+const popupPlacementAbove = ref(true)
+
+const popupStyle = computed(() => {
+  return {
+    left: popupLeft.value + 'px',
+    top: popupTop.value + 'px'
+  }
+})
+
+const computePopupPosition = () => {
+  if (!wrapperEl.value) return
+  const rect = wrapperEl.value.getBoundingClientRect()
+  const desiredAbove = rect.top > 220 // 如果空间足够，放上方，否则下方
+  popupPlacementAbove.value = desiredAbove
+  const gap = 12
+  popupLeft.value = rect.left + rect.width / 2
+  if (desiredAbove) {
+    popupTop.value = rect.top - gap
+  } else {
+    popupTop.value = rect.bottom + gap
+  }
+}
 
 const handleMouseEnter = () => {
+  // 清除之前的隐藏定时器
+  if (hideTimeout) {
+    clearTimeout(hideTimeout)
+    hideTimeout = null
+  }
+
   if (!isLocked.value && (props.node.status === 'running' || props.node.status === 'completed')) {
     showDetails.value = true
+    nextTick(() => computePopupPosition())
   }
 }
 
 const handleMouseLeave = () => {
+  if (!isLocked.value) {
+    // 延迟隐藏，给用户时间移动到弹窗
+    hideTimeout = setTimeout(() => {
+      showDetails.value = false
+    }, 200)
+  }
+}
+
+const handlePopupEnter = () => {
+  // 鼠标进入弹窗，取消隐藏
+  if (hideTimeout) {
+    clearTimeout(hideTimeout)
+    hideTimeout = null
+  }
+}
+
+const handlePopupLeave = () => {
+  // 鼠标离开弹窗，隐藏
   if (!isLocked.value) {
     showDetails.value = false
   }
@@ -110,6 +176,9 @@ const handleClick = () => {
   if (props.node.status === 'running' || props.node.status === 'completed') {
     isLocked.value = !isLocked.value
     showDetails.value = isLocked.value
+    if (showDetails.value) {
+      nextTick(() => computePopupPosition())
+    }
   }
 }
 
@@ -119,9 +188,18 @@ const closeDetail = () => {
 }
 
 
+
 </script>
 
 <style scoped>
+.chain-step-node-wrapper {
+  position: relative;
+  display: inline-block;
+  /* 确保弹层拥有更高的层级基础 */
+  z-index: 10;
+  overflow: visible;
+}
+
 .chain-step-node {
   background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
   border-radius: 8px;
@@ -302,23 +380,92 @@ const closeDetail = () => {
 }
 
 /* 详情弹出层 */
-.node-detail-popup {
+.node-detail-popup.fixed-popup {
+  position: fixed;
+  transform: translateX(-50%);
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%);
+  border: 2px solid rgba(99, 102, 241, 0.6);
+  border-radius: 12px;
+  padding: 16px;
+  min-width: 300px;
+  max-width: 380px;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 0 20px rgba(99, 102, 241, 0.4);
+  z-index: 10000;
+  backdrop-filter: blur(20px);
+  pointer-events: auto;
+}
+
+.node-detail-popup.fixed-popup::after,
+.node-detail-popup.fixed-popup::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.node-detail-popup.fixed-popup::after {
+  width: 0; height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+}
+
+.node-detail-popup.fixed-popup.placement-below::after {
+  top: -10px;
+  border-bottom: 10px solid rgba(99, 102, 241, 0.6);
+  border-top: none;
+}
+.node-detail-popup.fixed-popup:not(.placement-below)::after {
+  bottom: -10px;
+  border-top: 10px solid rgba(99, 102, 241, 0.6);
+  border-bottom: none;
+}
+
+.node-detail-popup.fixed-popup::before {
+  width: 0; height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+}
+.node-detail-popup.fixed-popup.placement-below::before {
+  top: -8px;
+  border-bottom: 8px solid rgba(15, 23, 42, 0.98);
+  border-top: none;
+}
+.node-detail-popup.fixed-popup:not(.placement-below)::before {
+  bottom: -8px;
+  border-top: 8px solid rgba(15, 23, 42, 0.98);
+  border-bottom: none;
+}
+
+/* 添加箭头指示器 */
+.node-detail-popup::after {
+  content: '';
   position: absolute;
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  margin-top: 8px;
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
-  border: 1px solid rgba(99, 102, 241, 0.4);
-  border-radius: 10px;
-  padding: 12px;
-  min-width: 280px;
-  max-width: 360px;
-  box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(255, 255, 255, 0.05);
-  z-index: 1000;
-  backdrop-filter: blur(20px);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid rgba(99, 102, 241, 0.6);
+}
+
+.node-detail-popup::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: -2px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid rgba(15, 23, 42, 0.98);
+  z-index: 1;
 }
 
 .popup-header {
@@ -433,18 +580,22 @@ const closeDetail = () => {
 }
 
 /* 动画效果 */
-.detail-fade-enter-active, .detail-fade-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.detail-fade-enter-active {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.detail-fade-leave-active {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .detail-fade-enter-from {
   opacity: 0;
-  transform: translateX(-50%) translateY(-10px);
+  transform: translateX(-50%) translateY(10px);
 }
 
 .detail-fade-leave-to {
   opacity: 0;
-  transform: translateX(-50%) translateY(-5px);
+  transform: translateX(-50%) translateY(10px);
 }
 
 /* 悬停效果 */
