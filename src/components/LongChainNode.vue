@@ -1,63 +1,79 @@
 <template>
-  <el-popover
-    placement="top"
-    :width="200"
-    trigger="hover"
-    :disabled="node.status === 'pending'"
-    popper-class="node-popover"
+  <div
+    class="chain-step-node"
+    :class="[
+      `status-${node.status}`,
+      `type-${node.isLLM ? 'llm' : 'compute'}`,
+      { 'show-details': showDetails }
+    ]"
+    :data-node-id="node.id"
+    @mouseenter="handleMouseEnter"
+    @mouseleave="handleMouseLeave"
+    @click="handleClick"
   >
-    <template #reference>
-      <div
-        class="node-card"
-        :class="[
-          `node-type-${node.type || 'default'}`,
-          `node-status-${node.status || 'pending'}`,
-          { 'is-llm': node.isLLM }
-        ]"
-      >
-        <div class="node-header">
-          <span class="node-title">{{ node.title }}</span>
-          <el-tag v-if="node.isLLM" type="warning" size="small" class="llm-tag">LLM</el-tag>
-        </div>
-        <div v-if="node.status !== 'pending'" class="node-body">
-          <div v-if="node.time" class="node-stat">
-            <i class="icon-time"></i>
-            <span>{{ typeof node.time === 'number' ? node.time.toFixed(2) : node.time }}s</span>
-          </div>
-          <div v-if="node.tokens" class="node-stat">
-            <i class="icon-token"></i>
-            <span>{{ node.tokens }}</span>
-          </div>
-        </div>
-        <div v-if="node.status === 'error'" class="error-badge">
-          <i class="icon-error"></i>
-        </div>
+    <div class="node-header">
+      <div class="node-icon">
+        <el-icon v-if="node.status === 'completed'"><CircleCheck /></el-icon>
+        <el-icon v-else-if="node.status === 'running'" class="spinning"><Loading /></el-icon>
+        <el-icon v-else><Clock /></el-icon>
       </div>
-    </template>
-    <div class="popover-content">
-      <div class="popover-title">{{ node.title }}</div>
-      <div class="popover-item">
-        <span>状态:</span>
-        <el-tag :type="statusMap[node.status]?.type || 'info'" size="small">{{ statusMap[node.status]?.text || '未知' }}</el-tag>
+      <div class="node-title">{{ node.title }}</div>
+    </div>
+
+    <!-- 显示耗时和token信息 -->
+    <div v-if="node.status !== 'pending'" class="node-stats">
+      <div v-if="node.time > 0" class="stat-item">
+        <el-icon class="stat-icon"><Timer /></el-icon>
+        <span>{{ node.time.toFixed(2) }}s</span>
       </div>
-      <div v-if="node.time" class="popover-item">
-        <span>耗时:</span>
-        <span>{{ typeof node.time === 'number' ? node.time.toFixed(4) : node.time }} s</span>
-      </div>
-      <div v-if="node.tokens" class="popover-item">
-        <span>Tokens:</span>
+      <div v-if="node.tokens > 0" class="stat-item">
+        <el-icon class="stat-icon"><Coin /></el-icon>
         <span>{{ node.tokens }}</span>
       </div>
-      <div v-if="node.error" class="popover-item error-details">
-        <span>错误:</span>
-        <span>{{ node.error }}</span>
-      </div>
     </div>
-  </el-popover>
+
+    <!-- 详情弹出层 -->
+    <transition name="detail-fade">
+      <div v-if="showDetails && (node.status === 'running' || node.status === 'completed')" class="node-detail-popup">
+        <div class="popup-header">
+          <span class="popup-title">{{ node.title }}</span>
+          <el-icon class="close-icon" @click.stop="closeDetail"><Close /></el-icon>
+        </div>
+
+        <div class="popup-stats">
+          <div v-if="node.time > 0" class="stat-item">
+            <el-icon><Timer /></el-icon>
+            <span class="stat-label">耗时</span>
+            <span class="stat-value">{{ node.time.toFixed(2) }}s</span>
+          </div>
+          <div v-if="node.tokens > 0" class="stat-item">
+            <el-icon><Coin /></el-icon>
+            <span class="stat-label">Token消耗</span>
+            <span class="stat-value">{{ node.tokens }}</span>
+          </div>
+        </div>
+
+        <div v-if="node.details && node.details.length > 0" class="popup-details">
+          <div v-for="(detail, idx) in node.details" :key="idx" class="detail-line">
+            <el-icon class="detail-icon"><Document /></el-icon>
+            <span>{{ detail }}</span>
+          </div>
+        </div>
+
+        <div v-if="node.error" class="popup-error">
+          <el-icon class="error-icon"><WarningFilled /></el-icon>
+          <span>{{ node.error }}</span>
+        </div>
+      </div>
+    </transition>
+  </div>
 </template>
 
 <script setup>
-defineProps({
+import { ref } from 'vue'
+import { CircleCheck, Loading, Clock, Coin, Timer, Close, Document, WarningFilled } from '@element-plus/icons-vue'
+
+const props = defineProps({
   node: {
     type: Object,
     required: true,
@@ -70,138 +86,374 @@ defineProps({
       time: 0,
       tokens: 0,
       error: null,
+      details: []
     })
   }
 });
 
-const statusMap = {
-  pending: { text: '等待中', type: 'info' },
-  running: { text: '执行中', type: 'warning' },
-  completed: { text: '已完成', type: 'success' },
-  error: { text: '失败', type: 'danger' },
-};
+const showDetails = ref(false)
+const isLocked = ref(false)
+
+const handleMouseEnter = () => {
+  if (!isLocked.value && (props.node.status === 'running' || props.node.status === 'completed')) {
+    showDetails.value = true
+  }
+}
+
+const handleMouseLeave = () => {
+  if (!isLocked.value) {
+    showDetails.value = false
+  }
+}
+
+const handleClick = () => {
+  if (props.node.status === 'running' || props.node.status === 'completed') {
+    isLocked.value = !isLocked.value
+    showDetails.value = isLocked.value
+  }
+}
+
+const closeDetail = () => {
+  isLocked.value = false
+  showDetails.value = false
+}
+
+
 </script>
 
 <style scoped>
-/* Basic Icons */
-.icon-time, .icon-token, .icon-error {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  margin-right: 4px;
-  vertical-align: -0.15em;
-}
-.icon-time { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>'); }
-.icon-token { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>'); }
-.icon-error { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23f87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'); }
-
-.node-card {
-  position: relative;
-  padding: 8px 12px;
+.chain-step-node {
+  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
   border-radius: 8px;
-  background-color: #27374D;
-  border: 1px solid #3b506d;
-  color: #dde6ed;
-  font-size: 13px;
-  transition: all 0.3s ease;
+  padding: 8px 12px;
+  border: 2px solid rgba(100, 116, 139, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   min-width: 120px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  max-width: 160px;
+  cursor: pointer;
+  position: relative;
+}
+
+/* LLM类型节点 - 蓝色主题，未执行前更暗 */
+.chain-step-node.type-llm {
+  border-color: rgba(59, 130, 246, 0.3);
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+}
+
+.chain-step-node.type-llm.status-running {
+  border-color: rgba(59, 130, 246, 1);
+  background: linear-gradient(145deg, rgba(30, 58, 138, 0.6) 0%, rgba(30, 41, 59, 0.8) 100%);
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.6);
+  animation: llmPulse 2s ease-in-out infinite;
+}
+
+.chain-step-node.type-llm.status-completed {
+  border-color: rgba(34, 197, 94, 0.8);
+  background: linear-gradient(145deg, rgba(5, 150, 105, 0.4) 0%, rgba(6, 78, 59, 0.6) 100%);
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+}
+
+/* 传统计算类型节点 - 紫色主题，未执行前更暗 */
+.chain-step-node.type-compute {
+  border-color: rgba(168, 85, 247, 0.3);
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+}
+
+.chain-step-node.type-compute.status-running {
+  border-color: rgba(168, 85, 247, 1);
+  background: linear-gradient(145deg, rgba(107, 33, 168, 0.5) 0%, rgba(88, 28, 135, 0.7) 100%);
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
+  animation: computePulse 2s ease-in-out infinite;
+}
+
+.chain-step-node.type-compute.status-completed {
+  border-color: rgba(134, 239, 172, 0.8);
+  background: linear-gradient(145deg, rgba(74, 222, 128, 0.3) 0%, rgba(34, 197, 94, 0.5) 100%);
+  box-shadow: 0 0 15px rgba(134, 239, 172, 0.3);
+}
+
+/* 非激活状态 - 大幅降低亮度 */
+.chain-step-node.status-pending {
+  opacity: 0.4;
+  border-color: rgba(71, 85, 105, 0.2);
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.5) 0%, rgba(15, 23, 42, 0.6) 100%);
 }
 
 .node-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 8px;
 }
 
+.node-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.type-llm .node-icon {
+  color: #60a5fa;
+}
+
+.type-llm.status-pending .node-icon {
+  color: #475569;
+}
+
+.type-llm.status-running .node-icon {
+  color: #60a5fa;
+}
+
+.type-compute .node-icon {
+  color: #c084fc;
+}
+
+.type-compute.status-pending .node-icon {
+  color: #475569;
+}
+
+.type-compute.status-running .node-icon {
+  color: #c084fc;
+}
+
+.status-completed .node-icon {
+  color: #10b981;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes llmPulse {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.6);
+    border-color: rgba(59, 130, 246, 1);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(59, 130, 246, 0.9);
+    border-color: rgba(96, 165, 250, 1);
+  }
+}
+
+@keyframes computePulse {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
+    border-color: rgba(168, 85, 247, 1);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(168, 85, 247, 0.8);
+    border-color: rgba(192, 132, 252, 1);
+  }
+}
+
 .node-title {
+  font-size: 12px;
   font-weight: 600;
-  color: #f0f0f0;
+  color: #e2e8f0;
+  line-height: 1.3;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.llm-tag {
-  height: 18px;
-  padding: 0 6px;
-  font-weight: bold;
-  border-color: rgba(234, 179, 8, 0.4);
-  background-color: rgba(234, 179, 8, 0.1);
-  color: #eab308;
+.status-pending .node-title {
+  color: #64748b;
 }
 
-.node-body {
+/* 节点统计信息 */
+.node-stats {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 12px;
-  color: #94a3b8;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(100, 116, 139, 0.3);
 }
 
-.node-stat {
+.node-stats .stat-item {
   display: flex;
   align-items: center;
   gap: 4px;
+  font-size: 11px;
+  color: #94a3b8;
 }
 
-/* Node Types */
-.node-type-llm {
-  background-color: #1e3a8a;
-  border-color: #2563eb;
-}
-.node-type-computation {
-  background-color: #5b21b6;
-  border-color: #8b5cf6;
-}
-.node-type-data {
-  background-color: #374151;
-  border-color: #6b7280;
+.node-stats .stat-icon {
+  font-size: 13px;
+  color: #60a5fa;
 }
 
-/* Node Statuses */
-.node-status-pending {
-  opacity: 0.6;
-  border-style: dashed;
-}
-.node-status-running {
-  border-color: #eab308;
-  box-shadow: 0 0 12px rgba(234, 179, 8, 0.5);
-}
-.node-status-completed {
-  border-color: #22c55e;
-}
-.node-status-error {
-  border-color: #ef4444;
-  background-color: #450a0a;
+.type-llm.status-running .node-stats .stat-icon,
+.type-compute.status-running .node-stats .stat-icon {
+  color: #fbbf24;
 }
 
-.error-badge {
+.status-completed .node-stats .stat-icon {
+  color: #10b981;
+}
+
+.node-stats .stat-item span {
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+/* 详情弹出层 */
+.node-detail-popup {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background-color: #1f2937;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.error-badge .icon-error {
-  color: #f87171;
-  width: 16px;
-  height: 16px;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 8px;
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  border-radius: 10px;
+  padding: 12px;
+  min-width: 280px;
+  max-width: 360px;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  z-index: 1000;
+  backdrop-filter: blur(20px);
 }
 
-:deep(.el-loading-spinner .path) {
-  stroke: #eab308;
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgba(99, 102, 241, 0.3);
 }
-:deep(.el-loading-text) {
-  color: #eab308;
+
+.popup-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f1f5f9;
+  letter-spacing: 0.3px;
+}
+
+.close-icon {
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 16px;
+  padding: 2px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.close-icon:hover {
+  color: #f1f5f9;
+  background: rgba(148, 163, 184, 0.1);
+  transform: rotate(90deg);
+}
+
+.popup-stats {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.popup-stats .stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%);
+  border-radius: 8px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.popup-stats .stat-item .el-icon {
+  font-size: 18px;
+  color: #60a5fa;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 14px;
+  color: #f1f5f9;
+  font-weight: 700;
+}
+
+.popup-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: #cbd5e1;
+  line-height: 1.5;
+  padding: 8px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+  border-radius: 6px;
+  border-left: 3px solid rgba(59, 130, 246, 0.5);
+}
+
+.detail-icon {
+  color: #60a5fa;
+  font-size: 14px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.popup-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.15) 100%);
+  border-radius: 8px;
+  border-left: 3px solid rgba(239, 68, 68, 0.6);
+  font-size: 12px;
+  color: #fca5a5;
+  margin-top: 8px;
+}
+
+.error-icon {
+  color: #ef4444;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+/* 动画效果 */
+.detail-fade-enter-active, .detail-fade-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.detail-fade-enter-from {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-10px);
+}
+
+.detail-fade-leave-to {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-5px);
+}
+
+/* 悬停效果 */
+.chain-step-node:hover:not(.status-pending) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.chain-step-node.status-pending:hover {
+  opacity: 0.5;
 }
 </style>
