@@ -94,10 +94,13 @@ defineProps({
 .panel-body {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   overflow-x: auto;
   overflow-y: hidden;
   flex: 1;
   min-height: 220px;
+  padding: 20px 0;
 }
 
 /* 美化滚动条 */

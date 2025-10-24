@@ -231,23 +231,23 @@ const closeDetail = () => {
   box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
 }
 
-/* 传统计算类型节点 - 紫色主题，未执行前更暗 */
+/* 传统计算类型节点 - 蓝色主题（统一为蓝色），未执行前更暗 */
 .chain-step-node.type-compute {
-  border-color: rgba(168, 85, 247, 0.3);
+  border-color: rgba(59, 130, 246, 0.3);
   background: linear-gradient(145deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
 }
 
 .chain-step-node.type-compute.status-running {
-  border-color: rgba(168, 85, 247, 1);
-  background: linear-gradient(145deg, rgba(107, 33, 168, 0.5) 0%, rgba(88, 28, 135, 0.7) 100%);
-  box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
+  border-color: rgba(59, 130, 246, 1);
+  background: linear-gradient(145deg, rgba(30, 58, 138, 0.6) 0%, rgba(30, 41, 59, 0.8) 100%);
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.6);
   animation: computePulse 2s ease-in-out infinite;
 }
 
 .chain-step-node.type-compute.status-completed {
-  border-color: rgba(134, 239, 172, 0.8);
-  background: linear-gradient(145deg, rgba(74, 222, 128, 0.3) 0%, rgba(34, 197, 94, 0.5) 100%);
-  box-shadow: 0 0 15px rgba(134, 239, 172, 0.3);
+  border-color: rgba(34, 197, 94, 0.8);
+  background: linear-gradient(145deg, rgba(5, 150, 105, 0.4) 0%, rgba(6, 78, 59, 0.6) 100%);
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
 }
 
 /* 非激活状态 - 大幅降低亮度 */
@@ -281,7 +281,7 @@ const closeDetail = () => {
 }
 
 .type-compute .node-icon {
-  color: #c084fc;
+  color: #60a5fa;
 }
 
 .type-compute.status-pending .node-icon {
@@ -289,7 +289,7 @@ const closeDetail = () => {
 }
 
 .type-compute.status-running .node-icon {
-  color: #c084fc;
+  color: #60a5fa;
 }
 
 .status-completed .node-icon {
@@ -318,12 +318,12 @@ const closeDetail = () => {
 
 @keyframes computePulse {
   0%, 100% {
-    box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
-    border-color: rgba(168, 85, 247, 1);
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.6);
+    border-color: rgba(59, 130, 246, 1);
   }
   50% {
-    box-shadow: 0 0 35px rgba(168, 85, 247, 0.8);
-    border-color: rgba(192, 132, 252, 1);
+    box-shadow: 0 0 35px rgba(59, 130, 246, 0.9);
+    border-color: rgba(96, 165, 250, 1);
   }
 }
 

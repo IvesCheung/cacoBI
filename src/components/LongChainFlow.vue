@@ -21,7 +21,7 @@
 
       <!-- Column 2: 表召回 (stage2) -->
       <div class="flow-column">
-        <div class="flow-group-box purple-box">
+        <div class="flow-group-box">
           <div class="group-title">表召回</div>
           <LongChainNode
             v-for="step in stage2Steps"
@@ -54,7 +54,7 @@
 
       <!-- Column 4: 单表知识召回 (stage4) & Rerank (stage5) -->
       <div class="flow-column">
-        <div class="flow-group-box purple-box">
+        <div class="flow-group-box">
           <div class="group-title">单表知识召回</div>
           <LongChainNode
             v-for="step in stage4Steps"
