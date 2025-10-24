@@ -260,7 +260,10 @@ const mapStepToNode = (step) => {
     id: step.id,
     title: step.title,
     type: step.type === 'llm' ? 'llm' : 'computation',
-    status: step.status === 'active' ? 'running' : step.status === 'completed' ? 'completed' : 'pending',
+    status: step.status === 'active' ? 'running' :
+            step.status === 'completed' ? 'completed' :
+            step.status === 'skipped' ? 'skipped' :
+            step.status === 'inactive' ? 'pending' : 'pending',
     isLLM: step.type === 'llm',
     time: duration,
     tokens: step.tokens || 0,

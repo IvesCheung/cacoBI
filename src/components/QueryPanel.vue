@@ -36,7 +36,8 @@
         size="large"
         class="cost-agent-btn"
       >
-        Cost Agent
+        <el-icon v-if="costAgentEnabled"><CircleCheck /></el-icon>
+        {{ costAgentEnabled ? 'Cost Agent (已启用)' : 'Cost Agent' }}
       </el-button>
     </div>
 
@@ -68,7 +69,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { VideoPlay } from '@element-plus/icons-vue'
+import { VideoPlay, CircleCheck } from '@element-plus/icons-vue'
 import ResultChart from './ResultChart.vue'
 
 const props = defineProps({

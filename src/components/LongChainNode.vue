@@ -18,6 +18,7 @@
       <div class="node-header">
         <div class="node-icon">
           <el-icon v-if="node.status === 'completed'"><CircleCheck /></el-icon>
+          <el-icon v-else-if="node.status === 'skipped'"><CircleClose /></el-icon>
           <el-icon v-else-if="node.status === 'running'" class="spinning"><Loading /></el-icon>
           <el-icon v-else><Clock /></el-icon>
         </div>
@@ -25,7 +26,7 @@
       </div>
 
       <!-- 显示耗时和token信息 -->
-      <div v-if="node.status !== 'pending'" class="node-stats">
+      <div v-if="node.status !== 'pending' && node.status !== 'skipped'" class="node-stats">
         <div v-if="node.time > 0" class="stat-item">
           <el-icon class="stat-icon"><Timer /></el-icon>
           <span>{{ node.time.toFixed(2) }}s</span>
@@ -41,9 +42,9 @@
     <teleport to="body">
       <transition name="detail-fade">
         <div
-          v-if="showDetails && (node.status === 'running' || node.status === 'completed')"
+          v-if="showDetails && (node.status === 'running' || node.status === 'completed' || node.status === 'skipped')"
           class="node-detail-popup fixed-popup"
-          :class="{ 'placement-below': !popupPlacementAbove }"
+          :class="{ 'placement-below': !popupPlacementAbove, 'skipped-popup': node.status === 'skipped' }"
           @mouseenter="handlePopupEnter"
           @mouseleave="handlePopupLeave"
           :style="popupStyle"
@@ -53,30 +54,42 @@
             <el-icon class="close-icon" @click.stop="closeDetail"><Close /></el-icon>
           </div>
 
-          <div class="popup-stats">
-            <div v-if="node.time > 0" class="stat-item">
-              <el-icon><Timer /></el-icon>
-              <span class="stat-label">耗时</span>
-              <span class="stat-value">{{ node.time.toFixed(2) }}s</span>
-            </div>
-            <div v-if="node.tokens > 0" class="stat-item">
-              <el-icon><Coin /></el-icon>
-              <span class="stat-label">Token消耗</span>
-              <span class="stat-value">{{ node.tokens }}</span>
+          <!-- 跳过状态的特殊提示 -->
+          <div v-if="node.status === 'skipped'" class="popup-skipped-message">
+            <el-icon class="skipped-icon"><CircleClose /></el-icon>
+            <div class="skipped-text">
+              <div class="skipped-title">智能跳过</div>
+              <div class="skipped-desc">Cost Agent分析后决定跳过此步骤，以优化执行效率</div>
             </div>
           </div>
 
-          <div v-if="node.details && node.details.length > 0" class="popup-details">
-            <div v-for="(detail, idx) in node.details" :key="idx" class="detail-line">
-              <el-icon class="detail-icon"><Document /></el-icon>
-              <span>{{ detail }}</span>
+          <!-- 正常状态的统计和详情 -->
+          <template v-else>
+            <div class="popup-stats">
+              <div v-if="node.time > 0" class="stat-item">
+                <el-icon><Timer /></el-icon>
+                <span class="stat-label">耗时</span>
+                <span class="stat-value">{{ node.time.toFixed(2) }}s</span>
+              </div>
+              <div v-if="node.tokens > 0" class="stat-item">
+                <el-icon><Coin /></el-icon>
+                <span class="stat-label">Token消耗</span>
+                <span class="stat-value">{{ node.tokens }}</span>
+              </div>
             </div>
-          </div>
 
-          <div v-if="node.error" class="popup-error">
-            <el-icon class="error-icon"><WarningFilled /></el-icon>
-            <span>{{ node.error }}</span>
-          </div>
+            <div v-if="node.details && node.details.length > 0" class="popup-details">
+              <div v-for="(detail, idx) in node.details" :key="idx" class="detail-line">
+                <el-icon class="detail-icon"><Document /></el-icon>
+                <span>{{ detail }}</span>
+              </div>
+            </div>
+
+            <div v-if="node.error" class="popup-error">
+              <el-icon class="error-icon"><WarningFilled /></el-icon>
+              <span>{{ node.error }}</span>
+            </div>
+          </template>
         </div>
       </transition>
     </teleport>
@@ -86,7 +99,7 @@
 
 <script setup>
 import { ref, nextTick, computed } from 'vue'
-import { CircleCheck, Loading, Clock, Coin, Timer, Close, Document, WarningFilled } from '@element-plus/icons-vue'
+import { CircleCheck, CircleClose, Loading, Clock, Coin, Timer, Close, Document, WarningFilled } from '@element-plus/icons-vue'
 
 const props = defineProps({
   node: {
@@ -142,7 +155,7 @@ const handleMouseEnter = () => {
     hideTimeout = null
   }
 
-  if (!isLocked.value && (props.node.status === 'running' || props.node.status === 'completed')) {
+  if (!isLocked.value && (props.node.status === 'running' || props.node.status === 'completed' || props.node.status === 'skipped')) {
     showDetails.value = true
     nextTick(() => computePopupPosition())
   }
@@ -257,6 +270,33 @@ const closeDetail = () => {
   background: linear-gradient(145deg, rgba(15, 23, 42, 0.5) 0%, rgba(15, 23, 42, 0.6) 100%);
 }
 
+/* 跳过状态 - 灰色主题，带有对角线条纹 */
+.chain-step-node.status-skipped {
+  opacity: 0.6;
+  border-color: rgba(148, 163, 184, 0.5);
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(71, 85, 105, 0.3),
+      rgba(71, 85, 105, 0.3) 10px,
+      rgba(51, 65, 85, 0.3) 10px,
+      rgba(51, 65, 85, 0.3) 20px
+    ),
+    linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.7) 100%);
+  position: relative;
+}
+
+.chain-step-node.status-skipped::before {
+  content: '已跳过';
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-size: 9px;
+  color: rgba(148, 163, 184, 0.8);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
 .node-header {
   display: flex;
   align-items: center;
@@ -294,6 +334,10 @@ const closeDetail = () => {
 
 .status-completed .node-icon {
   color: #10b981;
+}
+
+.status-skipped .node-icon {
+  color: #94a3b8;
 }
 
 .spinning {
@@ -340,6 +384,11 @@ const closeDetail = () => {
 
 .status-pending .node-title {
   color: #64748b;
+}
+
+.status-skipped .node-title {
+  color: #94a3b8;
+  text-decoration: line-through;
 }
 
 /* 节点统计信息 */
@@ -577,6 +626,46 @@ const closeDetail = () => {
   color: #ef4444;
   font-size: 16px;
   flex-shrink: 0;
+}
+
+/* 跳过状态弹窗样式 */
+.popup-skipped-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(148, 163, 184, 0.15) 0%, rgba(100, 116, 139, 0.15) 100%);
+  border-radius: 8px;
+  border-left: 3px solid rgba(148, 163, 184, 0.6);
+  margin-top: 8px;
+}
+
+.skipped-icon {
+  color: #94a3b8;
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.skipped-text {
+  flex: 1;
+}
+
+.skipped-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #cbd5e1;
+  margin-bottom: 4px;
+}
+
+.skipped-desc {
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+.skipped-popup {
+  border-color: rgba(148, 163, 184, 0.3);
 }
 
 /* 动画效果 */
