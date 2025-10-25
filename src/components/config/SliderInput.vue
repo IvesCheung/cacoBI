@@ -152,12 +152,13 @@ const handleChange = (val) => {
 :deep(.el-input__inner) {
   background: transparent !important;
   border: none !important;
-  color: #ffffff !important;
+  color: var(--app-text-primary) !important;
   text-align: center;
   font-size: 15px;
   font-weight: 500;
   padding-left: 0 !important;
   padding-right: 32px !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: color 0.3s ease;
 }
 </style>
