@@ -89,9 +89,10 @@ const handleExecute = async () => {
 <style scoped>
 .data-query-view {
   height: 100vh;
-  background: #0f172a;
+  background: var(--app-bg-color);
   padding: 12px;
   overflow: hidden;
+  transition: background-color 0.3s ease;
 }
 
 .container {

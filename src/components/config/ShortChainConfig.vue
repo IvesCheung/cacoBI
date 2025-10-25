@@ -78,27 +78,29 @@ watch(() => props.modelValue, (newVal) => {
 
 <style scoped>
 .short-chain-config {
-  background: linear-gradient(180deg, #1E3A5F 0%, #0F1B2E 100%);
+  background: var(--config-panel-bg);
   border-radius: 8px;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 1px solid var(--config-panel-border);
   padding: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px var(--app-shadow);
   height: 100%;
   display: flex;
   flex-direction: column;
+  transition: all 0.3s ease;
 }
 
 .config-header {
   margin-bottom: 12px;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+  border-bottom: 1px solid var(--config-panel-border);
 }
 
 .config-header h3 {
   font-size: 16px;
   font-weight: 500;
-  color: #2563EB;
+  color: var(--config-title-color);
   margin: 0;
+  transition: color 0.3s ease;
 }
 
 .config-content {

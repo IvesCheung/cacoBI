@@ -128,24 +128,26 @@ watch(() => props.modelValue, (newVal) => {
 
 <style scoped>
 .long-chain-config {
-  background: linear-gradient(180deg, #1E3A5F 0%, #0F1B2E 100%);
+  background: var(--config-panel-bg);
   border-radius: 8px;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 1px solid var(--config-panel-border);
   padding: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px var(--app-shadow);
+  transition: all 0.3s ease;
 }
 
 .config-header {
   margin-bottom: 12px;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+  border-bottom: 1px solid var(--config-panel-border);
 }
 
 .config-header h3 {
   font-size: 16px;
   font-weight: 500;
-  color: #2563EB;
+  color: var(--config-title-color);
   margin: 0;
+  transition: color 0.3s ease;
 }
 
 .config-content {
@@ -158,19 +160,21 @@ watch(() => props.modelValue, (newVal) => {
 }
 
 .config-section {
-  background: linear-gradient(135deg, rgba(30, 58, 138, 0.15) 0%, rgba(30, 41, 59, 0.15) 100%);
+  background: var(--config-section-bg);
   border-radius: 8px;
   padding: 12px;
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  border: 1px solid var(--config-section-border);
+  transition: all 0.3s ease;
 }
 
 .section-title {
   font-size: 13px;
   font-weight: 600;
-  color: #60a5fa;
+  color: var(--config-section-title);
   margin-bottom: 8px;
   padding-bottom: 6px;
-  border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+  border-bottom: 1px solid var(--config-section-border);
+  transition: color 0.3s ease;
 }
 
 .config-content::-webkit-scrollbar {
@@ -178,7 +182,7 @@ watch(() => props.modelValue, (newVal) => {
 }
 
 .config-content::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.5);
+  background: var(--progress-bg);
   border-radius: 10px;
 }
 

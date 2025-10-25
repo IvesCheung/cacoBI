@@ -40,7 +40,7 @@ defineProps({
 })
 </script><style scoped>
 .chain-panel {
-  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+  background: linear-gradient(145deg, var(--panel-bg-gradient-from) 0%, var(--panel-bg-gradient-to) 100%);
   border-radius: 12px;
   padding: 14px;
   display: flex;
@@ -48,10 +48,11 @@ defineProps({
   overflow: hidden;
   border: 1px solid rgba(245, 158, 11, 0.2);
   box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.3),
+    0 4px 16px var(--app-shadow),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   position: relative;
   height: 100%;
+  transition: all 0.3s ease;
 }
 
 .chain-panel::before {
@@ -109,7 +110,7 @@ defineProps({
 }
 
 .panel-body::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.5);
+  background: var(--progress-bg);
   border-radius: 10px;
 }
 

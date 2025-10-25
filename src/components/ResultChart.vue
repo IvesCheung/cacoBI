@@ -24,6 +24,18 @@ const props = defineProps({
 const chartRef = ref(null)
 let chartInstance = null
 
+// 获取当前主题文字颜色
+const getTextColor = () => {
+  const isDark = document.documentElement.classList.contains('dark')
+  return isDark ? '#e2e8f0' : '#1e293b'
+}
+
+// 获取图例颜色
+const getLegendColor = () => {
+  const isDark = document.documentElement.classList.contains('dark')
+  return isDark ? '#cbd5e1' : '#475569'
+}
+
 const initChart = () => {
   if (!chartRef.value) return
 
@@ -34,6 +46,9 @@ const initChart = () => {
 
   // 初始化 echarts 实例
   chartInstance = echarts.init(chartRef.value)
+
+  const textColor = getTextColor()
+  const legendColor = getLegendColor()
 
   // 配置项
   const option = {
@@ -57,7 +72,7 @@ const initChart = () => {
       itemHeight: 12,
       itemGap: 20,
       textStyle: {
-        color: '#e2e8f0',
+        color: legendColor,
         fontSize: 13,
         fontWeight: 500
       }
@@ -84,7 +99,7 @@ const initChart = () => {
           formatter: '{b}\n{d}%',
           fontSize: 13,
           fontWeight: 'bold',
-          color: '#e2e8f0',
+          color: textColor,
           lineHeight: 18
         },
         emphasis: {
@@ -202,10 +217,32 @@ watch(() => props.data, () => {
   initChart()
 }, { deep: true })
 
+// 监听主题变化
+const observeThemeChange = () => {
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+        // 主题改变时重新初始化图表
+        initChart()
+      }
+    })
+  })
+
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class']
+  })
+
+  return observer
+}
+
+let themeObserver = null
+
 onMounted(() => {
   console.log('🎨 ResultChart 组件已挂载 - 新版本 ECharts')
   initChart()
   window.addEventListener('resize', handleResize)
+  themeObserver = observeThemeChange()
 })
 
 onBeforeUnmount(() => {
@@ -216,6 +253,9 @@ onBeforeUnmount(() => {
     chartInstance.dispose()
   }
   window.removeEventListener('resize', handleResize)
+  if (themeObserver) {
+    themeObserver.disconnect()
+  }
 })
 </script>
 

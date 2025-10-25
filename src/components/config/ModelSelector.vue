@@ -55,9 +55,10 @@ const handleChange = (value) => {
 .config-label {
   display: block;
   font-size: 13px;
-  color: #BABABA;
+  color: var(--app-text-secondary);
   margin-bottom: 6px;
   font-weight: 400;
+  transition: color 0.3s ease;
 }
 
 .el-select {
@@ -65,11 +66,12 @@ const handleChange = (value) => {
 }
 
 :deep(.el-select__wrapper) {
-  background: rgba(15, 27, 46, 0.6);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
   border-radius: 6px;
-  color: #fff;
+  color: var(--app-text-primary);
   box-shadow: none;
+  transition: all 0.3s ease;
 }
 
 :deep(.el-select__wrapper:hover) {
@@ -82,10 +84,11 @@ const handleChange = (value) => {
 }
 
 :deep(.el-select__placeholder) {
-  color: rgba(192, 192, 192, 0.5);
+  color: var(--input-placeholder);
 }
 
 :deep(.el-select__selection) {
-  color: #fff;
+  color: var(--app-text-primary);
+  transition: color 0.3s ease;
 }
 </style>

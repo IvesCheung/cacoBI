@@ -74,9 +74,10 @@ const handleChange = (val) => {
 .config-label {
   display: block;
   font-size: 13px;
-  color: #BABABA;
+  color: var(--app-text-secondary);
   margin-bottom: 8px;
   font-weight: 400;
+  transition: color 0.3s ease;
 }
 
 .slider-container {
@@ -95,8 +96,9 @@ const handleChange = (val) => {
 }
 
 :deep(.el-slider__runway) {
-  background: rgba(15, 27, 46, 0.8);
+  background: var(--progress-bg);
   border: 1px solid rgba(59, 130, 246, 0.2);
+  transition: all 0.3s ease;
 }
 
 :deep(.el-slider__bar) {
@@ -105,7 +107,8 @@ const handleChange = (val) => {
 
 :deep(.el-slider__button) {
   border-color: #2563EB;
-  background: #fff;
+  background: var(--app-bg-secondary);
+  transition: all 0.3s ease;
 }
 
 :deep(.el-slider__button:hover) {
@@ -113,23 +116,23 @@ const handleChange = (val) => {
 }
 
 :deep(.el-input-number) {
-  background: rgba(30, 41, 59, 0.95);
-  border: 2px solid rgba(59, 130, 246, 0.4);
+  background: var(--input-bg);
+  border: 2px solid var(--input-border);
   border-radius: 8px;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px var(--app-shadow);
 }
 
 :deep(.el-input-number:hover) {
   border-color: rgba(59, 130, 246, 0.6);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 8px var(--app-shadow);
 }
 
 :deep(.el-input-number.is-controls-right .el-input-number__decrease),
 :deep(.el-input-number.is-controls-right .el-input-number__increase) {
   background: rgba(37, 99, 235, 0.15);
   border-left: 1px solid rgba(59, 130, 246, 0.3);
-  color: #cbd5e1;
+  color: var(--app-text-secondary);
   transition: all 0.2s ease;
 }
 

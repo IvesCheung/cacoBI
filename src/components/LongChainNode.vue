@@ -214,10 +214,10 @@ const closeDetail = () => {
 }
 
 .chain-step-node {
-  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+  background: linear-gradient(145deg, var(--node-bg-from) 0%, var(--node-bg-to) 100%);
   border-radius: 8px;
   padding: 8px 12px;
-  border: 2px solid rgba(100, 116, 139, 0.3);
+  border: 2px solid rgba(100, 116, 139, var(--node-border-opacity));
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   min-width: 120px;
   max-width: 160px;
@@ -227,8 +227,9 @@ const closeDetail = () => {
 
 /* LLM类型节点 - 蓝色主题，未执行前更暗 */
 .chain-step-node.type-llm {
-  border-color: rgba(59, 130, 246, 0.3);
-  background: linear-gradient(145deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border-color: rgba(59, 130, 246, var(--node-border-opacity));
+  background: linear-gradient(145deg, var(--node-bg-from) 0%, var(--node-bg-to) 100%);
+  opacity: 0.6;
 }
 
 .chain-step-node.type-llm.status-running {
@@ -236,18 +237,21 @@ const closeDetail = () => {
   background: linear-gradient(145deg, rgba(30, 58, 138, 0.6) 0%, rgba(30, 41, 59, 0.8) 100%);
   box-shadow: 0 0 25px rgba(59, 130, 246, 0.6);
   animation: llmPulse 2s ease-in-out infinite;
+  opacity: 1;
 }
 
 .chain-step-node.type-llm.status-completed {
   border-color: rgba(34, 197, 94, 0.8);
-  background: linear-gradient(145deg, rgba(5, 150, 105, 0.4) 0%, rgba(6, 78, 59, 0.6) 100%);
+  background: linear-gradient(145deg, var(--node-completed-bg-from) 0%, var(--node-completed-bg-to) 100%);
   box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+  opacity: 1;
 }
 
 /* 传统计算类型节点 - 蓝色主题（统一为蓝色），未执行前更暗 */
 .chain-step-node.type-compute {
-  border-color: rgba(59, 130, 246, 0.3);
-  background: linear-gradient(145deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border-color: rgba(59, 130, 246, var(--node-border-opacity));
+  background: linear-gradient(145deg, var(--node-bg-from) 0%, var(--node-bg-to) 100%);
+  opacity: 0.6;
 }
 
 .chain-step-node.type-compute.status-running {
@@ -255,19 +259,21 @@ const closeDetail = () => {
   background: linear-gradient(145deg, rgba(30, 58, 138, 0.6) 0%, rgba(30, 41, 59, 0.8) 100%);
   box-shadow: 0 0 25px rgba(59, 130, 246, 0.6);
   animation: computePulse 2s ease-in-out infinite;
+  opacity: 1;
 }
 
 .chain-step-node.type-compute.status-completed {
   border-color: rgba(34, 197, 94, 0.8);
-  background: linear-gradient(145deg, rgba(5, 150, 105, 0.4) 0%, rgba(6, 78, 59, 0.6) 100%);
+  background: linear-gradient(145deg, var(--node-completed-bg-from) 0%, var(--node-completed-bg-to) 100%);
   box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+  opacity: 1;
 }
 
 /* 非激活状态 - 大幅降低亮度 */
 .chain-step-node.status-pending {
   opacity: 0.4;
   border-color: rgba(71, 85, 105, 0.2);
-  background: linear-gradient(145deg, rgba(15, 23, 42, 0.5) 0%, rgba(15, 23, 42, 0.6) 100%);
+  background: linear-gradient(145deg, var(--node-bg-from) 0%, var(--node-bg-to) 100%);
 }
 
 /* 跳过状态 - 灰色主题，带有对角线条纹 */
@@ -282,7 +288,7 @@ const closeDetail = () => {
       rgba(51, 65, 85, 0.3) 10px,
       rgba(51, 65, 85, 0.3) 20px
     ),
-    linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.7) 100%);
+    linear-gradient(145deg, var(--node-bg-from) 0%, var(--node-bg-to) 100%);
   position: relative;
 }
 
@@ -306,6 +312,7 @@ const closeDetail = () => {
 .node-icon {
   font-size: 18px;
   flex-shrink: 0;
+  transition: color 0.3s ease;
 }
 
 .type-llm .node-icon {
@@ -313,7 +320,7 @@ const closeDetail = () => {
 }
 
 .type-llm.status-pending .node-icon {
-  color: #475569;
+  color: var(--app-text-secondary);
 }
 
 .type-llm.status-running .node-icon {
@@ -325,7 +332,7 @@ const closeDetail = () => {
 }
 
 .type-compute.status-pending .node-icon {
-  color: #475569;
+  color: var(--app-text-secondary);
 }
 
 .type-compute.status-running .node-icon {
@@ -374,20 +381,22 @@ const closeDetail = () => {
 .node-title {
   font-size: 12px;
   font-weight: 600;
-  color: #e2e8f0;
+  color: var(--app-text-primary);
   line-height: 1.3;
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color 0.3s ease;
 }
 
 .status-pending .node-title {
-  color: #64748b;
+  color: var(--app-text-secondary);
+  opacity: 0.7;
 }
 
 .status-skipped .node-title {
-  color: #94a3b8;
+  color: var(--app-text-secondary);
   text-decoration: line-through;
 }
 
@@ -406,12 +415,14 @@ const closeDetail = () => {
   align-items: center;
   gap: 4px;
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--app-text-secondary);
+  transition: color 0.3s ease;
 }
 
 .node-stats .stat-icon {
   font-size: 13px;
   color: #60a5fa;
+  transition: color 0.3s ease;
 }
 
 .type-llm.status-running .node-stats .stat-icon,
@@ -425,26 +436,28 @@ const closeDetail = () => {
 
 .node-stats .stat-item span {
   font-weight: 600;
-  color: #cbd5e1;
+  color: var(--app-text-primary);
+  transition: color 0.3s ease;
 }
 
 /* 详情弹出层 */
 .node-detail-popup.fixed-popup {
   position: fixed;
   transform: translateX(-50%);
-  background: linear-gradient(145deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%);
-  border: 2px solid rgba(99, 102, 241, 0.6);
+  background: linear-gradient(145deg, var(--popup-bg-from) 0%, var(--popup-bg-to) 100%);
+  border: 2px solid var(--popup-border);
   border-radius: 12px;
   padding: 16px;
   min-width: 300px;
   max-width: 380px;
   box-shadow:
-    0 10px 40px rgba(0, 0, 0, 0.8),
+    0 10px 40px var(--app-shadow),
     0 0 0 1px rgba(255, 255, 255, 0.1),
     0 0 20px rgba(99, 102, 241, 0.4);
   z-index: 10000;
   backdrop-filter: blur(20px);
   pointer-events: auto;
+  transition: all 0.3s ease;
 }
 
 .node-detail-popup.fixed-popup::after,
@@ -463,12 +476,12 @@ const closeDetail = () => {
 
 .node-detail-popup.fixed-popup.placement-below::after {
   top: -10px;
-  border-bottom: 10px solid rgba(99, 102, 241, 0.6);
+  border-bottom: 10px solid var(--popup-arrow-border);
   border-top: none;
 }
 .node-detail-popup.fixed-popup:not(.placement-below)::after {
   bottom: -10px;
-  border-top: 10px solid rgba(99, 102, 241, 0.6);
+  border-top: 10px solid var(--popup-arrow-border);
   border-bottom: none;
 }
 
@@ -479,12 +492,12 @@ const closeDetail = () => {
 }
 .node-detail-popup.fixed-popup.placement-below::before {
   top: -8px;
-  border-bottom: 8px solid rgba(15, 23, 42, 0.98);
+  border-bottom: 8px solid var(--popup-arrow-bg);
   border-top: none;
 }
 .node-detail-popup.fixed-popup:not(.placement-below)::before {
   bottom: -8px;
-  border-top: 8px solid rgba(15, 23, 42, 0.98);
+  border-top: 8px solid var(--popup-arrow-bg);
   border-bottom: none;
 }
 
@@ -529,13 +542,14 @@ const closeDetail = () => {
 .popup-title {
   font-size: 14px;
   font-weight: 700;
-  color: #f1f5f9;
+  color: var(--popup-title-color);
   letter-spacing: 0.3px;
+  transition: color 0.3s ease;
 }
 
 .close-icon {
   cursor: pointer;
-  color: #94a3b8;
+  color: var(--app-text-secondary);
   font-size: 16px;
   padding: 2px;
   border-radius: 4px;
@@ -543,7 +557,7 @@ const closeDetail = () => {
 }
 
 .close-icon:hover {
-  color: #f1f5f9;
+  color: var(--app-text-primary);
   background: rgba(148, 163, 184, 0.1);
   transform: rotate(90deg);
 }
@@ -573,14 +587,16 @@ const closeDetail = () => {
 
 .stat-label {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--app-text-secondary);
   font-weight: 500;
+  transition: color 0.3s ease;
 }
 
 .stat-value {
   font-size: 14px;
-  color: #f1f5f9;
+  color: var(--popup-title-color);
   font-weight: 700;
+  transition: color 0.3s ease;
 }
 
 .popup-details {
@@ -594,12 +610,13 @@ const closeDetail = () => {
   align-items: flex-start;
   gap: 8px;
   font-size: 12px;
-  color: #cbd5e1;
+  color: var(--popup-text-color);
   line-height: 1.5;
   padding: 8px;
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
   border-radius: 6px;
   border-left: 3px solid rgba(59, 130, 246, 0.5);
+  transition: color 0.3s ease;
 }
 
 .detail-icon {

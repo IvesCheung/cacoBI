@@ -147,13 +147,14 @@ const toggleCostAgent = () => {
 
 <style scoped>
 .query-panel {
-  background: #1e293b;
+  background: var(--query-panel-bg);
   border-radius: 8px;
   padding: 12px;
   height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 .query-panel > * {
@@ -166,10 +167,11 @@ const toggleCostAgent = () => {
 }
 
 .panel-title {
-  color: #3b82f6;
+  color: var(--query-panel-title);
   font-size: 16px;
   font-weight: 600;
   margin: 0 0 12px 0;
+  transition: color 0.3s ease;
 }
 
 .query-input-section {
@@ -178,9 +180,10 @@ const toggleCostAgent = () => {
 
 .input-label {
   display: block;
-  color: #e2e8f0;
+  color: var(--app-text-primary);
   font-size: 13px;
   margin-bottom: 8px;
+  transition: color 0.3s ease;
 }
 
 .query-textarea {
@@ -204,16 +207,17 @@ const toggleCostAgent = () => {
 }
 
 .execution-logs {
-  background: #334155;
+  background: var(--log-bg);
   border-radius: 6px;
   padding: 10px;
   margin-bottom: 12px;
+  transition: all 0.3s ease;
 }
 
 .log-item {
   display: flex;
   gap: 8px;
-  color: #cbd5e1;
+  color: var(--app-text-secondary);
   font-size: 13px;
   margin-bottom: 4px;
 }
@@ -223,13 +227,14 @@ const toggleCostAgent = () => {
 }
 
 .log-time {
-  color: #64748b;
+  color: var(--log-time-color);
   font-size: 11px;
   flex-shrink: 0;
 }
 
 .log-text {
-  color: #cbd5e1;
+  color: var(--app-text-secondary);
+  transition: color 0.3s ease;
 }
 
 .regular-log {
@@ -243,8 +248,9 @@ const toggleCostAgent = () => {
 }
 
 .regular-log .log-text {
-  color: #93c5fd;
+  color: var(--log-regular-text);
   font-weight: 500;
+  transition: color 0.3s ease;
 }
 
 .cost-agent-log {
@@ -258,8 +264,9 @@ const toggleCostAgent = () => {
 }
 
 .cost-agent-log .log-text {
-  color: #6ee7b7;
+  color: var(--log-cost-agent-text);
   font-weight: 500;
+  transition: color 0.3s ease;
 }
 
 .skipped-step-name {
@@ -269,10 +276,11 @@ const toggleCostAgent = () => {
 }
 
 .result-container {
-  background: #334155;
+  background: var(--result-bg);
   border-radius: 6px;
   padding: 10px;
   margin-bottom: 12px;
+  transition: all 0.3s ease;
 }
 
 .result-container:last-child {
@@ -294,30 +302,30 @@ const toggleCostAgent = () => {
 }
 
 :deep(.el-textarea__inner) {
-  background: #334155;
-  border: 2px solid #475569;
+  background: var(--input-bg);
+  border: 2px solid var(--input-border);
   border-radius: 8px;
-  color: #e2e8f0;
+  color: var(--app-text-primary);
   font-size: 14px;
   line-height: 1.6;
   padding: 12px;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px var(--app-shadow);
 }
 
 :deep(.el-textarea__inner::placeholder) {
-  color: #64748b;
+  color: var(--input-placeholder);
 }
 
 :deep(.el-textarea__inner:hover) {
-  border-color: #64748b;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border-color: var(--input-border-hover);
+  box-shadow: 0 4px 8px var(--app-shadow);
 }
 
 :deep(.el-textarea__inner:focus) {
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  background: #3a4556;
+  background: var(--input-bg-focus);
 }
 
 :deep(.el-button--primary) {

@@ -58,9 +58,10 @@ const handleChange = (val) => {
 .config-label {
   display: block;
   font-size: 13px;
-  color: #BABABA;
+  color: var(--app-text-secondary);
   margin-bottom: 6px;
   font-weight: 400;
+  transition: color 0.3s ease;
 }
 
 .el-input-number {
@@ -69,14 +70,15 @@ const handleChange = (val) => {
 
 /* 主容器样式 */
 :deep(.el-input-number) {
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(71, 85, 105, 0.5);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
   border-radius: 8px;
   overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 :deep(.el-input-number:hover) {
-  border-color: rgba(100, 116, 139, 0.7);
+  border-color: var(--input-border-hover);
 }
 
 :deep(.el-input-number:focus-within) {
@@ -86,9 +88,9 @@ const handleChange = (val) => {
 /* 按钮通用样式 */
 :deep(.el-input-number__decrease),
 :deep(.el-input-number__increase) {
-  background: rgba(51, 65, 85, 0.6);
+  background: var(--app-bg-tertiary);
   border: none;
-  color: #94a3b8;
+  color: var(--app-text-secondary);
   width: 40px;
   font-size: 16px;
   font-weight: 500;
@@ -97,13 +99,13 @@ const handleChange = (val) => {
 
 :deep(.el-input-number__decrease:hover),
 :deep(.el-input-number__increase:hover) {
-  background: rgba(71, 85, 105, 0.8);
-  color: #e2e8f0;
+  background: var(--input-border-hover);
+  color: var(--app-text-primary);
 }
 
 :deep(.el-input-number__decrease:active),
 :deep(.el-input-number__increase:active) {
-  background: rgba(51, 65, 85, 0.9);
+  background: var(--app-bg-tertiary);
 }
 
 /* 输入框样式 */
@@ -117,11 +119,12 @@ const handleChange = (val) => {
 :deep(.el-input__inner) {
   background: transparent;
   border: none;
-  color: #fff;
+  color: var(--app-text-primary);
   text-align: center;
   font-size: 16px;
   font-weight: 500;
   height: 40px;
   line-height: 40px;
+  transition: color 0.3s ease;
 }
 </style>

@@ -1,6 +1,132 @@
 @import './base.css';
 
-/* Element Plus 暗色主题变量覆盖 */
+/* 深色主题变量 */
+:root.dark {
+  --el-bg-color: #1e293b;
+  --el-bg-color-overlay: #334155;
+  --el-text-color-primary: #e2e8f0;
+  --el-text-color-regular: #cbd5e1;
+  --el-text-color-secondary: #94a3b8;
+  --el-text-color-placeholder: #64748b;
+  --el-border-color: #475569;
+  --el-border-color-light: #334155;
+  --el-border-color-lighter: #1e293b;
+  --el-fill-color-blank: #334155;
+
+  --app-bg-color: #0f172a;
+  --app-bg-secondary: #1e293b;
+  --app-bg-tertiary: #334155;
+  --app-text-primary: #e2e8f0;
+  --app-text-secondary: #cbd5e1;
+  --app-border-color: #475569;
+  --app-shadow: rgba(0, 0, 0, 0.3);
+
+  /* 组件特定变量 */
+  --panel-bg-gradient-from: #1e293b;
+  --panel-bg-gradient-to: #0f172a;
+  --node-bg-from: #1e293b;
+  --node-bg-to: #0f172a;
+  --node-border-opacity: 0.3;
+  --node-completed-bg-from: rgba(5, 150, 105, 0.45);
+  --node-completed-bg-to: rgba(6, 78, 59, 0.65);
+  --progress-bg: rgba(15, 23, 42, 0.5);
+
+  /* 配置面板变量 */
+  --config-panel-bg: linear-gradient(180deg, #1E3A5F 0%, #0F1B2E 100%);
+  --config-panel-border: rgba(59, 130, 246, 0.3);
+  --config-title-color: #2563EB;
+  --config-section-bg: linear-gradient(135deg, rgba(30, 58, 138, 0.15) 0%, rgba(30, 41, 59, 0.15) 100%);
+  --config-section-border: rgba(59, 130, 246, 0.2);
+  --config-section-title: #60a5fa;
+
+  /* 查询面板变量 */
+  --query-panel-bg: #1e293b;
+  --query-panel-title: #3b82f6;
+  --input-bg: #334155;
+  --input-border: #475569;
+  --input-border-hover: #64748b;
+  --input-bg-focus: #3a4556;
+  --input-placeholder: #64748b;
+  --log-bg: #334155;
+  --log-time-color: #64748b;
+  --result-bg: #334155;
+  --log-regular-text: #93c5fd;
+  --log-cost-agent-text: #6ee7b7;
+
+  /* 弹出层变量 */
+  --popup-bg-from: rgba(15, 23, 42, 0.98);
+  --popup-bg-to: rgba(30, 41, 59, 0.98);
+  --popup-border: rgba(99, 102, 241, 0.6);
+  --popup-arrow-border: rgba(99, 102, 241, 0.6);
+  --popup-arrow-bg: rgba(15, 23, 42, 0.98);
+  --popup-title-color: #f1f5f9;
+  --popup-text-color: #cbd5e1;
+}
+
+/* 浅色主题变量 */
+:root.light {
+  --el-bg-color: #ffffff;
+  --el-bg-color-overlay: #f8fafc;
+  --el-text-color-primary: #1e293b;
+  --el-text-color-regular: #334155;
+  --el-text-color-secondary: #64748b;
+  --el-text-color-placeholder: #94a3b8;
+  --el-border-color: #e2e8f0;
+  --el-border-color-light: #f1f5f9;
+  --el-border-color-lighter: #f8fafc;
+  --el-fill-color-blank: #ffffff;
+
+  --app-bg-color: #f8fafc;
+  --app-bg-secondary: #ffffff;
+  --app-bg-tertiary: #f1f5f9;
+  --app-text-primary: #1e293b;
+  --app-text-secondary: #475569;
+  --app-border-color: #e2e8f0;
+  --app-shadow: rgba(0, 0, 0, 0.1);
+
+  /* 组件特定变量 */
+  --panel-bg-gradient-from: #ffffff;
+  --panel-bg-gradient-to: #f8fafc;
+  --node-bg-from: #ffffff;
+  --node-bg-to: #f1f5f9;
+  --node-border-opacity: 0.5;
+  --node-completed-bg-from: rgba(16, 185, 129, 0.15);
+  --node-completed-bg-to: rgba(5, 150, 105, 0.25);
+  --progress-bg: rgba(241, 245, 249, 0.8);
+
+  /* 配置面板变量 */
+  --config-panel-bg: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  --config-panel-border: rgba(226, 232, 240, 1);
+  --config-title-color: #2563EB;
+  --config-section-bg: linear-gradient(135deg, rgba(241, 245, 249, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%);
+  --config-section-border: rgba(226, 232, 240, 0.8);
+  --config-section-title: #3b82f6;
+
+  /* 查询面板变量 */
+  --query-panel-bg: #ffffff;
+  --query-panel-title: #2563EB;
+  --input-bg: #f8fafc;
+  --input-border: #e2e8f0;
+  --input-border-hover: #cbd5e1;
+  --input-bg-focus: #ffffff;
+  --input-placeholder: #94a3b8;
+  --log-bg: #f1f5f9;
+  --log-time-color: #94a3b8;
+  --result-bg: #f1f5f9;
+  --log-regular-text: #2563eb;
+  --log-cost-agent-text: #059669;
+
+  /* 弹出层变量 */
+  --popup-bg-from: rgba(255, 255, 255, 0.98);
+  --popup-bg-to: rgba(248, 250, 252, 0.98);
+  --popup-border: rgba(59, 130, 246, 0.6);
+  --popup-arrow-border: rgba(59, 130, 246, 0.6);
+  --popup-arrow-bg: rgba(255, 255, 255, 0.98);
+  --popup-title-color: #1e293b;
+  --popup-text-color: #475569;
+}
+
+/* 默认为深色主题 */
 :root {
   --el-bg-color: #1e293b;
   --el-bg-color-overlay: #334155;
@@ -12,12 +138,61 @@
   --el-border-color-light: #334155;
   --el-border-color-lighter: #1e293b;
   --el-fill-color-blank: #334155;
+--app-bg-color: #0f172a;
+  --app-bg-secondary: #1e293b;
+  --app-bg-tertiary: #334155;
+  --app-text-primary: #e2e8f0;
+  --app-text-secondary: #cbd5e1;
+  --app-border-color: #475569;
+  --app-shadow: rgba(0, 0, 0, 0.3);
+
+  /* 组件特定变量 */
+  --panel-bg-gradient-from: #1e293b;
+  --panel-bg-gradient-to: #0f172a;
+  --node-bg-from: #1e293b;
+  --node-bg-to: #0f172a;
+  --node-border-opacity: 0.3;
+  --node-completed-bg-from: rgba(5, 150, 105, 0.45);
+  --node-completed-bg-to: rgba(6, 78, 59, 0.65);
+  --progress-bg: rgba(15, 23, 42, 0.5);
+
+  /* 配置面板变量 */
+  --config-panel-bg: linear-gradient(180deg, #1E3A5F 0%, #0F1B2E 100%);
+  --config-panel-border: rgba(59, 130, 246, 0.3);
+  --config-title-color: #2563EB;
+  --config-section-bg: linear-gradient(135deg, rgba(30, 58, 138, 0.15) 0%, rgba(30, 41, 59, 0.15) 100%);
+  --config-section-border: rgba(59, 130, 246, 0.2);
+  --config-section-title: #60a5fa;
+
+  /* 查询面板变量 */
+  --query-panel-bg: #1e293b;
+  --query-panel-title: #3b82f6;
+  --input-bg: #334155;
+  --input-border: #475569;
+  --input-border-hover: #64748b;
+  --input-bg-focus: #3a4556;
+  --input-placeholder: #64748b;
+  --log-bg: #334155;
+  --log-time-color: #64748b;
+  --result-bg: #334155;
+  --log-regular-text: #93c5fd;
+  --log-cost-agent-text: #6ee7b7;
+
+  /* 弹出层变量 */
+  --popup-bg-from: rgba(15, 23, 42, 0.98);
+  --popup-bg-to: rgba(30, 41, 59, 0.98);
+  --popup-border: rgba(99, 102, 241, 0.6);
+  --popup-arrow-border: rgba(99, 102, 241, 0.6);
+  --popup-arrow-bg: rgba(15, 23, 42, 0.98);
+  --popup-title-color: #f1f5f9;
+  --popup-text-color: #cbd5e1;
 }
 
 body {
   margin: 0;
   padding: 0;
-  background: #0f172a;
+  background: var(--app-bg-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #app {
@@ -26,34 +201,60 @@ body {
   margin: 0;
   padding: 0;
   font-weight: normal;
-  background: #0f172a;
+  background: var(--app-bg-color);
+    color: var(--app-text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* 全局滚动条样式 */
-* {
+/* 全局滚动条样式 - 深色主题 */
+:root.dark * {
   scrollbar-width: thin;
   scrollbar-color: rgba(71, 85, 105, 0.8) rgba(30, 41, 59, 0.5);
 }
 
-*::-webkit-scrollbar {
+:root.dark *::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-*::-webkit-scrollbar-track {
+:root.dark *::-webkit-scrollbar-track {
   background: rgba(30, 41, 59, 0.5);
   border-radius: 4px;
 }
 
-*::-webkit-scrollbar-thumb {
+:root.dark *::-webkit-scrollbar-thumb {
   background: rgba(71, 85, 105, 0.8);
   border-radius: 4px;
 }
 
-*::-webkit-scrollbar-thumb:hover {
+:root.dark *::-webkit-scrollbar-thumb:hover {
   background: rgba(100, 116, 139, 0.9);
 }
 
+/* 全局滚动条样式 - 浅色主题 */
+:root.light * {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(203, 213, 225, 0.8) rgba(241, 245, 249, 0.5);
+}
+
+:root.light *::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+:root.light *::-webkit-scrollbar-track {
+  background: rgba(241, 245, 249, 0.5);
+  border-radius: 4px;
+}
+
+:root.light *::-webkit-scrollbar-thumb {
+  background: rgba(203, 213, 225, 0.8);
+  border-radius: 4px;
+}
+
+:root.light *::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.9);
+}
 a,
 .green {
   text-decoration: none;
