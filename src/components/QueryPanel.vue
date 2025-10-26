@@ -4,14 +4,13 @@
 
     <!-- 查询输入 -->
     <div class="query-input-section">
-      <label class="input-label">数据查询</label>
       <el-input
         v-model="queryText"
         type="textarea"
-        :rows="4"
+        :rows="2"
         placeholder="请输入查询内容..."
         class="query-textarea"
-        :autosize="{ minRows: 4, maxRows: 8 }"
+        :autosize="{ minRows: 2, maxRows: 4 }"
       />
     </div>
 
@@ -188,6 +187,7 @@ const toggleCostAgent = () => {
 
 .query-textarea {
   width: 100%;
+  height: fit-content;
 }
 
 .query-actions {
