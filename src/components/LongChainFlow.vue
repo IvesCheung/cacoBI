@@ -309,22 +309,24 @@ const mapStepToNode = (step) => {
   gap: 12px;
   padding: 12px;
   border-radius: 10px;
-  border: 1px dashed #4a5568;
-  background-color: rgba(15, 23, 42, 0.5);
+  border: 3px dashed rgba(74, 85, 104, 0.3);
+  background-color: transparent;
   position: relative;
+  transition: all 0.3s ease;
 }
 
 .purple-box {
-    border-color: #8b5cf6;
-    background-color: rgba(91, 33, 182, 0.1);
+    border-color: rgba(139, 92, 246, 0.3);
+    background-color: transparent;
 }
 
 .group-title {
   font-size: 12px;
   font-weight: bold;
-  color: #a0aec0;
+  color: var(--app-text-secondary);
   text-align: center;
   margin-bottom: 4px;
+  transition: color 0.3s ease;
 }
 
 .flow-node {
