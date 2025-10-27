@@ -24,10 +24,10 @@ export const DEFAULT_LONG_CHAIN_CONFIG = {
   tableRecallTopK: 50,
   tableSelectionModel: 'Deepseek-v3',
   // Rerank
-  segmentRerankModel: 'Deepseek-v3',
+  fieldRerankModel: 'Deepseek-v3',
   dimensionRerankModel: 'Deepseek-v3',
   // DSL配置
-  metricParseModel: 'Deepseek-v3',
+  measureParseModel: 'Deepseek-v3',
   dimensionParseModel: 'Deepseek-v3',
   filterParseModel: 'Deepseek-v3',
 }

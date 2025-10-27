@@ -1,14 +1,14 @@
 <template>
   <div class="short-chain-config">
     <div class="config-header">
-      <h3>短链路配置项</h3>
+      <h3>Shortcut Configuration</h3>
     </div>
 
     <div class="config-content">
       <!-- DSL改写模型 -->
       <ModelSelector
         v-model="config.dslModel"
-        label="DSL改写模型"
+        label="DSL Rewriting Model"
         :models="dslModels"
       />
 
@@ -22,7 +22,7 @@
       <!-- 模板召回Top-k -->
       <StepperInput
         v-model="config.templateRecallTopK"
-        label="模板召回Top-k"
+        label="Cache Top-k"
         :min="1"
         :max="100"
         :step="1"
@@ -31,7 +31,7 @@
       <!-- 模板相似度阈值 -->
       <SliderInput
         v-model="config.templateSimilarityThreshold"
-        label="模板相似度阈值"
+        label="Cache Similarity Threshold"
         :min="0"
         :max="1"
         :step="0.01"

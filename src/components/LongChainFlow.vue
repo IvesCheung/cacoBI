@@ -4,7 +4,7 @@
       <!-- Column 1: 配置解析 (stage1) -->
       <div class="flow-column">
         <div class="flow-group-box">
-          <div class="group-title">配置解析</div>
+          <div class="group-title">Query Parsing</div>
           <LongChainNode
             v-for="step in stage1Steps"
             :key="step.id"
@@ -22,7 +22,7 @@
       <!-- Column 2: 表召回 (stage2) -->
       <div class="flow-column">
         <div class="flow-group-box">
-          <div class="group-title">表召回</div>
+          <div class="group-title">Table Retrieval</div>
           <LongChainNode
             v-for="step in stage2Steps"
             :key="step.id"
@@ -55,7 +55,7 @@
       <!-- Column 4: 单表知识召回 (stage4) & Rerank (stage5) -->
       <div class="flow-column">
         <div class="flow-group-box">
-          <div class="group-title">单表知识召回</div>
+          <div class="group-title">In-Table Knowledge Retrieval</div>
           <LongChainNode
             v-for="step in stage4Steps"
             :key="step.id"
@@ -69,7 +69,7 @@
       </div>
       <div class="flow-column">
         <div class="flow-group-box">
-          <div class="group-title">召回Rerank</div>
+          <div class="group-title">Retrieval Rerank</div>
           <LongChainNode
             v-for="step in stage5Steps"
             :key="step.id"
@@ -86,7 +86,7 @@
       <!-- Column 5: 配置解析 (stage6) -->
       <div class="flow-column">
         <div class="flow-group-box">
-          <div class="group-title">配置解析</div>
+          <div class="group-title">DSL Configuring</div>
           <LongChainNode
             v-for="step in stage6Steps"
             :key="step.id"
@@ -224,35 +224,35 @@ const mapStepToNode = (step) => {
     // 根据不同的步骤类型生成示例详细信息
     if (step.type === 'llm') {
       if (step.status === 'completed' || step.status === 'active') {
-        details.push(`模型调用成功，处理完成`);
+        details.push(`Model invocation succeeded, processing completed`);
         if (step.tokens) {
-          details.push(`输入Token: ${Math.floor(step.tokens * 0.6)}, 输出Token: ${Math.floor(step.tokens * 0.4)}`);
+          details.push(`Input Tokens: ${Math.floor(step.tokens * 0.6)}, Output Tokens: ${Math.floor(step.tokens * 0.4)}`);
         }
         if (duration > 0) {
-          details.push(`响应时间: ${duration.toFixed(2)}秒`);
+          details.push(`Response Time: ${duration.toFixed(2)} s`);
         }
       }
     } else {
       // 计算类型节点
       if (step.status === 'completed' || step.status === 'active') {
-        details.push(`计算处理完成`);
+        details.push(`Computation completed`);
         if (duration > 0) {
-          details.push(`执行耗时: ${duration.toFixed(2)}秒`);
+          details.push(`Execution Time: ${duration.toFixed(2)} s`);
         }
       }
     }
 
     // 根据步骤ID添加特定的详细信息
     if (step.id.includes('parse') || step.id.includes('config')) {
-      details.push(`配置参数已解析并验证`);
+      details.push(`Configuration parameters have been parsed and validated`);
     } else if (step.id.includes('recall') || step.id.includes('retrieve')) {
-      details.push(`成功召回相关数据`);
+      details.push(`Successfully recalled relevant data`);
     } else if (step.id.includes('select') || step.id.includes('choose')) {
-      details.push(`数据筛选完成`);
+      details.push(`Data filtering completed`);
     } else if (step.id.includes('rerank')) {
-      details.push(`排序优化完成`);
+      details.push(`Ranking optimization completed`);
     } else if (step.id.includes('dsl') || step.id.includes('convert')) {
-      details.push(`DSL转换成功`);
+      details.push(`DSL conversion succeeded`);
     }
   }
 

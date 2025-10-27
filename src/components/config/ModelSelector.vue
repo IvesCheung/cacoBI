@@ -3,7 +3,7 @@
     <label class="config-label">{{ label }}</label>
     <el-select
       v-model="selectedModel"
-      :placeholder="`请选择${label}`"
+      :placeholder="`select ${label}`"
       size="large"
       @change="handleChange"
     >

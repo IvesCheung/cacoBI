@@ -1,7 +1,7 @@
 <template>
   <div class="chain-panel">
     <div class="panel-header">
-      <h2 class="panel-title short-title">✅ 优化链路（短链路）</h2>
+      <h2 class="panel-title short-title">✅ Shortcut</h2>
       <ProgressBar
         :progress-array="progress"
         :time="time"

@@ -2,7 +2,7 @@
   <div class="result-chart">
     <div class="chart-header">
       <span class="chart-type-badge">{{ chartTypeName }}</span>
-      <button @click="switchChartType" class="switch-btn" title="切换图表类型">
+      <button @click="switchChartType" class="switch-btn" title="Switch Chart">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
           <path d="M9 12l2 2 4-4"/>
@@ -21,12 +21,12 @@ const props = defineProps({
   data: {
     type: Array,
     default: () => [
-      { name: '青岛', value: 335 },
-      { name: '杭州', value: 234 },
-      { name: '天津', value: 154 },
-      { name: '上海', value: 135 },
-      { name: '北京', value: 548 },
-      { name: '其它', value: 123 }
+      { name: 'Qingdao', value: 335 },
+      { name: 'Hangzhou', value: 234 },
+      { name: 'Tianjin', value: 154 },
+      { name: 'Shanghai', value: 135 },
+      { name: 'Beijing', value: 548 },
+      { name: 'Others', value: 123 }
     ]
   }
 })
@@ -34,15 +34,15 @@ const props = defineProps({
 // 图表类型列表
 const chartTypes = ['pie', 'bar', 'line', 'radar', 'funnel']
 const chartTypeNames = {
-  pie: '饼状图',
-  bar: '柱状图',
-  line: '折线图',
-  radar: '雷达图',
-  funnel: '漏斗图'
+  pie: 'Pie Chart',
+  bar: 'Bar Chart',
+  line: 'Line Chart',
+  radar: 'Radar Chart',
+  funnel: 'Funnel Chart'
 }
 
 const currentChartType = ref('pie')
-const chartTypeName = ref('饼状图')
+const chartTypeName = ref('Pie Chart')
 
 // 切换图表类型
 const switchChartType = () => {
@@ -155,7 +155,7 @@ const getPieOption = (textColor, legendColor) => ({
     }
   },
   series: [{
-    name: '数据分布',
+    name: 'Data Distribution',
     type: 'pie',
     radius: ['45%', '70%'],
     center: ['50%', '45%'],
@@ -264,7 +264,7 @@ const getBarOption = (textColor, legendColor) => ({
     }
   },
   series: [{
-    name: '数值',
+    name: 'Value',
     type: 'bar',
     data: props.data.map(item => item.value),
     itemStyle: {
@@ -337,7 +337,7 @@ const getLineOption = (textColor, legendColor) => ({
     }
   },
   series: [{
-    name: '数值',
+    name: 'Value',
     type: 'line',
     data: props.data.map(item => item.value),
     smooth: true,
@@ -429,11 +429,11 @@ const getRadarOption = (textColor, legendColor) => ({
     }
   },
   series: [{
-    name: '数据分布',
+    name: 'Data Distribution',
     type: 'radar',
     data: [{
       value: props.data.map(item => item.value),
-      name: '数据分布',
+      name: 'Data Distribution',
       areaStyle: {
         color: {
           type: 'linear',

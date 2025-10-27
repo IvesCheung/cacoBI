@@ -27,12 +27,12 @@
 
     <!-- 时间显示 -->
     <div class="time-badge" :style="badgeStyle">
-      链路耗时: <span class="time-value">{{ time.toFixed(2) }}</span> 秒
+      runtime: <span class="time-value">{{ time.toFixed(2) }}</span> s
     </div>
 
     <!-- Token消耗显示 -->
     <div class="token-badge" :style="badgeStyle">
-      总Token: <span class="token-value">{{ totalTokens }}</span>
+      token cost: <span class="token-value">{{ totalTokens }}</span>
     </div>
   </div>
 </template>

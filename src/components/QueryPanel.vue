@@ -1,6 +1,6 @@
 <template>
   <div class="query-panel">
-    <h2 class="panel-title">BI取数</h2>
+    <h2 class="panel-title">CACOBI</h2>
 
     <!-- 查询输入 -->
     <div class="query-input-section">
@@ -8,7 +8,7 @@
         v-model="queryText"
         type="textarea"
         :rows="2"
-        placeholder="请输入查询内容..."
+        placeholder="Please enter your query..."
         class="query-textarea"
         :autosize="{ minRows: 2, maxRows: 4 }"
       />
@@ -25,7 +25,7 @@
         class="execute-btn"
       >
         <el-icon v-if="!isExecuting"><VideoPlay /></el-icon>
-        {{ isExecuting ? '执行中...' : '执行查询' }}
+        {{ isExecuting ? 'Executing...' : 'Execute' }}
       </el-button>
 
       <el-button
@@ -36,7 +36,7 @@
         class="cost-agent-btn"
       >
         <el-icon v-if="costAgentEnabled"><CircleCheck /></el-icon>
-        {{ costAgentEnabled ? 'Cost Agent (已启用)' : 'Cost Agent' }}
+        {{ costAgentEnabled ? 'Cost Planer (Enabled)' : 'Cost Planer' }}
       </el-button>
     </div>
 
@@ -45,22 +45,22 @@
       <!-- 常规日志 -->
       <div class="log-item regular-log">
         <span class="log-time">{{ currentTime }}</span>
-        <span class="log-text">正在检索相关数据...</span>
+        <span class="log-text">Retrieving relevant data...</span>
       </div>
       <div class="log-item regular-log">
         <span class="log-time">{{ currentTime }}</span>
-        <span class="log-text">正在分析数据并生成报表...</span>
+        <span class="log-text">Analyzing data and generating report...</span>
       </div>
       <!-- Cost Agent 日志 -->
       <template v-if="costAgentEnabled">
         <div class="log-item cost-agent-log">
           <span class="log-time">{{ currentTime }}</span>
-          <span class="log-text">✨ 正在使用 Cost Agent 对问题进行智能分析...</span>
+          <span class="log-text">✨ Cost Planer is analyzing the query...</span>
         </div>
         <div v-if="skippedStepsInfo.length > 0" class="log-item cost-agent-log">
           <span class="log-time">{{ currentTime }}</span>
           <span class="log-text">
-            🎯 经过分析，智能跳过:
+            🎯 After analysis, intelligently skipped:
             <span v-for="(step, index) in skippedStepsInfo" :key="step.id" class="skipped-step-name">
               {{ step.title }}<span v-if="index < skippedStepsInfo.length - 1">、</span>
             </span>
@@ -71,13 +71,13 @@
 
     <!-- 短链路结果 -->
     <div v-if="shortCompleted" class="result-container short-result">
-      <h3 class="result-title short-title">✅ 优化链路结果</h3>
+      <h3 class="result-title short-title">✅ Shortcut Result</h3>
       <ResultChart key="short-chart" />
     </div>
 
     <!-- 长链路结果 -->
     <div v-if="longCompleted" class="result-container long-result">
-      <h3 class="result-title long-title">🟠 传统链路结果</h3>
+      <h3 class="result-title long-title">🟠 Long-chain Result</h3>
       <ResultChart key="long-chart" />
     </div>
   </div>

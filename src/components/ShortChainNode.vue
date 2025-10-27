@@ -50,12 +50,12 @@
           <div class="popup-stats">
             <div v-if="duration > 0" class="stat-item">
               <el-icon><Timer /></el-icon>
-              <span class="stat-label">耗时</span>
+              <span class="stat-label">Runtime</span>
               <span class="stat-value">{{ duration.toFixed(2) }}s</span>
             </div>
             <div v-if="tokens > 0" class="stat-item">
               <el-icon><Coin /></el-icon>
-              <span class="stat-label">Token</span>
+              <span class="stat-label">Token Cost</span>
               <span class="stat-value">{{ tokens }}</span>
             </div>
           </div>

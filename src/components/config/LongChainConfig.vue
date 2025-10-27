@@ -1,78 +1,78 @@
 <template>
   <div class="long-chain-config">
     <div class="config-header">
-      <h3>长链路配置项</h3>
+      <h3>Long-chain Configuration</h3>
     </div>
 
     <div class="config-content">
-      <!-- 配置解析阶段 -->
+      <!-- Query Parsing Stage -->
       <div class="config-section">
-        <div class="section-title">配置解析</div>
+        <div class="section-title">Query Parsing</div>
         <ModelSelector
           v-model="config.entityRecognitionModel"
-          label="实体识别模型"
+          label="Entity Recognition Model"
           :models="llmModels"
         />
         <ModelSelector
           v-model="config.questionRewriteModel"
-          label="问题改写模型"
+          label="Question Rewrite Model"
           :models="llmModels"
         />
         <ModelSelector
           v-model="config.questionClarifyModel"
-          label="问题澄清模型"
+          label="Question Clarification Model"
           :models="llmModels"
         />
       </div>
 
-      <!-- 表召回和选择 -->
+      <!-- Query Recall and Selection -->
       <div class="config-section">
-        <div class="section-title">表召回与选择</div>
+        <div class="section-title">Table Retrieval and Selection</div>
         <StepperInput
           v-model="config.tableRecallTopK"
-          label="表召回Top-k"
+          label="Table Top-k"
           :min="1"
           :max="200"
           :step="5"
         />
         <ModelSelector
           v-model="config.tableSelectionModel"
-          label="选表模型"
+          label="Table Selection Model"
           :models="llmModels"
         />
       </div>
 
       <!-- Rerank -->
       <div class="config-section">
-        <div class="section-title">召回Rerank</div>
+        <div class="section-title">Rerank</div>
         <ModelSelector
-          v-model="config.segmentRerankModel"
-          label="学段Rerank模型"
+          v-model="config.fieldRerankModel"
+          label="Field Rerank Model"
           :models="llmModels"
         />
         <ModelSelector
           v-model="config.dimensionRerankModel"
-          label="维值Rerank模型"
+          label="Dimension Rerank Model"
           :models="llmModels"
         />
       </div>
 
       <!-- DSL配置 -->
       <div class="config-section">
-        <div class="section-title">DSL配置</div>
+        <div class="section-title">DSL Configuring</div>
         <ModelSelector
-          v-model="config.metricParseModel"
-          label="指标解析模型"
+          v-model="config.measureParseModel"
+          label="Measure Parse Model"
           :models="llmModels"
         />
         <ModelSelector
           v-model="config.dimensionParseModel"
-          label="维度解析模型"
+          label="Dimension Parse Model"
           :models="llmModels"
         />
         <ModelSelector
           v-model="config.filterParseModel"
-          label="筛选解析模型"
+          label="Filter Parse Model"
           :models="llmModels"
         />
       </div>
@@ -108,11 +108,11 @@ const config = reactive({
   tableSelectionModel: props.modelValue.tableSelectionModel || DEFAULT_LONG_CHAIN_CONFIG.tableSelectionModel || 'Deepseek-v3',
 
   // Rerank
-  segmentRerankModel: props.modelValue.segmentRerankModel || DEFAULT_LONG_CHAIN_CONFIG.segmentRerankModel || 'Deepseek-v3',
+  fieldRerankModel: props.modelValue.fieldRerankModel || DEFAULT_LONG_CHAIN_CONFIG.fieldRerankModel || 'Deepseek-v3',
   dimensionRerankModel: props.modelValue.dimensionRerankModel || DEFAULT_LONG_CHAIN_CONFIG.dimensionRerankModel || 'Deepseek-v3',
 
   // DSL配置
-  metricParseModel: props.modelValue.metricParseModel || DEFAULT_LONG_CHAIN_CONFIG.metricParseModel || 'Deepseek-v3',
+  measureParseModel: props.modelValue.measureParseModel || DEFAULT_LONG_CHAIN_CONFIG.measureParseModel || 'Deepseek-v3',
   dimensionParseModel: props.modelValue.dimensionParseModel || DEFAULT_LONG_CHAIN_CONFIG.dimensionParseModel || 'Deepseek-v3',
   filterParseModel: props.modelValue.filterParseModel || DEFAULT_LONG_CHAIN_CONFIG.filterParseModel || 'Deepseek-v3'
 })

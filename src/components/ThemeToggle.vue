@@ -1,5 +1,5 @@
 <template>
-  <div class="theme-toggle" @click="toggleTheme" :title="isDark ? '切换到浅色主题' : '切换到深色主题'">
+  <div class="theme-toggle" @click="toggleTheme" :title="isDark ? 'Light Theme' : 'Dark Theme'">
     <transition name="icon-fade" mode="out-in">
       <el-icon v-if="isDark" :size="24" key="moon">
         <Moon />
