@@ -12,7 +12,7 @@ export const DEFAULT_SHORT_CHAIN_CONFIG = {
   dslModel: 'Qwen3-embedding-0.6B',
   encoder: 'Qwen2.5-instruct-72B',
   templateRecallTopK: 3,
-  templateSimilarityThreshold: 0.3,
+  templateSimilarityThreshold: 0.80,
 }
 
 export const DEFAULT_LONG_CHAIN_CONFIG = {
@@ -21,7 +21,7 @@ export const DEFAULT_LONG_CHAIN_CONFIG = {
   questionRewriteModel: 'Qwen2.5-instruct-72B',
   questionClarifyModel: 'Qwen2.5-instruct-72B',
   // 表召回与选择
-  tableRecallTopK: 50,
+  tableRecallTopK: 10,
   tableSelectionModel: 'Deepseek-v3',
   // Rerank
   fieldRerankModel: 'Deepseek-v3',

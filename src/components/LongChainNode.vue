@@ -58,8 +58,8 @@
           <div v-if="node.status === 'skipped'" class="popup-skipped-message">
             <el-icon class="skipped-icon"><CircleClose /></el-icon>
             <div class="skipped-text">
-              <div class="skipped-title">智能跳过</div>
-              <div class="skipped-desc">Cost Agent分析后决定跳过此步骤，以优化执行效率</div>
+              <div class="skipped-title">Skip</div>
+                <div class="skipped-desc">Cost Planer determined to skip this step after analysis to optimize execution efficiency</div>
             </div>
           </div>
 
@@ -68,12 +68,12 @@
             <div class="popup-stats">
               <div v-if="node.time > 0" class="stat-item">
                 <el-icon><Timer /></el-icon>
-                <span class="stat-label">耗时</span>
+                <span class="stat-label">Runtime</span>
                 <span class="stat-value">{{ node.time.toFixed(2) }}s</span>
               </div>
               <div v-if="node.tokens > 0" class="stat-item">
                 <el-icon><Coin /></el-icon>
-                <span class="stat-label">Token消耗</span>
+                <span class="stat-label">Token Cost</span>
                 <span class="stat-value">{{ node.tokens }}</span>
               </div>
             </div>

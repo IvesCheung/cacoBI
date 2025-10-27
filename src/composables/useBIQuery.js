@@ -42,7 +42,7 @@ export function useBIQuery() {
   const shortSteps = reactive([
     {
       id: 1,
-      title: '向量化用户问题',
+      title: 'Embed User Query',
       time: '',
       active: false,
       completed: false,
@@ -52,7 +52,7 @@ export function useBIQuery() {
     },
     {
       id: 2,
-      title: '检索历史相关问题',
+      title: 'Retrieve Historical Related Questions',
       time: '',
       active: false,
       completed: false,
@@ -65,7 +65,7 @@ export function useBIQuery() {
     },
     {
       id: 3,
-      title: '生成DSL',
+      title: 'Generate DSL',
       time: '',
       active: false,
       completed: false,
@@ -82,12 +82,12 @@ export function useBIQuery() {
   const longSteps = ref({
     // 阶段1: 配置解析 (并行执行)
     stage1: {
-      title: '配置解析',
+      title: 'Query Parsing',
       parallel: true,
       steps: [
         {
           id: 'entity-recognition',
-          title: '实体识别',
+          title: 'Entity Recognition',
           type: 'llm',
           status: 'inactive',
           tokens: 0,
@@ -96,7 +96,7 @@ export function useBIQuery() {
         },
         {
           id: 'question-rewrite',
-          title: '问题改写',
+          title: 'Question Rewrite',
           type: 'llm',
           status: 'inactive',
           tokens: 0,
@@ -105,7 +105,7 @@ export function useBIQuery() {
         },
         {
           id: 'question-clarify',
-          title: '问题澄清',
+          title: 'Question Clarification',
           type: 'llm',
           status: 'inactive',
           tokens: 0,
@@ -116,12 +116,12 @@ export function useBIQuery() {
     },
     // 阶段2: 召回 (并行执行)
     stage2: {
-      title: '表召回',
+      title: 'Table Retrieval',
       parallel: true,
       steps: [
         {
           id: 'main-table-recall',
-          title: '主体召回表',
+          title: 'Subject Retrieval',
           type: 'compute',
           status: 'inactive',
           tokens: 0,
@@ -130,7 +130,7 @@ export function useBIQuery() {
         },
         {
           id: 'field-table-recall',
-          title: '字段召回表',
+          title: 'Field Retrieval',
           type: 'compute',
           status: 'inactive',
           tokens: 0,
@@ -139,7 +139,7 @@ export function useBIQuery() {
         },
         {
           id: 'business-table-recall',
-          title: '业务术语召回表',
+          title: 'Jargon Retrieval',
           type: 'compute',
           status: 'inactive',
           tokens: 0,
@@ -150,12 +150,12 @@ export function useBIQuery() {
     },
     // 阶段3: 选表
     stage3: {
-      title: '选表',
+      title: 'Table Selection',
       parallel: false,
       steps: [
         {
           id: 'table-selection',
-          title: '选表 (N→1)',
+          title: 'Table(N→1)',
           type: 'llm',
           status: 'inactive',
           tokens: 0,
@@ -166,12 +166,12 @@ export function useBIQuery() {
     },
     // 阶段4: 单表知识召回
     stage4: {
-      title: '单表知识召回',
+      title: 'In-Table Knowledge Retrieval',
       parallel: true,
       steps: [
         {
           id: 'segment-recall',
-          title: '学段召回',
+          title: 'Field',
           type: 'compute',
           status: 'inactive',
           tokens: 0,
@@ -180,7 +180,7 @@ export function useBIQuery() {
         },
         {
           id: 'business-term',
-          title: '业务术语',
+          title: 'Jargon',
           type: 'compute',
           status: 'inactive',
           tokens: 0,
@@ -189,7 +189,7 @@ export function useBIQuery() {
         },
         {
           id: 'table-rule',
-          title: '表规则',
+          title: 'Table Rule',
           type: 'compute',
           status: 'inactive',
           tokens: 0,
@@ -198,7 +198,7 @@ export function useBIQuery() {
         },
         {
           id: 'dimension-value-recall',
-          title: '维度维值召回',
+          title: 'Dimension Value',
           type: 'compute',
           status: 'inactive',
           tokens: 0,
@@ -209,12 +209,12 @@ export function useBIQuery() {
     },
     // 阶段5: Rerank (并行执行)
     stage5: {
-      title: '召回Rerank',
+      title: 'Retrieval Rerank',
       parallel: true,
       steps: [
         {
           id: 'segment-rerank',
-          title: '学段召回Rerank',
+          title: 'Field Rerank',
           type: 'llm',
           status: 'inactive',
           tokens: 0,
@@ -223,7 +223,7 @@ export function useBIQuery() {
         },
         {
           id: 'dimension-rerank',
-          title: '维值Rerank',
+          title: 'Dimension Rerank',
           type: 'llm',
           status: 'inactive',
           tokens: 0,
@@ -234,12 +234,12 @@ export function useBIQuery() {
     },
     // 阶段6: 配置解析 (并行执行)
     stage6: {
-      title: '配置解析',
+      title: 'DSL Configuring',
       parallel: true,
       steps: [
         {
           id: 'metric-parse',
-          title: '指标解析',
+          title: 'Measure',
           type: 'llm',
           status: 'inactive',
           tokens: 0,
@@ -248,7 +248,7 @@ export function useBIQuery() {
         },
         {
           id: 'dimension-parse',
-          title: '维度解析',
+          title: 'Dimension',
           type: 'llm',
           status: 'inactive',
           tokens: 0,
@@ -257,7 +257,7 @@ export function useBIQuery() {
         },
         {
           id: 'filter-parse',
-          title: '筛选解析',
+          title: 'Filter',
           type: 'llm',
           status: 'inactive',
           tokens: 0,
@@ -268,12 +268,12 @@ export function useBIQuery() {
     },
     // 阶段7: DSL转换
     stage7: {
-      title: 'DSL配置转换',
+      title: 'Generate DSL',
       parallel: false,
       steps: [
         {
           id: 'dsl-transform',
-          title: 'DSL配置转换',
+          title: 'Generate DSL',
           type: 'compute',
           status: 'inactive',
           tokens: 0,
@@ -309,6 +309,7 @@ export function useBIQuery() {
 
     // 随机选择跳过1-2个步骤
     // const numToSkip = Math.random() < 0.5 ? 1 : 2
+    // 固定跳过三个
     const numToSkip = 3
     const skipped = []
     const skippedInfo = []
