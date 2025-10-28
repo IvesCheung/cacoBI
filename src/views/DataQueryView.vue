@@ -41,7 +41,6 @@
           :is-executing="isExecuting"
           :short-completed="shortCompleted"
           :long-completed="longCompleted"
-          :skipped-steps-info="skippedStepsInfo"
           @execute="handleExecute"
           @clear-logs="clearLogs"
         />
@@ -75,7 +74,6 @@ const {
   longProgress,
   shortChainTokens,
   longChainTokens,
-  skippedStepsInfo,
   executeQuery,
   clearLogs
 } = useBIQuery()

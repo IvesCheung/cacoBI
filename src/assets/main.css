@@ -268,3 +268,72 @@ a,
     background-color: hsla(160, 100%, 37%, 0.2);
   }
 }
+
+/* 自定义通知样式 */
+.regular-log-notification {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.95) 0%, rgba(37, 99, 235, 0.95) 100%) !important;
+  border-left: 4px solid #3b82f6 !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+}
+
+.regular-log-notification .el-notification__title {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+.regular-log-notification .el-notification__content {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+}
+
+.regular-log-notification .el-notification__closeBtn {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.regular-log-notification .el-notification__closeBtn:hover {
+  color: #ffffff !important;
+}
+
+.cost-agent-log-notification {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.95) 0%, rgba(5, 150, 105, 0.95) 100%) !important;
+  border-left: 4px solid #10b981 !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+}
+
+.cost-agent-log-notification .el-notification__title {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+.cost-agent-log-notification .el-notification__content {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+}
+
+.cost-agent-log-notification .el-notification__closeBtn {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.cost-agent-log-notification .el-notification__closeBtn:hover {
+  color: #ffffff !important;
+}
+
+/* 深色主题下的通知样式调整 */
+:root.dark .el-notification {
+  background-color: #1e293b !important;
+  border: 1px solid #475569 !important;
+}
+
+:root.dark .el-notification.el-notification--success {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%) !important;
+  border-left: 4px solid #10b981 !important;
+}
+
+:root.dark .el-notification.el-notification--info {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.2) 100%) !important;
+  border-left: 4px solid #3b82f6 !important;
+}

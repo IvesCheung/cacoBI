@@ -1,4 +1,6 @@
 import { ref, reactive } from 'vue'
+import { ElNotification } from 'element-plus'
+import { LOG_MESSAGES, LOG_TYPES } from '@/constants/logMessages'
 
 export function useBIQuery() {
   // 执行状态
@@ -70,8 +72,10 @@ export function useBIQuery() {
       active: false,
       completed: false,
       details: [
-        '维度: [笔记id, 笔记作者username, 笔记作者IP属地]',
-        '筛选条件: [笔记内容=洗衣液成分, 笔记创建时间>=近30天]',
+        'Table: mobile_table',
+        'dimension: ["sv_by_inc"]',
+        'measure: {"field":"Apple", "aggregation":"sum"}',
+        'filter: {"field":"time","type":"in", "condition":[2025]}',
       ],
       tokens: 0,
       duration: 0,
@@ -298,6 +302,45 @@ export function useBIQuery() {
     return `${hours}:${minutes}:${seconds}`
   }
 
+  // 显示日志通知的辅助函数
+  const showLogNotification = (message, logType = LOG_TYPES.REGULAR) => {
+    const currentTime = getCurrentTime()
+
+    // 根据日志类型配置通知样式
+    const notificationConfig = {
+      title: currentTime,
+      message: message,
+      position: 'top-right',
+      duration: 2000,
+      offset: 50,
+    }
+
+    // 根据日志类型设置不同的样式
+    if (logType === LOG_TYPES.REGULAR) {
+      ElNotification({
+        ...notificationConfig,
+        type: 'info',
+        customClass: 'regular-log-notification',
+      })
+    } else if (logType === LOG_TYPES.COST_AGENT) {
+      ElNotification({
+        ...notificationConfig,
+        type: 'success',
+        customClass: 'cost-agent-log-notification',
+      })
+    } else if (logType === LOG_TYPES.SUCCESS) {
+      ElNotification({
+        ...notificationConfig,
+        type: 'success',
+      })
+    } else if (logType === LOG_TYPES.ERROR) {
+      ElNotification({
+        ...notificationConfig,
+        type: 'error',
+      })
+    }
+  }
+
   // Token消耗统计
   const shortChainTokens = ref(0)
   const longChainTokens = ref(0)
@@ -332,7 +375,7 @@ export function useBIQuery() {
           skippedInfo.push({
             id: stepId,
             title: step.title,
-            stage: stage.title
+            stage: stage.title,
           })
         }
       }
@@ -386,6 +429,27 @@ export function useBIQuery() {
       resetAll()
       isExecuting.value = true
 
+      // 显示常规日志通知
+      showLogNotification(LOG_MESSAGES.RETRIEVING_DATA, LOG_TYPES.REGULAR)
+
+      setTimeout(() => {
+        showLogNotification(LOG_MESSAGES.ANALYZING_DATA, LOG_TYPES.REGULAR)
+      }, 500)
+
+      // 如果启用了 Cost Agent，显示相关通知
+      if (costAgentEnabled.value) {
+        setTimeout(() => {
+          showLogNotification(LOG_MESSAGES.COST_PLANER_ANALYZING, LOG_TYPES.COST_AGENT)
+        }, 1000)
+      }
+      // 如果启用了 Cost Agent 且有跳过的步骤，显示跳过信息
+      if (costAgentEnabled.value && skippedStepsInfo.value.length > 0) {
+        showLogNotification(
+          LOG_MESSAGES.COST_PLANER_SKIPPED(skippedStepsInfo.value),
+          LOG_TYPES.COST_AGENT,
+        )
+      }
+
       // 模拟链路执行
       simulateShortChain()
       simulateLongChain()
@@ -395,6 +459,9 @@ export function useBIQuery() {
         if (shortCompleted.value && longCompleted.value) {
           clearInterval(checkInterval)
           isExecuting.value = false
+          // 显示完成通知
+          showLogNotification(LOG_MESSAGES.EXECUTION_COMPLETED, LOG_TYPES.SUCCESS)
+
           resolve()
         }
       }, 100)
@@ -461,7 +528,7 @@ export function useBIQuery() {
 
   // 模拟长链路执行
   const simulateLongChain = () => {
-    console.log('开始执行长链路');
+    console.log('开始执行长链路')
 
     let timer = setInterval(() => {
       longChainTime.value += 0.01
@@ -476,19 +543,19 @@ export function useBIQuery() {
 
     // 阶段1: 配置解析 (3个LLM步骤并行, 2.7秒)
     setTimeout(() => {
-      console.log('阶段1开始: 配置解析');
+      console.log('阶段1开始: 配置解析')
       const stage1Steps = longSteps.value.stage1.steps
       // 开始阶段1进度动画
       animateProgress(longProgress, 0, 2700, () => {
-        console.log('阶段1进度完成');
+        console.log('阶段1进度完成')
       })
       // 并行执行,同时开始
       stage1Steps.forEach((step, idx) => {
-        console.log(`阶段1-步骤${idx} 开始执行:`, step.id);
+        console.log(`阶段1-步骤${idx} 开始执行:`, step.id)
 
         // 检查是否被跳过
         if (skippedSteps.includes(step.id)) {
-          console.log(`阶段1-步骤${idx} 被跳过:`, step.id);
+          console.log(`阶段1-步骤${idx} 被跳过:`, step.id)
           step.status = 'skipped'
           return
         }
@@ -496,7 +563,7 @@ export function useBIQuery() {
         step.status = 'active'
         const duration = 2500 + idx * 200 // 略有差异
         setTimeout(() => {
-          console.log(`阶段1-步骤${idx} 完成:`, step.id);
+          console.log(`阶段1-步骤${idx} 完成:`, step.id)
           step.status = 'completed'
           step.tokens = 650 + idx * 100
           step.duration = parseFloat((duration / 1000).toFixed(2))
@@ -509,25 +576,25 @@ export function useBIQuery() {
 
     // 阶段2: 表召回 (3个传统计算步骤并行, 瞬时完成)
     setTimeout(() => {
-      console.log('阶段2开始: 表召回');
+      console.log('阶段2开始: 表召回')
       const stage2Steps = longSteps.value.stage2.steps
       // 开始阶段2进度动画
       animateProgress(longProgress, 1, 100, () => {
-        console.log('阶段2进度完成');
+        console.log('阶段2进度完成')
       })
       stage2Steps.forEach((step, idx) => {
-        console.log(`阶段2-步骤${idx} 开始执行:`, step.id);
+        console.log(`阶段2-步骤${idx} 开始执行:`, step.id)
 
         // 检查是否被跳过
         if (skippedSteps.includes(step.id)) {
-          console.log(`阶段2-步骤${idx} 被跳过:`, step.id);
+          console.log(`阶段2-步骤${idx} 被跳过:`, step.id)
           step.status = 'skipped'
           return
         }
 
         step.status = 'active'
         setTimeout(() => {
-          console.log(`阶段2-步骤${idx} 完成:`, step.id);
+          console.log(`阶段2-步骤${idx} 完成:`, step.id)
           step.status = 'completed'
           step.duration = 0.1
           step.details = [
@@ -544,26 +611,26 @@ export function useBIQuery() {
 
     // 阶段3: 选表 (1个LLM步骤, 3秒)
     setTimeout(() => {
-      console.log('阶段3开始: 选表');
+      console.log('阶段3开始: 选表')
       const step = longSteps.value.stage3.steps[0]
 
       // 检查是否被跳过
       if (skippedSteps.includes(step.id)) {
-        console.log('阶段3-步骤 被跳过:', step.id);
+        console.log('阶段3-步骤 被跳过:', step.id)
         step.status = 'skipped'
         // 跳过时也要完成进度条，但瞬间完成
         animateProgress(longProgress, 2, 100, () => {
-          console.log('阶段3进度完成(跳过)');
+          console.log('阶段3进度完成(跳过)')
         })
       } else {
         // 开始阶段3进度动画
         animateProgress(longProgress, 2, 3000, () => {
-          console.log('阶段3进度完成');
+          console.log('阶段3进度完成')
         })
-        console.log('阶段3-步骤 开始执行:', step.id);
+        console.log('阶段3-步骤 开始执行:', step.id)
         step.status = 'active'
         setTimeout(() => {
-          console.log('阶段3-步骤 完成:', step.id);
+          console.log('阶段3-步骤 完成:', step.id)
           step.status = 'completed'
           step.tokens = 1850
           step.duration = 3.0
@@ -578,25 +645,25 @@ export function useBIQuery() {
 
     // 阶段4: 单表知识召回 (4个传统计算步骤并行, 瞬时完成)
     setTimeout(() => {
-      console.log('阶段4开始: 单表知识召回');
+      console.log('阶段4开始: 单表知识召回')
       const stage4Steps = longSteps.value.stage4.steps
       // 开始阶段4进度动画
       animateProgress(longProgress, 3, 100, () => {
-        console.log('阶段4进度完成');
+        console.log('阶段4进度完成')
       })
       stage4Steps.forEach((step, idx) => {
-        console.log(`阶段4-步骤${idx} 开始执行:`, step.id);
+        console.log(`阶段4-步骤${idx} 开始执行:`, step.id)
 
         // 检查是否被跳过
         if (skippedSteps.includes(step.id)) {
-          console.log(`阶段4-步骤${idx} 被跳过:`, step.id);
+          console.log(`阶段4-步骤${idx} 被跳过:`, step.id)
           step.status = 'skipped'
           return
         }
 
         step.status = 'active'
         setTimeout(() => {
-          console.log(`阶段4-步骤${idx} 完成:`, step.id);
+          console.log(`阶段4-步骤${idx} 完成:`, step.id)
           step.status = 'completed'
           step.duration = 0.1
           step.details = [
@@ -615,23 +682,23 @@ export function useBIQuery() {
 
     // 阶段5: Rerank (2个LLM步骤并行, 3.1秒)
     setTimeout(() => {
-      console.log('阶段5开始: Rerank');
+      console.log('阶段5开始: Rerank')
       const stage5Steps = longSteps.value.stage5.steps
 
       // 检查是否有步骤被跳过
-      const allSkipped = stage5Steps.every(step => skippedSteps.includes(step.id))
+      const allSkipped = stage5Steps.every((step) => skippedSteps.includes(step.id))
       const stageDuration = allSkipped ? 100 : 3100
 
       // 开始阶段5进度动画
       animateProgress(longProgress, 4, stageDuration, () => {
-        console.log('阶段5进度完成');
+        console.log('阶段5进度完成')
       })
       stage5Steps.forEach((step, idx) => {
-        console.log(`阶段5-步骤${idx} 开始执行:`, step.id);
+        console.log(`阶段5-步骤${idx} 开始执行:`, step.id)
 
         // 检查是否被跳过
         if (skippedSteps.includes(step.id)) {
-          console.log(`阶段5-步骤${idx} 被跳过:`, step.id);
+          console.log(`阶段5-步骤${idx} 被跳过:`, step.id)
           step.status = 'skipped'
           return
         }
@@ -639,7 +706,7 @@ export function useBIQuery() {
         step.status = 'active'
         const duration = 2800 + idx * 300
         setTimeout(() => {
-          console.log(`阶段5-步骤${idx} 完成:`, step.id);
+          console.log(`阶段5-步骤${idx} 完成:`, step.id)
           step.status = 'completed'
           step.tokens = 980 + idx * 120
           step.duration = parseFloat((duration / 1000).toFixed(2))
@@ -649,28 +716,30 @@ export function useBIQuery() {
       })
     }, accumulatedTime)
     // 如果stage5有步骤被跳过，调整延迟时间
-    const stage5AllSkipped = longSteps.value.stage5.steps.every(step => skippedSteps.includes(step.id))
+    const stage5AllSkipped = longSteps.value.stage5.steps.every((step) =>
+      skippedSteps.includes(step.id),
+    )
     accumulatedTime += stage5AllSkipped ? 100 : 3100
 
     // 阶段6: 配置解析 (3个LLM步骤并行, 3.45秒)
     setTimeout(() => {
-      console.log('阶段6开始: 配置解析');
+      console.log('阶段6开始: 配置解析')
       const stage6Steps = longSteps.value.stage6.steps
 
       // 检查是否有步骤被跳过
-      const allSkipped = stage6Steps.every(step => skippedSteps.includes(step.id))
+      const allSkipped = stage6Steps.every((step) => skippedSteps.includes(step.id))
       const stageDuration = allSkipped ? 100 : 3450
 
       // 开始阶段6进度动画
       animateProgress(longProgress, 5, stageDuration, () => {
-        console.log('阶段6进度完成');
+        console.log('阶段6进度完成')
       })
       stage6Steps.forEach((step, idx) => {
-        console.log(`阶段6-步骤${idx} 开始执行:`, step.id);
+        console.log(`阶段6-步骤${idx} 开始执行:`, step.id)
 
         // 检查是否被跳过
         if (skippedSteps.includes(step.id)) {
-          console.log(`阶段6-步骤${idx} 被跳过:`, step.id);
+          console.log(`阶段6-步骤${idx} 被跳过:`, step.id)
           step.status = 'skipped'
           return
         }
@@ -678,7 +747,7 @@ export function useBIQuery() {
         step.status = 'active'
         const duration = 3200 + idx * 250
         setTimeout(() => {
-          console.log(`阶段6-步骤${idx} 完成:`, step.id);
+          console.log(`阶段6-步骤${idx} 完成:`, step.id)
           step.status = 'completed'
           step.tokens = 1200 + idx * 180
           step.duration = parseFloat((duration / 1000).toFixed(2))
@@ -694,28 +763,30 @@ export function useBIQuery() {
       })
     }, accumulatedTime)
     // 如果stage6有步骤被跳过，调整延迟时间
-    const stage6AllSkipped = longSteps.value.stage6.steps.every(step => skippedSteps.includes(step.id))
+    const stage6AllSkipped = longSteps.value.stage6.steps.every((step) =>
+      skippedSteps.includes(step.id),
+    )
     accumulatedTime += stage6AllSkipped ? 100 : 3450
 
     // 阶段7: DSL配置转换 (传统计算, 瞬时完成)
     setTimeout(() => {
-      console.log('阶段7开始: DSL配置转换');
+      console.log('阶段7开始: DSL配置转换')
       const step = longSteps.value.stage7.steps[0]
       // 开始阶段7进度动画
       animateProgress(longProgress, 6, 100, () => {
-        console.log('阶段7进度完成');
+        console.log('阶段7进度完成')
       })
-      console.log('阶段7-步骤 开始执行:', step.id);
+      console.log('阶段7-步骤 开始执行:', step.id)
       step.status = 'active'
       setTimeout(() => {
-        console.log('阶段7-步骤 完成:', step.id);
+        console.log('阶段7-步骤 完成:', step.id)
         step.status = 'completed'
         step.duration = 0.1
         step.details = ['DSL生成成功', '包含2个指标, 2个维度, 2个筛选条件']
         clearInterval(timer)
         longChainTime.value = parseFloat((accumulatedTime / 1000).toFixed(2))
         longCompleted.value = true
-        console.log('长链路执行完成');
+        console.log('长链路执行完成')
       }, 100)
     }, accumulatedTime)
   }

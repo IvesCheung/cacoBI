@@ -40,35 +40,6 @@
       </el-button>
     </div>
 
-    <!-- 执行日志 -->
-    <div v-if="isExecuting || shortCompleted || longCompleted" class="execution-logs">
-      <!-- 常规日志 -->
-      <div class="log-item regular-log">
-        <span class="log-time">{{ currentTime }}</span>
-        <span class="log-text">Retrieving relevant data...</span>
-      </div>
-      <div class="log-item regular-log">
-        <span class="log-time">{{ currentTime }}</span>
-        <span class="log-text">Analyzing data and generating report...</span>
-      </div>
-      <!-- Cost Agent 日志 -->
-      <template v-if="costAgentEnabled">
-        <div class="log-item cost-agent-log">
-          <span class="log-time">{{ currentTime }}</span>
-          <span class="log-text">✨ Cost Planer is analyzing the query...</span>
-        </div>
-        <div v-if="skippedStepsInfo.length > 0" class="log-item cost-agent-log">
-          <span class="log-time">{{ currentTime }}</span>
-          <span class="log-text">
-            🎯 After analysis, intelligently skipped:
-            <span v-for="(step, index) in skippedStepsInfo" :key="step.id" class="skipped-step-name">
-              {{ step.title }}<span v-if="index < skippedStepsInfo.length - 1">、</span>
-            </span>
-          </span>
-        </div>
-      </template>
-    </div>
-
     <!-- 短链路结果 -->
     <div v-if="shortCompleted" class="result-container short-result">
       <h3 class="result-title short-title">✅ Shortcut Result</h3>
@@ -108,10 +79,6 @@ const props = defineProps({
   longCompleted: {
     type: Boolean,
     default: false
-  },
-  skippedStepsInfo: {
-    type: Array,
-    default: () => []
   }
 })
 
@@ -125,10 +92,6 @@ const queryText = computed({
 const costAgentEnabled = computed({
   get: () => props.costAgentEnabled,
   set: (val) => emit('update:costAgentEnabled', val)
-})
-
-const currentTime = computed(() => {
-  return new Date().toLocaleTimeString()
 })
 
 const handleExecute = () => {
@@ -204,75 +167,6 @@ const toggleCostAgent = () => {
 
 .cost-agent-btn {
   flex-shrink: 0;
-}
-
-.execution-logs {
-  background: var(--log-bg);
-  border-radius: 6px;
-  padding: 10px;
-  margin-bottom: 12px;
-  transition: all 0.3s ease;
-}
-
-.log-item {
-  display: flex;
-  gap: 8px;
-  color: var(--app-text-secondary);
-  font-size: 13px;
-  margin-bottom: 4px;
-}
-
-.log-item:last-child {
-  margin-bottom: 0;
-}
-
-.log-time {
-  color: var(--log-time-color);
-  font-size: 11px;
-  flex-shrink: 0;
-}
-
-.log-text {
-  color: var(--app-text-secondary);
-  transition: color 0.3s ease;
-}
-
-.regular-log {
-  background: linear-gradient(90deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
-  padding: 6px 10px;
-  border-radius: 6px;
-  border-left: 3px solid #3b82f6;
-  margin-left: -8px;
-  padding-left: 8px;
-  margin-bottom: 6px;
-}
-
-.regular-log .log-text {
-  color: var(--log-regular-text);
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.cost-agent-log {
-  background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%);
-  padding: 6px 10px;
-  border-radius: 6px;
-  border-left: 3px solid #10b981;
-  margin-left: -8px;
-  padding-left: 8px;
-  margin-bottom: 6px;
-}
-
-.cost-agent-log .log-text {
-  color: var(--log-cost-agent-text);
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.skipped-step-name {
-  color: #fcd34d;
-  font-weight: 600;
-  text-shadow: 0 0 10px rgba(252, 211, 77, 0.3);
 }
 
 .result-container {
