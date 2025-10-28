@@ -41,6 +41,8 @@
           :is-executing="isExecuting"
           :short-completed="shortCompleted"
           :long-completed="longCompleted"
+          :short-progress="shortProgress"
+          :long-progress="longProgress"
           @execute="handleExecute"
           @clear-logs="clearLogs"
         />

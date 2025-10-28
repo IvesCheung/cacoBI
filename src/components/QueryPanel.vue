@@ -40,6 +40,16 @@
       </el-button>
     </div>
 
+    <!-- 双路径进度条 -->
+    <DualPathProgress
+      v-if="isExecuting || shortCompleted || longCompleted"
+      :short-progress="shortProgress"
+      :long-progress="longProgress"
+      :short-completed="shortCompleted"
+      :long-completed="longCompleted"
+      :is-executing="isExecuting"
+    />
+
     <!-- 短链路结果 -->
     <div v-if="shortCompleted" class="result-container short-result">
       <h3 class="result-title short-title">✅ Shortcut Result</h3>
@@ -58,6 +68,7 @@
 import { computed } from 'vue'
 import { VideoPlay, CircleCheck } from '@element-plus/icons-vue'
 import ResultChart from './ResultChart.vue'
+import DualPathProgress from './DualPathProgress.vue'
 
 const props = defineProps({
   queryText: {
@@ -79,6 +90,14 @@ const props = defineProps({
   longCompleted: {
     type: Boolean,
     default: false
+  },
+  shortProgress: {
+    type: Array,
+    default: () => [0, 0, 0]
+  },
+  longProgress: {
+    type: Array,
+    default: () => [0, 0, 0, 0, 0, 0, 0]
   }
 })
 
