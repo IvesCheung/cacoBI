@@ -1,6 +1,6 @@
 <template>
   <div class="demo-container">
-    <iframe src="/demo/index.html" frameborder="0"></iframe>
+    <iframe src="/cacoBI/demo/index.html" frameborder="0"></iframe>
   </div>
 </template>
 
