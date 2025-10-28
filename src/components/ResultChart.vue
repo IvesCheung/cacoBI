@@ -495,7 +495,7 @@ const getFunnelOption = (textColor, legendColor) => ({
     }
   },
   series: [{
-    name: '数据分布',
+    name: 'Data Distribution',
     type: 'funnel',
     left: '10%',
     top: '5%',

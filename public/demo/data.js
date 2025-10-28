@@ -114,10 +114,9 @@ const siteData = {
       type: 'video/mp4',
     },
     description:
-      "This demonstration showcases CACOBI's three main interfaces: \
-        the table repository, table search, and table processing. \
-        We illustrate how users can leverage natural language queries to discover relevant tables, \
-        apply conditions to refine results, and perform complex table manipulations.",
+      'The demo highlights our hybrid execution engine, which intelligently routes queries between \
+      the cache-based shortcut for recurring patterns and the RL-optimized long-chain pipeline for complex queries, \
+      demonstrating significant improvements in processing efficiency and resource utilization.',
   },
 
   // Solution Section
@@ -129,23 +128,23 @@ const siteData = {
       alt: 'CACOBI Architecture',
     },
     intro:
-      'We propose CACOBI, an LLM-based table assistant capable of advanced table discovery. Our approach includes:',
+      'We propose CACOBI, a system that optimizes long-chain BI workflows by introducing a hybrid execution engine. Our approach intelligently routes queries to the most resource-efficient path:',
     points: [
       {
-        highlight: 'NLCTD Definition:',
-        text: 'We define a new table discovery scenario named Natural Language Conditional Table Discovery (NLCTD) that accepts both natural language conditions and query tables as input.',
+        highlight: 'Cache-based Shortcut:',
+        text: 'For recurring query patterns, we use a skeleton-based cache to retrieve similar historical examples, enabling direct, few-shot DSL generation. This significantly reduces latency and token usage.',
       },
       {
-        highlight: 'LLM Integration:',
-        text: 'We prompt LLMs with carefully designed instructions to recognize table discovery tasks and invoke appropriate discovery methods.',
+        highlight: 'RL-based Cost Planner:',
+        text: 'For novel or complex queries, an RL-trained agent dynamically prunes redundant steps from the long-chain pipeline, creating an optimal execution path that balances cost and accuracy.',
       },
       {
-        highlight: 'Fusion-Based Solution:',
-        text: 'Our novel fusion method makes table discovery more intuitive and user-friendly.',
+        highlight: 'Hybrid Execution Engine:',
+        text: 'Our system automatically determines whether to use the fast cache-based shortcut or the optimized long-chain pipeline, ensuring the most efficient processing for any given user query.',
       },
       {
-        highlight: 'Three-Interface System:',
-        text: 'Table repository for data management, table search for discovery, and table processing for operations.',
+        highlight: 'End-to-End Prototype:',
+        text: 'We built a fully functional prototype that integrates our caching and cost-planning mechanisms, demonstrating their effectiveness in creating a practical, efficient, and scalable NL-driven BI solution.',
       },
     ],
   },
