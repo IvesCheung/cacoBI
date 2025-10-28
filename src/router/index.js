@@ -8,6 +8,11 @@ const router = createRouter({
       name: 'dataQuery',
       component: () => import('../views/DataQueryView.vue'),
     },
+    {
+      path: '/intro',
+      name: 'intro',
+      component: () => import('../views/DemoIntroduce.vue'),
+    },
   ],
 })
 
