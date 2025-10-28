@@ -97,7 +97,7 @@ const handleExecute = async () => {
 
 .container {
   display: grid;
-  grid-template-columns: 1fr 300px 1fr;
+  grid-template-columns: 1.1fr 400px 0.9fr;
   grid-template-rows: auto auto;
   gap: 12px;
   height: 100%;
