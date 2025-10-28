@@ -319,10 +319,10 @@ const getLongNodeClass = (index) => {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px 10px;
+  padding: 8px 8px;
   background: var(--result-bg);
   border-radius: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .progress-svg {
