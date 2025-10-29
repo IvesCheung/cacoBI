@@ -5,7 +5,7 @@
       <div class="flow-column">
         <div class="flow-group-box">
           <div class="group-title">Query Parsing</div>
-          <LongChainNode
+          <ChainNode
             v-for="step in stage1Steps"
             :key="step.id"
             :node="mapStepToNode(step)"
@@ -23,7 +23,7 @@
       <div class="flow-column">
         <div class="flow-group-box">
           <div class="group-title">Table Retrieval</div>
-          <LongChainNode
+          <ChainNode
             v-for="step in stage2Steps"
             :key="step.id"
             :node="mapStepToNode(step)"
@@ -39,7 +39,7 @@
 
       <!-- Column 3: 选表 (stage3) -->
       <div class="flow-column">
-        <LongChainNode
+        <ChainNode
           v-for="step in stage3Steps"
           :key="step.id"
           :node="mapStepToNode(step)"
@@ -56,7 +56,7 @@
       <div class="flow-column">
         <div class="flow-group-box">
           <div class="group-title">In-Table Knowledge Retrieval</div>
-          <LongChainNode
+          <ChainNode
             v-for="step in stage4Steps"
             :key="step.id"
             :node="mapStepToNode(step)"
@@ -70,7 +70,7 @@
       <div class="flow-column">
         <div class="flow-group-box">
           <div class="group-title">Retrieval Rerank</div>
-          <LongChainNode
+          <ChainNode
             v-for="step in stage5Steps"
             :key="step.id"
             :node="mapStepToNode(step)"
@@ -87,7 +87,7 @@
       <div class="flow-column">
         <div class="flow-group-box">
           <div class="group-title">DSL Configuring</div>
-          <LongChainNode
+          <ChainNode
             v-for="step in stage6Steps"
             :key="step.id"
             :node="mapStepToNode(step)"
@@ -103,7 +103,7 @@
 
       <!-- Column 6: DSL转换 (stage7) -->
       <div class="flow-column">
-        <LongChainNode
+        <ChainNode
           v-for="step in stage7Steps"
           :key="step.id"
           :node="mapStepToNode(step)"
@@ -116,7 +116,7 @@
 
 <script setup>
 import { computed, watch, nextTick } from 'vue';
-import LongChainNode from './LongChainNode.vue';
+import ChainNode from './ChainNode.vue';
 
 const props = defineProps({
   steps: {

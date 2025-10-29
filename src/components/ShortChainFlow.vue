@@ -6,14 +6,8 @@
         :key="step.id"
         class="flow-column"
       >
-        <ShortChainNode
-          :id="step.id"
-          :title="step.title"
-          :active="step.active"
-          :completed="step.completed"
-          :tokens="step.tokens"
-          :duration="step.duration"
-          :details="step.details || []"
+        <ChainNode
+          :node="mapStepToNode(step)"
         />
       </div>
     </div>
@@ -21,10 +15,28 @@
 </template>
 
 <script setup>
-import ShortChainNode from './ShortChainNode.vue'
+import ChainNode from './ChainNode.vue'
+
 defineProps({
   steps: { type: Array, required: true }
 })
+
+const mapStepToNode = (step) => {
+  const duration = step.duration ? parseFloat(step.duration) : 0
+
+  return {
+    id: step.id,
+    title: step.title,
+    status: step.active ? 'running' :
+            step.completed ? 'completed' :
+            step.skipped ? 'skipped' : 'pending',
+    isLLM: step.type === 'llm',
+    time: duration,
+    tokens: step.tokens || 0,
+    error: step.error || null,
+    details: step.details || []
+  }
+}
 </script>
 
 <style scoped>
