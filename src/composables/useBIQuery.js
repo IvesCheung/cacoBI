@@ -24,14 +24,14 @@ export function useBIQuery() {
   const skippedStepsInfo = ref([])
 
   // 查询输入
-  const queryText = ref("Apple's 2025 sales")
+  const queryText = ref("Apple's sales in 2025")
   const queryResult = ref([
-    { name: 'Macbook', value: 335 },
-    { name: 'Airpods Pro', value: 234 },
-    { name: 'iPhone 17', value: 154 },
-    { name: 'iWatch', value: 135 },
-    { name: 'iPad Pro', value: 548 },
-    { name: 'Others', value: 123 },
+    { name: 'Macbook', value: 3335 },
+    { name: 'Airpods', value: 2304 },
+    { name: 'iPhone', value: 5896 },
+    { name: 'iWatch', value: 1935 },
+    { name: 'iPad Pro', value: 2685 },
+    { name: 'Others', value: 1078 },
   ])
 
   // 短链路配置
@@ -58,12 +58,12 @@ export function useBIQuery() {
     {
       id: 1,
       title: 'Embed User Query',
-      type: 'llm',
+      type: 'compute',
       time: '',
       active: false,
       completed: false,
       details: [`Use ${shortChainConfig.encoder} to embed the user query`],
-      tokens: 120,
+      tokens: 0,
       duration: 1.5,
     },
     {
