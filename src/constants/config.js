@@ -1,18 +1,19 @@
 // 模型配置选项
-export const DSL_MODELS = [
+export const EMB_MODELS = [
   'Qwen3-embedding-0.6B',
   'Qwen3-embedding-4B',
   'Entity-agnostic Qwen3-0.6B',
 ]
 
 export const LLM_MODELS = ['Qwen2.5-instruct-72B', 'Qwen3-32B', 'Deepseek-v3']
+export const RERANK_MODELS = ['Qwen2.5-instruct-72B', 'Qwen3-32B', 'Deepseek-v3']
 
 // 默认配置
 export const DEFAULT_SHORT_CHAIN_CONFIG = {
   dslModel: 'Qwen3-embedding-0.6B',
   encoder: 'Qwen2.5-instruct-72B',
-  templateRecallTopK: 3,
-  templateSimilarityThreshold: 0.80,
+  templateRecallTopK: 2,
+  templateSimilarityThreshold: 0.8,
 }
 
 export const DEFAULT_LONG_CHAIN_CONFIG = {

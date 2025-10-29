@@ -5,20 +5,13 @@
     </div>
 
     <div class="config-content">
-      <!-- DSL改写模型 -->
-      <ModelSelector
-        v-model="config.dslModel"
-        label="DSL Rewriting Model"
-        :models="dslModels"
-      />
 
       <!-- Encoder -->
       <ModelSelector
         v-model="config.encoder"
         label="Encoder"
-        :models="encoderModels"
+        :models="embModels"
       />
-
       <!-- 模板召回Top-k -->
       <StepperInput
         v-model="config.templateRecallTopK"
@@ -27,7 +20,6 @@
         :max="100"
         :step="1"
       />
-
       <!-- 模板相似度阈值 -->
       <SliderInput
         v-model="config.templateSimilarityThreshold"
@@ -37,6 +29,13 @@
         :step="0.01"
         :precision="2"
       />
+      <!-- DSL改写模型 -->
+      <ModelSelector
+        v-model="config.dslModel"
+        label="DSL Rewriting Model"
+        :models="dslModels"
+      />
+
     </div>
   </div>
 </template>
@@ -46,7 +45,7 @@ import { reactive, watch } from 'vue'
 import ModelSelector from './ModelSelector.vue'
 import SliderInput from './SliderInput.vue'
 import StepperInput from './StepperInput.vue'
-import { DSL_MODELS, LLM_MODELS, DEFAULT_SHORT_CHAIN_CONFIG } from '@/constants/config'
+import { EMB_MODELS, LLM_MODELS, DEFAULT_SHORT_CHAIN_CONFIG } from '@/constants/config'
 
 const props = defineProps({
   modelValue: {
@@ -57,8 +56,8 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-const dslModels = DSL_MODELS
-const encoderModels = LLM_MODELS
+const embModels = EMB_MODELS
+const dslModels = LLM_MODELS
 
 const config = reactive({
   dslModel: props.modelValue.dslModel || DEFAULT_SHORT_CHAIN_CONFIG.dslModel,

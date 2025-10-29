@@ -37,17 +37,17 @@ export function useBIQuery() {
   // 短链路配置
   const shortChainConfig = reactive({
     encoder: 'Entity-agnostic Qwen3-0.6B',
-    topK: 5,
-    similarity: 70,
+    templateRecallTopK: 2,
+    templateSimilarityThreshold: 0.8,
     dslModel: 'Qwen2.5-instruct-72B',
   })
 
   // 长链路配置
   const longChainConfig = reactive({
     questionModel: 'Qwen3-32B',
-    tableTopK: 105,
+    tableTopK: 5,
     tableRerankModel: 'Deepseek-v3',
-    columnTopK: 35,
+    columnTopK: 10,
     metricModel: 'Deepseek-v3',
     dimensionModel: 'Deepseek-v3',
     filterModel: 'Deepseek-v3',

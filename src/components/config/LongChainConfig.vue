@@ -10,10 +10,10 @@
         <div class="section-title">Query Parsing</div>
         <ModelSelector
           v-model="config.entityRecognitionModel"
-          label="Entity Recognition Model"
+          label="Entity Recognition, Question Rewrite and Clarification"
           :models="llmModels"
         />
-        <ModelSelector
+        <!-- <ModelSelector
           v-model="config.questionRewriteModel"
           label="Question Rewrite Model"
           :models="llmModels"
@@ -22,7 +22,7 @@
           v-model="config.questionClarifyModel"
           label="Question Clarification Model"
           :models="llmModels"
-        />
+        /> -->
       </div>
 
       <!-- Query Recall and Selection -->
