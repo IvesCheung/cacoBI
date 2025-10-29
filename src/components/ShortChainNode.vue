@@ -20,7 +20,7 @@
         <div class="node-title" :title="title">{{ title }}</div>
       </div>
 
-      <div v-if="mappedStatus !== 'pending'" class="node-stats">
+      <div v-if="mappedStatus === 'completed'" class="node-stats">
         <div v-if="duration > 0" class="stat-item">
           <el-icon class="stat-icon"><Timer /></el-icon>
           <span>{{ duration.toFixed(2) }}s</span>
@@ -35,7 +35,7 @@
     <teleport to="body">
       <transition name="detail-fade">
         <div
-          v-if="showDetails && (mappedStatus === 'running' || mappedStatus === 'completed')"
+          v-if="showDetails && mappedStatus === 'completed'"
           class="node-detail-popup fixed-popup"
           :class="{ 'placement-below': !popupPlacementAbove }"
           @mouseenter="handlePopupEnter"

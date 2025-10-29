@@ -58,8 +58,8 @@ export function useBIQuery() {
       active: false,
       completed: false,
       details: [`Use ${shortChainConfig.encoder} to embed the user query`],
-      tokens: 0,
-      duration: 0,
+      tokens: 120,
+      duration: 1.5,
     },
     {
       id: 2,
@@ -72,8 +72,8 @@ export function useBIQuery() {
         '1. 包含洗衣液关键词的笔记作者IP属地分布，近7天',
         '2. 内容为母婴用品的笔记作者ip属地分布，近30天',
       ],
-      tokens: 0,
-      duration: 0,
+      tokens: 450,
+      duration: 2.0,
     },
     {
       id: 3,
@@ -88,8 +88,8 @@ export function useBIQuery() {
         'measure: {"field":"Apple", "aggregation":"sum"}',
         'filter: {"field":"time","type":"in", "condition":[2025]}',
       ],
-      tokens: 0,
-      duration: 0,
+      tokens: 1280,
+      duration: 1.54,
     },
   ])
 
@@ -108,9 +108,9 @@ export function useBIQuery() {
           active: false,
           completed: false,
           skipped: false,
-          details: [],
-          tokens: 0,
-          duration: 0,
+          details: ['实体: 笔记内容, 作者IP属地', '时间范围: 近30天'],
+          tokens: 650,
+          duration: 2.5,
         },
         {
           id: 'question-rewrite',
@@ -120,9 +120,9 @@ export function useBIQuery() {
           active: false,
           completed: false,
           skipped: false,
-          details: [],
-          tokens: 0,
-          duration: 0,
+          details: ['实体: 笔记内容, 作者IP属地', '时间范围: 近30天'],
+          tokens: 750,
+          duration: 2.7,
         },
         {
           id: 'question-clarify',
@@ -132,9 +132,9 @@ export function useBIQuery() {
           active: false,
           completed: false,
           skipped: false,
-          details: [],
-          tokens: 0,
-          duration: 0,
+          details: ['实体: 笔记内容, 作者IP属地', '时间范围: 近30天'],
+          tokens: 850,
+          duration: 2.9,
         },
       ],
     },
@@ -151,9 +151,9 @@ export function useBIQuery() {
           active: false,
           completed: false,
           skipped: false,
-          details: [],
+          details: ['召回50张主体相关表'],
           tokens: 0,
-          duration: 0,
+          duration: 0.1,
         },
         {
           id: 'field-table-recall',
@@ -163,9 +163,9 @@ export function useBIQuery() {
           active: false,
           completed: false,
           skipped: false,
-          details: [],
+          details: ['召回35个字段相关表'],
           tokens: 0,
-          duration: 0,
+          duration: 0.1,
         },
         {
           id: 'business-table-recall',
@@ -175,9 +175,9 @@ export function useBIQuery() {
           active: false,
           completed: false,
           skipped: false,
-          details: [],
+          details: ['召回20个业务术语表'],
           tokens: 0,
-          duration: 0,
+          duration: 0.1,
         },
       ],
     },
@@ -194,9 +194,9 @@ export function useBIQuery() {
           active: false,
           completed: false,
           skipped: false,
-          details: [],
-          tokens: 0,
-          duration: 0,
+          details: ['选中表: 笔记作者总表', '置信度: 95%'],
+          tokens: 1850,
+          duration: 3.0,
         },
       ],
     },
@@ -213,9 +213,9 @@ export function useBIQuery() {
           active: false,
           completed: false,
           skipped: false,
-          details: [],
+          details: ['召回学段信息: 小学, 初中, 高中'],
           tokens: 0,
-          duration: 0,
+          duration: 0.1,
         },
         {
           id: 'business-term',
@@ -225,9 +225,9 @@ export function useBIQuery() {
           active: false,
           completed: false,
           skipped: false,
-          details: [],
+          details: ['召回业务术语: 15条'],
           tokens: 0,
-          duration: 0,
+          duration: 0.1,
         },
         {
           id: 'table-rule',
@@ -237,9 +237,9 @@ export function useBIQuery() {
           active: false,
           completed: false,
           skipped: false,
-          details: [],
+          details: ['召回表规则: 8条'],
           tokens: 0,
-          duration: 0,
+          duration: 0.1,
         },
         {
           id: 'dimension-value-recall',
@@ -249,9 +249,9 @@ export function useBIQuery() {
           active: false,
           completed: false,
           skipped: false,
-          details: [],
+          details: ['召回维度维值: 35个'],
           tokens: 0,
-          duration: 0,
+          duration: 0.1,
         },
       ],
     },
@@ -268,9 +268,9 @@ export function useBIQuery() {
           active: false,
           completed: false,
           skipped: false,
-          details: [],
-          tokens: 0,
-          duration: 0,
+          details: ['Rerank后: Top-5 学段'],
+          tokens: 980,
+          duration: 2.8,
         },
         {
           id: 'dimension-rerank',
@@ -280,9 +280,9 @@ export function useBIQuery() {
           active: false,
           completed: false,
           skipped: false,
-          details: [],
-          tokens: 0,
-          duration: 0,
+          details: ['Rerank后: Top-10 维值'],
+          tokens: 1100,
+          duration: 3.1,
         },
       ],
     },
@@ -299,9 +299,9 @@ export function useBIQuery() {
           active: false,
           completed: false,
           skipped: false,
-          details: [],
-          tokens: 0,
-          duration: 0,
+          details: ['指标: 笔记数量, 作者数'],
+          tokens: 1200,
+          duration: 3.2,
         },
         {
           id: 'dimension-parse',
@@ -311,9 +311,9 @@ export function useBIQuery() {
           active: false,
           completed: false,
           skipped: false,
-          details: [],
-          tokens: 0,
-          duration: 0,
+          details: ['维度: 作者IP属地, 笔记内容'],
+          tokens: 1380,
+          duration: 3.45,
         },
         {
           id: 'filter-parse',
@@ -323,9 +323,9 @@ export function useBIQuery() {
           active: false,
           completed: false,
           skipped: false,
-          details: [],
-          tokens: 0,
-          duration: 0,
+          details: ['筛选: 笔记内容=洗衣液成分, 时间>=近30天'],
+          tokens: 1560,
+          duration: 3.7,
         },
       ],
     },
@@ -342,9 +342,9 @@ export function useBIQuery() {
           active: false,
           completed: false,
           skipped: false,
-          details: [],
+          details: ['DSL生成成功', '包含2个指标, 2个维度, 2个筛选条件'],
           tokens: 0,
-          duration: 0,
+          duration: 0.1,
         },
       ],
     },
@@ -464,8 +464,6 @@ export function useBIQuery() {
       step.active = false
       step.completed = false
       step.time = ''
-      step.tokens = 0
-      step.duration = 0
     })
 
     // 重置长链路步骤 - 遍历所有阶段
@@ -476,9 +474,6 @@ export function useBIQuery() {
         step.completed = false
         step.skipped = false
         step.time = ''
-        step.tokens = 0
-        step.duration = 0
-        step.details = []
       })
     })
 
@@ -553,42 +548,40 @@ export function useBIQuery() {
       shortSteps[0].time = getCurrentTime()
       shortSteps[0].active = true
     }, 0)
-    animateProgress(shortProgress, 0, 1500, () => {
+    animateProgress(shortProgress, 0, shortSteps[0].duration * 1000, () => {
+      shortSteps[0].active = false
       shortSteps[0].completed = true
-      shortSteps[0].tokens = 120
-      shortSteps[0].duration = 1.5
-      // 立即增加token消耗
-      shortChainTokens.value += 120
+      shortChainTokens.value += shortSteps[0].tokens
     })
 
     // 步骤2 - 检索历史相关问题
     setTimeout(() => {
       shortSteps[1].time = getCurrentTime()
       shortSteps[1].active = true
-      animateProgress(shortProgress, 1, 2000, () => {
+      animateProgress(shortProgress, 1, shortSteps[1].duration * 1000, () => {
+        shortSteps[1].active = false
         shortSteps[1].completed = true
-        shortSteps[1].tokens = 450
-        shortSteps[1].duration = 2.0
-        // 立即增加token消耗
-        shortChainTokens.value += 450
+        shortChainTokens.value += shortSteps[1].tokens
       })
-    }, 1500)
+    }, shortSteps[0].duration * 1000)
 
     // 步骤3 - 生成DSL
-    setTimeout(() => {
-      shortSteps[2].time = getCurrentTime()
-      shortSteps[2].active = true
-      animateProgress(shortProgress, 2, 1540, () => {
-        shortSteps[2].completed = true
-        shortSteps[2].tokens = 1280
-        shortSteps[2].duration = 1.54
-        // 立即增加token消耗
-        shortChainTokens.value += 1280
-        clearInterval(timer)
-        shortChainTime.value = 5.04
-        shortCompleted.value = true
-      })
-    }, 3500)
+    setTimeout(
+      () => {
+        shortSteps[2].time = getCurrentTime()
+        shortSteps[2].active = true
+        animateProgress(shortProgress, 2, shortSteps[2].duration * 1000, () => {
+          shortSteps[2].active = false
+          shortSteps[2].completed = true
+          shortChainTokens.value += shortSteps[2].tokens
+          clearInterval(timer)
+          shortChainTime.value =
+            shortSteps[0].duration + shortSteps[1].duration + shortSteps[2].duration
+          shortCompleted.value = true
+        })
+      },
+      (shortSteps[0].duration + shortSteps[1].duration) * 1000,
+    )
   }
 
   // 模拟长链路执行
@@ -606,268 +599,64 @@ export function useBIQuery() {
     console.log('Cost Agent enabled:', costAgentEnabled.value)
     console.log('Skipped steps:', skippedSteps)
 
-    // 阶段1: 配置解析 (3个LLM步骤并行, 2.7秒)
-    setTimeout(() => {
-      console.log('阶段1开始: 配置解析')
-      const stage1Steps = longSteps.value.stage1.steps
-      // 开始阶段1进度动画
-      animateProgress(longProgress, 0, 2700, () => {
-        console.log('阶段1进度完成')
-      })
-      // 并行执行,同时开始
-      stage1Steps.forEach((step, idx) => {
-        console.log(`阶段1-步骤${idx} 开始执行:`, step.id)
+    // 获取所有阶段
+    const stageKeys = ['stage1', 'stage2', 'stage3', 'stage4', 'stage5', 'stage6', 'stage7']
+    const isLastStage = (index) => index === stageKeys.length - 1
 
-        // 检查是否被跳过
-        if (skippedSteps.includes(step.id)) {
-          console.log(`阶段1-步骤${idx} 被跳过:`, step.id)
-          step.skipped = true
-          return
-        }
-
-        step.time = getCurrentTime()
-        step.active = true
-        const duration = 2500 + idx * 200 // 略有差异
-        setTimeout(() => {
-          console.log(`阶段1-步骤${idx} 完成:`, step.id)
-          step.active = false
-          step.completed = true
-          step.tokens = 650 + idx * 100
-          step.duration = parseFloat((duration / 1000).toFixed(2))
-          step.details = ['实体: 笔记内容, 作者IP属地', '时间范围: 近30天']
-          longChainTokens.value += step.tokens
-        }, duration)
-      })
-    }, accumulatedTime)
-    accumulatedTime += 2700
-
-    // 阶段2: 表召回 (3个传统计算步骤并行, 瞬时完成)
-    setTimeout(() => {
-      console.log('阶段2开始: 表召回')
-      const stage2Steps = longSteps.value.stage2.steps
-      // 开始阶段2进度动画
-      animateProgress(longProgress, 1, 100, () => {
-        console.log('阶段2进度完成')
-      })
-      stage2Steps.forEach((step, idx) => {
-        console.log(`阶段2-步骤${idx} 开始执行:`, step.id)
-
-        // 检查是否被跳过
-        if (skippedSteps.includes(step.id)) {
-          console.log(`阶段2-步骤${idx} 被跳过:`, step.id)
-          step.skipped = true
-          return
-        }
-
-        step.time = getCurrentTime()
-        step.active = true
-        setTimeout(() => {
-          console.log(`阶段2-步骤${idx} 完成:`, step.id)
-          step.active = false
-          step.completed = true
-          step.duration = 0.1
-          step.details = [
-            idx === 0
-              ? '召回50张主体相关表'
-              : idx === 1
-                ? '召回35个字段相关表'
-                : '召回20个业务术语表',
-          ]
-        }, 100)
-      })
-    }, accumulatedTime)
-    accumulatedTime += 100
-
-    // 阶段3: 选表 (1个LLM步骤, 3秒)
-    setTimeout(() => {
-      console.log('阶段3开始: 选表')
-      const step = longSteps.value.stage3.steps[0]
-
-      // 检查是否被跳过
-      if (skippedSteps.includes(step.id)) {
-        console.log('阶段3-步骤 被跳过:', step.id)
-        step.skipped = true
-        // 跳过时也要完成进度条，但瞬间完成
-        animateProgress(longProgress, 2, 100, () => {
-          console.log('阶段3进度完成(跳过)')
-        })
-      } else {
-        // 开始阶段3进度动画
-        animateProgress(longProgress, 2, 3000, () => {
-          console.log('阶段3进度完成')
-        })
-        console.log('阶段3-步骤 开始执行:', step.id)
-        step.time = getCurrentTime()
-        step.active = true
-        setTimeout(() => {
-          console.log('阶段3-步骤 完成:', step.id)
-          step.active = false
-          step.completed = true
-          step.tokens = 1850
-          step.duration = 3.0
-          step.details = ['选中表: 笔记作者总表', '置信度: 95%']
-          longChainTokens.value += step.tokens
-        }, 3000)
-      }
-    }, accumulatedTime)
-    // 如果stage3被跳过，减少延迟时间
-    const stage3Duration = skippedSteps.includes(longSteps.value.stage3.steps[0].id) ? 100 : 3000
-    accumulatedTime += stage3Duration
-
-    // 阶段4: 单表知识召回 (4个传统计算步骤并行, 瞬时完成)
-    setTimeout(() => {
-      console.log('阶段4开始: 单表知识召回')
-      const stage4Steps = longSteps.value.stage4.steps
-      // 开始阶段4进度动画
-      animateProgress(longProgress, 3, 100, () => {
-        console.log('阶段4进度完成')
-      })
-      stage4Steps.forEach((step, idx) => {
-        console.log(`阶段4-步骤${idx} 开始执行:`, step.id)
-
-        // 检查是否被跳过
-        if (skippedSteps.includes(step.id)) {
-          console.log(`阶段4-步骤${idx} 被跳过:`, step.id)
-          step.skipped = true
-          return
-        }
-
-        step.time = getCurrentTime()
-        step.active = true
-        setTimeout(() => {
-          console.log(`阶段4-步骤${idx} 完成:`, step.id)
-          step.active = false
-          step.completed = true
-          step.duration = 0.1
-          step.details = [
-            idx === 0
-              ? '召回学段信息: 小学, 初中, 高中'
-              : idx === 1
-                ? '召回业务术语: 15条'
-                : idx === 2
-                  ? '召回表规则: 8条'
-                  : '召回维度维值: 35个',
-          ]
-        }, 100)
-      })
-    }, accumulatedTime)
-    accumulatedTime += 100
-
-    // 阶段5: Rerank (2个LLM步骤并行, 3.1秒)
-    setTimeout(() => {
-      console.log('阶段5开始: Rerank')
-      const stage5Steps = longSteps.value.stage5.steps
-
-      // 检查是否有步骤被跳过
-      const allSkipped = stage5Steps.every((step) => skippedSteps.includes(step.id))
-      const stageDuration = allSkipped ? 100 : 3100
-
-      // 开始阶段5进度动画
-      animateProgress(longProgress, 4, stageDuration, () => {
-        console.log('阶段5进度完成')
-      })
-      stage5Steps.forEach((step, idx) => {
-        console.log(`阶段5-步骤${idx} 开始执行:`, step.id)
-
-        // 检查是否被跳过
-        if (skippedSteps.includes(step.id)) {
-          console.log(`阶段5-步骤${idx} 被跳过:`, step.id)
-          step.skipped = true
-          return
-        }
-
-        step.time = getCurrentTime()
-        step.active = true
-        const duration = 2800 + idx * 300
-        setTimeout(() => {
-          console.log(`阶段5-步骤${idx} 完成:`, step.id)
-          step.active = false
-          step.completed = true
-          step.tokens = 980 + idx * 120
-          step.duration = parseFloat((duration / 1000).toFixed(2))
-          step.details = [idx === 0 ? 'Rerank后: Top-5 学段' : 'Rerank后: Top-10 维值']
-          longChainTokens.value += step.tokens
-        }, duration)
-      })
-    }, accumulatedTime)
-    // 如果stage5有步骤被跳过，调整延迟时间
-    const stage5AllSkipped = longSteps.value.stage5.steps.every((step) =>
-      skippedSteps.includes(step.id),
-    )
-    accumulatedTime += stage5AllSkipped ? 100 : 3100
-
-    // 阶段6: 配置解析 (3个LLM步骤并行, 3.45秒)
-    setTimeout(() => {
-      console.log('阶段6开始: 配置解析')
-      const stage6Steps = longSteps.value.stage6.steps
-
-      // 检查是否有步骤被跳过
-      const allSkipped = stage6Steps.every((step) => skippedSteps.includes(step.id))
-      const stageDuration = allSkipped ? 100 : 3450
-
-      // 开始阶段6进度动画
-      animateProgress(longProgress, 5, stageDuration, () => {
-        console.log('阶段6进度完成')
-      })
-      stage6Steps.forEach((step, idx) => {
-        console.log(`阶段6-步骤${idx} 开始执行:`, step.id)
-
-        // 检查是否被跳过
-        if (skippedSteps.includes(step.id)) {
-          console.log(`阶段6-步骤${idx} 被跳过:`, step.id)
-          step.skipped = true
-          return
-        }
-
-        step.time = getCurrentTime()
-        step.active = true
-        const duration = 3200 + idx * 250
-        setTimeout(() => {
-          console.log(`阶段6-步骤${idx} 完成:`, step.id)
-          step.active = false
-          step.completed = true
-          step.tokens = 1200 + idx * 180
-          step.duration = parseFloat((duration / 1000).toFixed(2))
-          step.details = [
-            idx === 0
-              ? '指标: 笔记数量, 作者数'
-              : idx === 1
-                ? '维度: 作者IP属地, 笔记内容'
-                : '筛选: 笔记内容=洗衣液成分, 时间>=近30天',
-          ]
-          longChainTokens.value += step.tokens
-        }, duration)
-      })
-    }, accumulatedTime)
-    // 如果stage6有步骤被跳过，调整延迟时间
-    const stage6AllSkipped = longSteps.value.stage6.steps.every((step) =>
-      skippedSteps.includes(step.id),
-    )
-    accumulatedTime += stage6AllSkipped ? 100 : 3450
-
-    // 阶段7: DSL配置转换 (传统计算, 瞬时完成)
-    setTimeout(() => {
-      console.log('阶段7开始: DSL配置转换')
-      const step = longSteps.value.stage7.steps[0]
-      // 开始阶段7进度动画
-      animateProgress(longProgress, 6, 100, () => {
-        console.log('阶段7进度完成')
-      })
-      console.log('阶段7-步骤 开始执行:', step.id)
-      step.time = getCurrentTime()
-      step.active = true
+    // 循环执行每个阶段
+    stageKeys.forEach((stageKey, stageIndex) => {
       setTimeout(() => {
-        console.log('阶段7-步骤 完成:', step.id)
-        step.active = false
-        step.completed = true
-        step.duration = 0.1
-        step.details = ['DSL生成成功', '包含2个指标, 2个维度, 2个筛选条件']
-        clearInterval(timer)
-        longChainTime.value = parseFloat((accumulatedTime / 1000).toFixed(2))
-        longCompleted.value = true
-        console.log('长链路执行完成')
-      }, 100)
-    }, accumulatedTime)
+        const stage = longSteps.value[stageKey]
+        const stageSteps = stage.steps
+        console.log(`阶段${stageIndex + 1}开始: ${stage.title}`)
+
+        // 检查该阶段所有步骤是否都被跳过
+        const allSkipped = stageSteps.every((step) => skippedSteps.includes(step.id))
+
+        // 计算阶段最长执行时间
+        const maxDuration = allSkipped ? 100 : Math.max(...stageSteps.map((s) => s.duration)) * 1000
+
+        // 开始阶段进度动画
+        animateProgress(longProgress, stageIndex, maxDuration, () => {
+          console.log(`阶段${stageIndex + 1}进度完成`)
+        })
+
+        // 执行该阶段的所有步骤
+        stageSteps.forEach((step, stepIdx) => {
+          console.log(`阶段${stageIndex + 1}-步骤${stepIdx} 开始执行:`, step.id)
+
+          // 检查是否被跳过
+          if (skippedSteps.includes(step.id)) {
+            console.log(`阶段${stageIndex + 1}-步骤${stepIdx} 被跳过:`, step.id)
+            step.skipped = true
+            return
+          }
+
+          step.time = getCurrentTime()
+          step.active = true
+
+          setTimeout(() => {
+            console.log(`阶段${stageIndex + 1}-步骤${stepIdx} 完成:`, step.id)
+            step.active = false
+            step.completed = true
+            longChainTokens.value += step.tokens
+
+            // 如果是最后一个阶段的最后一个步骤，完成长链路
+            if (isLastStage(stageIndex) && stepIdx === stageSteps.length - 1) {
+              clearInterval(timer)
+              longChainTime.value = parseFloat((accumulatedTime / 1000).toFixed(2))
+              longCompleted.value = true
+              console.log('长链路执行完成')
+            }
+          }, step.duration * 1000)
+        })
+      }, accumulatedTime)
+
+      // 累加该阶段的时间
+      const stageSteps = longSteps.value[stageKey].steps
+      const allSkipped = stageSteps.every((step) => skippedSteps.includes(step.id))
+      accumulatedTime += allSkipped ? 100 : Math.max(...stageSteps.map((s) => s.duration)) * 1000
+    })
   }
 
   // 动画进度条

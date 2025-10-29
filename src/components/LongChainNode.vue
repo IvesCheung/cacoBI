@@ -26,7 +26,7 @@
       </div>
 
       <!-- 显示耗时和token信息 -->
-      <div v-if="node.status !== 'pending' && node.status !== 'skipped'" class="node-stats">
+      <div v-if="node.status === 'completed' && node.status !== 'skipped'" class="node-stats">
         <div v-if="node.time > 0" class="stat-item">
           <el-icon class="stat-icon"><Timer /></el-icon>
           <span>{{ node.time.toFixed(2) }}s</span>
@@ -42,7 +42,7 @@
     <teleport to="body">
       <transition name="detail-fade">
         <div
-          v-if="showDetails && (node.status === 'running' || node.status === 'completed' || node.status === 'skipped')"
+          v-if="showDetails && (node.status === 'completed' || node.status === 'skipped')"
           class="node-detail-popup fixed-popup"
           :class="{ 'placement-below': !popupPlacementAbove, 'skipped-popup': node.status === 'skipped' }"
           @mouseenter="handlePopupEnter"
