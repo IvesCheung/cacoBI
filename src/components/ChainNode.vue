@@ -11,6 +11,11 @@
       @click="handleClick"
       :data-node-id="node.id"
     >
+      <!-- LLM Badge -->
+      <div v-if="node.isLLM" class="llm-badge">
+        <img src="@/assets/robot-2-fill.svg" alt="LLM" class="llm-icon" />
+      </div>
+
       <div class="node-header">
         <div class="node-icon">
           <el-icon v-if="mappedStatus === 'completed'"><CircleCheck /></el-icon>
@@ -194,8 +199,8 @@ const closeDetail = () => {
   padding: 8px 12px;
   border: 2px solid rgba(16,185,129,var(--node-border-opacity));
   transition: all .3s cubic-bezier(.4,0,.2,1);
-  min-width: 140px;
-  max-width: 170px;
+  min-width: 150px;
+  max-width: 180px;
   cursor: pointer;
   position: relative;
 }
@@ -242,6 +247,60 @@ const closeDetail = () => {
   color: rgba(148, 163, 184, 0.8);
   font-weight: 600;
   letter-spacing: 0.5px;
+}
+
+/* LLM Badge */
+.llm-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(34, 197, 94, 0.2) 100%);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+/* 当节点被跳过时，LLM badge 向左移动以避开 "Skipped" 标签 */
+.status-skipped .llm-badge {
+  right: 60px;
+}
+
+.llm-icon {
+  width: 12px;
+  height: 12px;
+  opacity: 1;
+  filter: brightness(0) saturate(100%) invert(71%) sepia(48%) saturate(464%) hue-rotate(99deg) brightness(91%) contrast(86%);
+}
+
+.status-running .llm-badge {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(34, 197, 94, 0.3) 100%);
+  animation: llmBadgePulse 2s ease-in-out infinite;
+}
+
+.status-completed .llm-badge {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.3) 0%, rgba(16, 185, 129, 0.25) 100%);
+}
+
+.status-skipped .llm-badge {
+  background: linear-gradient(135deg, rgba(148, 163, 184, 0.2) 0%, rgba(100, 116, 139, 0.2) 100%);
+}
+
+.status-skipped .llm-icon {
+  filter: brightness(0) saturate(100%) invert(68%) sepia(8%) saturate(645%) hue-rotate(182deg) brightness(92%) contrast(90%);
+}
+
+@keyframes llmBadgePulse {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+  }
 }
 
 @keyframes greenPulse {
