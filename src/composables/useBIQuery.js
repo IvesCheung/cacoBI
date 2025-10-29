@@ -30,7 +30,7 @@ export function useBIQuery() {
     { name: 'Airpods', value: 2304 },
     { name: 'iPhone', value: 5896 },
     { name: 'iWatch', value: 1935 },
-    { name: 'iPad Pro', value: 2685 },
+    { name: 'iPad', value: 2685 },
     { name: 'Others', value: 1078 },
   ])
 
