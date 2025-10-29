@@ -43,6 +43,7 @@
           :long-completed="longCompleted"
           :short-progress="shortProgress"
           :long-progress="longProgress"
+          :query-result="queryResult"
           @execute="handleExecute"
           @clear-logs="clearLogs"
         />
@@ -68,6 +69,7 @@ const {
   shortCompleted,
   longCompleted,
   queryText,
+  queryResult,
   shortChainConfig,
   longChainConfig,
   shortSteps,

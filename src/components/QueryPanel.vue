@@ -53,13 +53,13 @@
     <!-- 短链路结果 -->
     <div v-if="shortCompleted" class="result-container short-result">
       <h3 class="result-title short-title">✅ Shortcut Result</h3>
-      <ResultChart key="short-chart" />
+      <ResultChart key="short-chart" :data="queryResult" />
     </div>
 
     <!-- 长链路结果 -->
     <div v-if="longCompleted" class="result-container long-result">
       <h3 class="result-title long-title">🟠 Long-chain Result</h3>
-      <ResultChart key="long-chart" />
+      <ResultChart key="long-chart" :data="queryResult" />
     </div>
   </div>
 </template>
@@ -98,6 +98,10 @@ const props = defineProps({
   longProgress: {
     type: Array,
     default: () => [0, 0, 0, 0, 0, 0, 0]
+  },
+  queryResult: {
+    type: Array,
+    default: () => []
   }
 })
 

@@ -19,7 +19,15 @@ export function useBIQuery() {
   const skippedStepsInfo = ref([])
 
   // 查询输入
-  const queryText = ref('包含洗衣液成分关键词的笔记作者ip属地分布，近30天')
+  const queryText = ref("Apple's 2025 sales")
+  const queryResult = ref([
+    { name: 'Macbook', value: 335 },
+    { name: 'Airpods Pro', value: 234 },
+    { name: 'iPhone 17', value: 154 },
+    { name: 'iWatch', value: 135 },
+    { name: 'iPad Pro', value: 548 },
+    { name: 'Others', value: 123 },
+  ])
 
   // 短链路配置
   const shortChainConfig = reactive({
@@ -888,6 +896,7 @@ export function useBIQuery() {
     shortCompleted,
     longCompleted,
     queryText,
+    queryResult,
     shortChainTokens,
     longChainTokens,
     skippedStepsInfo,
