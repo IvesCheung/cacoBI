@@ -137,13 +137,13 @@ const stage7Steps = computed(() => props.steps.stage7?.steps || []);
 // 调试：监听 steps 变化
 watch(() => props.steps, (newSteps) => {
   console.log('LongChainFlow: steps changed', {
-    stage1: newSteps.stage1?.steps.map(s => ({ id: s.id, status: s.status })),
-    stage2: newSteps.stage2?.steps.map(s => ({ id: s.id, status: s.status })),
-    stage3: newSteps.stage3?.steps.map(s => ({ id: s.id, status: s.status })),
-    stage4: newSteps.stage4?.steps.map(s => ({ id: s.id, status: s.status })),
-    stage5: newSteps.stage5?.steps.map(s => ({ id: s.id, status: s.status })),
-    stage6: newSteps.stage6?.steps.map(s => ({ id: s.id, status: s.status })),
-    stage7: newSteps.stage7?.steps.map(s => ({ id: s.id, status: s.status })),
+    stage1: newSteps.stage1?.steps.map(s => ({ id: s.id, active: s.active, completed: s.completed, skipped: s.skipped })),
+    stage2: newSteps.stage2?.steps.map(s => ({ id: s.id, active: s.active, completed: s.completed, skipped: s.skipped })),
+    stage3: newSteps.stage3?.steps.map(s => ({ id: s.id, active: s.active, completed: s.completed, skipped: s.skipped })),
+    stage4: newSteps.stage4?.steps.map(s => ({ id: s.id, active: s.active, completed: s.completed, skipped: s.skipped })),
+    stage5: newSteps.stage5?.steps.map(s => ({ id: s.id, active: s.active, completed: s.completed, skipped: s.skipped })),
+    stage6: newSteps.stage6?.steps.map(s => ({ id: s.id, active: s.active, completed: s.completed, skipped: s.skipped })),
+    stage7: newSteps.stage7?.steps.map(s => ({ id: s.id, active: s.active, completed: s.completed, skipped: s.skipped })),
   });
 
   // 自动滚动到正在执行的节点
@@ -165,9 +165,9 @@ const scrollToActiveNode = () => {
     ...(props.steps.stage7?.steps || [])
   ];
 
-  console.log('All steps:', allStages.map(s => ({ id: s.id, status: s.status })));
+  console.log('All steps:', allStages.map(s => ({ id: s.id, active: s.active, completed: s.completed, skipped: s.skipped })));
 
-  const activeStep = allStages.find(step => step.status === 'active');
+  const activeStep = allStages.find(step => step.active);
 
   console.log('Active step found:', activeStep);
 
@@ -223,7 +223,7 @@ const mapStepToNode = (step) => {
   } else {
     // 根据不同的步骤类型生成示例详细信息
     if (step.type === 'llm') {
-      if (step.status === 'completed' || step.status === 'active') {
+      if (step.completed || step.active) {
         details.push(`Model invocation succeeded, processing completed`);
         if (step.tokens) {
           details.push(`Input Tokens: ${Math.floor(step.tokens * 0.6)}, Output Tokens: ${Math.floor(step.tokens * 0.4)}`);
@@ -234,7 +234,7 @@ const mapStepToNode = (step) => {
       }
     } else {
       // 计算类型节点
-      if (step.status === 'completed' || step.status === 'active') {
+      if (step.completed || step.active) {
         details.push(`Computation completed`);
         if (duration > 0) {
           details.push(`Execution Time: ${duration.toFixed(2)} s`);
@@ -260,10 +260,9 @@ const mapStepToNode = (step) => {
     id: step.id,
     title: step.title,
     type: step.type === 'llm' ? 'llm' : 'computation',
-    status: step.status === 'active' ? 'running' :
-            step.status === 'completed' ? 'completed' :
-            step.status === 'skipped' ? 'skipped' :
-            step.status === 'inactive' ? 'pending' : 'pending',
+    status: step.active ? 'running' :
+            step.completed ? 'completed' :
+            step.skipped ? 'skipped' : 'pending',
     isLLM: step.type === 'llm',
     time: duration,
     tokens: step.tokens || 0,
@@ -272,7 +271,9 @@ const mapStepToNode = (step) => {
   };
 
   console.log(`Mapping step ${step.id}:`, {
-    originalStatus: step.status,
+    active: step.active,
+    completed: step.completed,
+    skipped: step.skipped,
     mappedStatus: mapped.status,
     duration: step.duration,
     parsedDuration: duration,

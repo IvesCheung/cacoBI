@@ -45,16 +45,18 @@ export function useBIQuery() {
     {
       id: 1,
       title: 'Embed User Query',
+      type: 'llm',
       time: '',
       active: false,
       completed: false,
-      details: null,
+      details: [`Use ${shortChainConfig.encoder} to embed the user query`],
       tokens: 0,
       duration: 0,
     },
     {
       id: 2,
       title: 'Retrieve Historical Related Questions',
+      type: 'compute',
       time: '',
       active: false,
       completed: false,
@@ -68,6 +70,7 @@ export function useBIQuery() {
     {
       id: 3,
       title: 'Generate DSL',
+      type: 'llm',
       time: '',
       active: false,
       completed: false,
@@ -93,28 +96,37 @@ export function useBIQuery() {
           id: 'entity-recognition',
           title: 'Entity Recognition',
           type: 'llm',
-          status: 'inactive',
+          time: '',
+          active: false,
+          completed: false,
+          skipped: false,
+          details: [],
           tokens: 0,
           duration: 0,
-          details: [],
         },
         {
           id: 'question-rewrite',
           title: 'Question Rewrite',
           type: 'llm',
-          status: 'inactive',
+          time: '',
+          active: false,
+          completed: false,
+          skipped: false,
+          details: [],
           tokens: 0,
           duration: 0,
-          details: [],
         },
         {
           id: 'question-clarify',
           title: 'Question Clarification',
           type: 'llm',
-          status: 'inactive',
+          time: '',
+          active: false,
+          completed: false,
+          skipped: false,
+          details: [],
           tokens: 0,
           duration: 0,
-          details: [],
         },
       ],
     },
@@ -127,28 +139,37 @@ export function useBIQuery() {
           id: 'main-table-recall',
           title: 'Subject Retrieval',
           type: 'compute',
-          status: 'inactive',
+          time: '',
+          active: false,
+          completed: false,
+          skipped: false,
+          details: [],
           tokens: 0,
           duration: 0,
-          details: [],
         },
         {
           id: 'field-table-recall',
           title: 'Field Retrieval',
           type: 'compute',
-          status: 'inactive',
+          time: '',
+          active: false,
+          completed: false,
+          skipped: false,
+          details: [],
           tokens: 0,
           duration: 0,
-          details: [],
         },
         {
           id: 'business-table-recall',
           title: 'Jargon Retrieval',
           type: 'compute',
-          status: 'inactive',
+          time: '',
+          active: false,
+          completed: false,
+          skipped: false,
+          details: [],
           tokens: 0,
           duration: 0,
-          details: [],
         },
       ],
     },
@@ -161,10 +182,13 @@ export function useBIQuery() {
           id: 'table-selection',
           title: 'Table(N→1)',
           type: 'llm',
-          status: 'inactive',
+          time: '',
+          active: false,
+          completed: false,
+          skipped: false,
+          details: [],
           tokens: 0,
           duration: 0,
-          details: [],
         },
       ],
     },
@@ -177,37 +201,49 @@ export function useBIQuery() {
           id: 'segment-recall',
           title: 'Field',
           type: 'compute',
-          status: 'inactive',
+          time: '',
+          active: false,
+          completed: false,
+          skipped: false,
+          details: [],
           tokens: 0,
           duration: 0,
-          details: [],
         },
         {
           id: 'business-term',
           title: 'Jargon',
           type: 'compute',
-          status: 'inactive',
+          time: '',
+          active: false,
+          completed: false,
+          skipped: false,
+          details: [],
           tokens: 0,
           duration: 0,
-          details: [],
         },
         {
           id: 'table-rule',
           title: 'Table Rule',
           type: 'compute',
-          status: 'inactive',
+          time: '',
+          active: false,
+          completed: false,
+          skipped: false,
+          details: [],
           tokens: 0,
           duration: 0,
-          details: [],
         },
         {
           id: 'dimension-value-recall',
           title: 'Dimension Value',
           type: 'compute',
-          status: 'inactive',
+          time: '',
+          active: false,
+          completed: false,
+          skipped: false,
+          details: [],
           tokens: 0,
           duration: 0,
-          details: [],
         },
       ],
     },
@@ -220,19 +256,25 @@ export function useBIQuery() {
           id: 'segment-rerank',
           title: 'Field Rerank',
           type: 'llm',
-          status: 'inactive',
+          time: '',
+          active: false,
+          completed: false,
+          skipped: false,
+          details: [],
           tokens: 0,
           duration: 0,
-          details: [],
         },
         {
           id: 'dimension-rerank',
           title: 'Dimension Rerank',
           type: 'llm',
-          status: 'inactive',
+          time: '',
+          active: false,
+          completed: false,
+          skipped: false,
+          details: [],
           tokens: 0,
           duration: 0,
-          details: [],
         },
       ],
     },
@@ -245,28 +287,37 @@ export function useBIQuery() {
           id: 'metric-parse',
           title: 'Measure',
           type: 'llm',
-          status: 'inactive',
+          time: '',
+          active: false,
+          completed: false,
+          skipped: false,
+          details: [],
           tokens: 0,
           duration: 0,
-          details: [],
         },
         {
           id: 'dimension-parse',
           title: 'Dimension',
           type: 'llm',
-          status: 'inactive',
+          time: '',
+          active: false,
+          completed: false,
+          skipped: false,
+          details: [],
           tokens: 0,
           duration: 0,
-          details: [],
         },
         {
           id: 'filter-parse',
           title: 'Filter',
           type: 'llm',
-          status: 'inactive',
+          time: '',
+          active: false,
+          completed: false,
+          skipped: false,
+          details: [],
           tokens: 0,
           duration: 0,
-          details: [],
         },
       ],
     },
@@ -279,10 +330,13 @@ export function useBIQuery() {
           id: 'dsl-transform',
           title: 'Generate DSL',
           type: 'compute',
-          status: 'inactive',
+          time: '',
+          active: false,
+          completed: false,
+          skipped: false,
+          details: [],
           tokens: 0,
           duration: 0,
-          details: [],
         },
       ],
     },
@@ -410,7 +464,10 @@ export function useBIQuery() {
     Object.keys(longSteps.value).forEach((stageKey) => {
       const stage = longSteps.value[stageKey]
       stage.steps.forEach((step) => {
-        step.status = 'inactive'
+        step.active = false
+        step.completed = false
+        step.skipped = false
+        step.time = ''
         step.tokens = 0
         step.duration = 0
         step.details = []
@@ -556,15 +613,17 @@ export function useBIQuery() {
         // 检查是否被跳过
         if (skippedSteps.includes(step.id)) {
           console.log(`阶段1-步骤${idx} 被跳过:`, step.id)
-          step.status = 'skipped'
+          step.skipped = true
           return
         }
 
-        step.status = 'active'
+        step.time = getCurrentTime()
+        step.active = true
         const duration = 2500 + idx * 200 // 略有差异
         setTimeout(() => {
           console.log(`阶段1-步骤${idx} 完成:`, step.id)
-          step.status = 'completed'
+          step.active = false
+          step.completed = true
           step.tokens = 650 + idx * 100
           step.duration = parseFloat((duration / 1000).toFixed(2))
           step.details = ['实体: 笔记内容, 作者IP属地', '时间范围: 近30天']
@@ -588,14 +647,16 @@ export function useBIQuery() {
         // 检查是否被跳过
         if (skippedSteps.includes(step.id)) {
           console.log(`阶段2-步骤${idx} 被跳过:`, step.id)
-          step.status = 'skipped'
+          step.skipped = true
           return
         }
 
-        step.status = 'active'
+        step.time = getCurrentTime()
+        step.active = true
         setTimeout(() => {
           console.log(`阶段2-步骤${idx} 完成:`, step.id)
-          step.status = 'completed'
+          step.active = false
+          step.completed = true
           step.duration = 0.1
           step.details = [
             idx === 0
@@ -617,7 +678,7 @@ export function useBIQuery() {
       // 检查是否被跳过
       if (skippedSteps.includes(step.id)) {
         console.log('阶段3-步骤 被跳过:', step.id)
-        step.status = 'skipped'
+        step.skipped = true
         // 跳过时也要完成进度条，但瞬间完成
         animateProgress(longProgress, 2, 100, () => {
           console.log('阶段3进度完成(跳过)')
@@ -628,10 +689,12 @@ export function useBIQuery() {
           console.log('阶段3进度完成')
         })
         console.log('阶段3-步骤 开始执行:', step.id)
-        step.status = 'active'
+        step.time = getCurrentTime()
+        step.active = true
         setTimeout(() => {
           console.log('阶段3-步骤 完成:', step.id)
-          step.status = 'completed'
+          step.active = false
+          step.completed = true
           step.tokens = 1850
           step.duration = 3.0
           step.details = ['选中表: 笔记作者总表', '置信度: 95%']
@@ -657,14 +720,16 @@ export function useBIQuery() {
         // 检查是否被跳过
         if (skippedSteps.includes(step.id)) {
           console.log(`阶段4-步骤${idx} 被跳过:`, step.id)
-          step.status = 'skipped'
+          step.skipped = true
           return
         }
 
-        step.status = 'active'
+        step.time = getCurrentTime()
+        step.active = true
         setTimeout(() => {
           console.log(`阶段4-步骤${idx} 完成:`, step.id)
-          step.status = 'completed'
+          step.active = false
+          step.completed = true
           step.duration = 0.1
           step.details = [
             idx === 0
@@ -699,15 +764,17 @@ export function useBIQuery() {
         // 检查是否被跳过
         if (skippedSteps.includes(step.id)) {
           console.log(`阶段5-步骤${idx} 被跳过:`, step.id)
-          step.status = 'skipped'
+          step.skipped = true
           return
         }
 
-        step.status = 'active'
+        step.time = getCurrentTime()
+        step.active = true
         const duration = 2800 + idx * 300
         setTimeout(() => {
           console.log(`阶段5-步骤${idx} 完成:`, step.id)
-          step.status = 'completed'
+          step.active = false
+          step.completed = true
           step.tokens = 980 + idx * 120
           step.duration = parseFloat((duration / 1000).toFixed(2))
           step.details = [idx === 0 ? 'Rerank后: Top-5 学段' : 'Rerank后: Top-10 维值']
@@ -740,15 +807,17 @@ export function useBIQuery() {
         // 检查是否被跳过
         if (skippedSteps.includes(step.id)) {
           console.log(`阶段6-步骤${idx} 被跳过:`, step.id)
-          step.status = 'skipped'
+          step.skipped = true
           return
         }
 
-        step.status = 'active'
+        step.time = getCurrentTime()
+        step.active = true
         const duration = 3200 + idx * 250
         setTimeout(() => {
           console.log(`阶段6-步骤${idx} 完成:`, step.id)
-          step.status = 'completed'
+          step.active = false
+          step.completed = true
           step.tokens = 1200 + idx * 180
           step.duration = parseFloat((duration / 1000).toFixed(2))
           step.details = [
@@ -777,10 +846,12 @@ export function useBIQuery() {
         console.log('阶段7进度完成')
       })
       console.log('阶段7-步骤 开始执行:', step.id)
-      step.status = 'active'
+      step.time = getCurrentTime()
+      step.active = true
       setTimeout(() => {
         console.log('阶段7-步骤 完成:', step.id)
-        step.status = 'completed'
+        step.active = false
+        step.completed = true
         step.duration = 0.1
         step.details = ['DSL生成成功', '包含2个指标, 2个维度, 2个筛选条件']
         clearInterval(timer)
