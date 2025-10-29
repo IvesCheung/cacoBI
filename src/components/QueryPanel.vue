@@ -1,6 +1,6 @@
 <template>
   <div class="query-panel">
-    <h2 class="panel-title">CACOBI</h2>
+    <h2 class="panel-title">ChronosBI</h2>
 
     <!-- 查询输入 -->
     <div class="query-input-section">
