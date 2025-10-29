@@ -8,6 +8,7 @@
           :progress="shortProgress"
           :time="shortChainTime"
           :total-tokens="shortChainTokens"
+          :llm-calls="shortLLMCalls"
           class="chain-panel-wrapper"
         />
 
@@ -16,6 +17,7 @@
           :progress="longProgress"
           :time="longChainTime"
           :total-tokens="longChainTokens"
+          :llm-calls="longLLMCalls"
           class="chain-panel-wrapper"
         />
       </div>
@@ -78,6 +80,8 @@ const {
   longProgress,
   shortChainTokens,
   longChainTokens,
+  shortLLMCalls,
+  longLLMCalls,
   executeQuery,
   clearLogs
 } = useBIQuery()

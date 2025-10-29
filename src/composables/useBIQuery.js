@@ -10,7 +10,12 @@ export function useBIQuery() {
   // 链路时间
   const shortChainTime = ref(0)
   const longChainTime = ref(0)
-
+  // Token消耗统计
+  const shortChainTokens = ref(0)
+  const longChainTokens = ref(0)
+  // LLM调用次数
+  const shortLLMCalls = ref(0)
+  const longLLMCalls = ref(0)
   // 链路完成状态
   const shortCompleted = ref(false)
   const longCompleted = ref(false)
@@ -387,6 +392,7 @@ export function useBIQuery() {
     } else if (logType === LOG_TYPES.COST_AGENT) {
       ElNotification({
         ...notificationConfig,
+        duration: 4000,
         type: 'success',
         customClass: 'cost-agent-log-notification',
       })
@@ -402,10 +408,6 @@ export function useBIQuery() {
       })
     }
   }
-
-  // Token消耗统计
-  const shortChainTokens = ref(0)
-  const longChainTokens = ref(0)
 
   // 选择要跳过的步骤（Cost Agent功能）
   const selectRandomStepsToSkip = () => {
@@ -457,6 +459,8 @@ export function useBIQuery() {
     longChainTime.value = 0
     shortChainTokens.value = 0
     longChainTokens.value = 0
+    shortLLMCalls.value = 0
+    longLLMCalls.value = 0
     skippedStepsInfo.value = []
 
     // 重置短链路步骤
@@ -500,14 +504,13 @@ export function useBIQuery() {
       if (costAgentEnabled.value) {
         setTimeout(() => {
           showLogNotification(LOG_MESSAGES.COST_PLANER_ANALYZING, LOG_TYPES.COST_AGENT)
+        }, 700)
+        setTimeout(() => {
+          showLogNotification(
+            LOG_MESSAGES.COST_PLANER_SKIPPED(skippedStepsInfo.value),
+            LOG_TYPES.COST_AGENT,
+          )
         }, 1000)
-      }
-      // 如果启用了 Cost Agent 且有跳过的步骤，显示跳过信息
-      if (costAgentEnabled.value && skippedStepsInfo.value.length > 0) {
-        showLogNotification(
-          LOG_MESSAGES.COST_PLANER_SKIPPED(skippedStepsInfo.value),
-          LOG_TYPES.COST_AGENT,
-        )
       }
 
       // 模拟链路执行
@@ -578,6 +581,7 @@ export function useBIQuery() {
           shortChainTime.value =
             shortSteps[0].duration + shortSteps[1].duration + shortSteps[2].duration
           shortCompleted.value = true
+          shortLLMCalls.value += 1
         })
       },
       (shortSteps[0].duration + shortSteps[1].duration) * 1000,
@@ -640,6 +644,10 @@ export function useBIQuery() {
             step.active = false
             step.completed = true
             longChainTokens.value += step.tokens
+            // 只有 LLM 类型的节点才增加调用次数
+            if (step.type === 'llm') {
+              longLLMCalls.value += 1
+            }
 
             // 如果是最后一个阶段的最后一个步骤，完成长链路
             if (isLastStage(stageIndex) && stepIdx === stageSteps.length - 1) {
@@ -688,6 +696,8 @@ export function useBIQuery() {
     queryResult,
     shortChainTokens,
     longChainTokens,
+    shortLLMCalls,
+    longLLMCalls,
     skippedStepsInfo,
 
     // 配置

@@ -6,6 +6,7 @@
         :progress-array="progress"
         :time="time"
         :total-tokens="totalTokens"
+        :llm-calls="llmCalls"
         start-color="#f59e0b"
       />
     </div>
@@ -34,6 +35,10 @@ defineProps({
     default: 0
   },
   totalTokens: {
+    type: Number,
+    default: 0
+  },
+  llmCalls: {
     type: Number,
     default: 0
   }

@@ -34,6 +34,11 @@
     <div class="token-badge" :style="badgeStyle">
       token cost: <span class="token-value">{{ totalTokens }}</span>
     </div>
+
+    <!-- LLM调用次数显示 -->
+    <div class="token-badge" :style="badgeStyle">
+      invocation: <span class="token-value">{{ llmCalls }}</span>
+    </div>
   </div>
 </template>
 
@@ -54,6 +59,10 @@ const props = defineProps({
     default: 0
   },
   totalTokens: {
+    type: Number,
+    default: 0
+  },
+  llmCalls: {
     type: Number,
     default: 0
   }
