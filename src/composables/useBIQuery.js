@@ -52,6 +52,11 @@ export function useBIQuery() {
     filterModel: 'Deepseek-v3',
   })
 
+  // 生成随机的compute节点duration (0.05-0.15秒)
+  const getRandomComputeDuration = () => {
+    return Math.random() * (0.15 - 0.05) + 0.05
+  }
+
   // 初始化短链路步骤模板
   const createShortSteps = (exampleData) => {
     return [
@@ -64,7 +69,7 @@ export function useBIQuery() {
         completed: false,
         details: exampleData.step1.details,
         tokens: exampleData.step1.tokens,
-        duration: exampleData.step1.duration,
+        duration: getRandomComputeDuration(),
       },
       {
         id: 2,
@@ -75,7 +80,7 @@ export function useBIQuery() {
         completed: false,
         details: exampleData.step2.details,
         tokens: exampleData.step2.tokens,
-        duration: exampleData.step2.duration,
+        duration: getRandomComputeDuration(),
       },
       {
         id: 3,
@@ -155,7 +160,7 @@ export function useBIQuery() {
             skipped: false,
             details: exampleData.stage2['main-table-recall'].details,
             tokens: exampleData.stage2['main-table-recall'].tokens,
-            duration: exampleData.stage2['main-table-recall'].duration,
+            duration: getRandomComputeDuration(),
           },
           {
             id: 'field-table-recall',
@@ -167,7 +172,7 @@ export function useBIQuery() {
             skipped: false,
             details: exampleData.stage2['field-table-recall'].details,
             tokens: exampleData.stage2['field-table-recall'].tokens,
-            duration: exampleData.stage2['field-table-recall'].duration,
+            duration: getRandomComputeDuration(),
           },
           {
             id: 'business-table-recall',
@@ -179,7 +184,7 @@ export function useBIQuery() {
             skipped: false,
             details: exampleData.stage2['business-table-recall'].details,
             tokens: exampleData.stage2['business-table-recall'].tokens,
-            duration: exampleData.stage2['business-table-recall'].duration,
+            duration: getRandomComputeDuration(),
           },
         ],
       },
@@ -217,7 +222,7 @@ export function useBIQuery() {
             skipped: false,
             details: exampleData.stage4['segment-recall'].details,
             tokens: exampleData.stage4['segment-recall'].tokens,
-            duration: exampleData.stage4['segment-recall'].duration,
+            duration: getRandomComputeDuration(),
           },
           {
             id: 'business-term',
@@ -229,7 +234,7 @@ export function useBIQuery() {
             skipped: false,
             details: exampleData.stage4['business-term'].details,
             tokens: exampleData.stage4['business-term'].tokens,
-            duration: exampleData.stage4['business-term'].duration,
+            duration: getRandomComputeDuration(),
           },
           {
             id: 'table-rule',
@@ -241,7 +246,7 @@ export function useBIQuery() {
             skipped: false,
             details: exampleData.stage4['table-rule'].details,
             tokens: exampleData.stage4['table-rule'].tokens,
-            duration: exampleData.stage4['table-rule'].duration,
+            duration: getRandomComputeDuration(),
           },
           {
             id: 'dimension-value-recall',
@@ -253,7 +258,7 @@ export function useBIQuery() {
             skipped: false,
             details: exampleData.stage4['dimension-value-recall'].details,
             tokens: exampleData.stage4['dimension-value-recall'].tokens,
-            duration: exampleData.stage4['dimension-value-recall'].duration,
+            duration: getRandomComputeDuration(),
           },
         ],
       },
@@ -346,7 +351,7 @@ export function useBIQuery() {
             skipped: false,
             details: exampleData.stage7['dsl-transform'].details,
             tokens: exampleData.stage7['dsl-transform'].tokens,
-            duration: exampleData.stage7['dsl-transform'].duration,
+            duration: getRandomComputeDuration(),
           },
         ],
       },
