@@ -46,8 +46,10 @@
           :short-progress="shortProgress"
           :long-progress="longProgress"
           :query-result="queryResult"
+          :current-example-id="currentExampleId"
           @execute="handleExecute"
           @clear-logs="clearLogs"
+          @example-change="handleExampleChange"
         />
       </div>
     </div>
@@ -82,13 +84,20 @@ const {
   longChainTokens,
   shortLLMCalls,
   longLLMCalls,
+  currentExampleId,
   executeQuery,
-  clearLogs
+  clearLogs,
+  loadQueryExample
 } = useBIQuery()
 
 // 执行查询
 const handleExecute = async () => {
   await executeQuery()
+}
+
+// 处理示例切换
+const handleExampleChange = (exampleId) => {
+  loadQueryExample(exampleId)
 }
 </script>
 

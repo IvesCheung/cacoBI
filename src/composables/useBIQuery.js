@@ -1,8 +1,14 @@
 import { ref, reactive } from 'vue'
 import { ElNotification } from 'element-plus'
 import { LOG_MESSAGES, LOG_TYPES } from '@/constants/logMessages'
+import { getDefaultQueryExample, getQueryExample } from '@/data/queryExamples'
 
 export function useBIQuery() {
+  // 加载默认查询示例
+  const defaultExample = getDefaultQueryExample()
+
+  // 当前选中的查询示例ID
+  const currentExampleId = ref(defaultExample.id)
   // 执行状态
   const isExecuting = ref(false)
   const costAgentEnabled = ref(false)
@@ -24,15 +30,8 @@ export function useBIQuery() {
   const skippedStepsInfo = ref([])
 
   // 查询输入
-  const queryText = ref("Apple's sales in 2025")
-  const queryResult = ref([
-    { name: 'Macbook', value: 3335 },
-    { name: 'Airpods', value: 2304 },
-    { name: 'iPhone', value: 5896 },
-    { name: 'iWatch', value: 1935 },
-    { name: 'iPad', value: 2685 },
-    { name: 'Others', value: 1078 },
-  ])
+  const queryText = ref(defaultExample.queryText)
+  const queryResult = ref(defaultExample.queryResult)
 
   // 短链路配置
   const shortChainConfig = reactive({
@@ -53,318 +52,309 @@ export function useBIQuery() {
     filterModel: 'Deepseek-v3',
   })
 
+  // 初始化短链路步骤模板
+  const createShortSteps = (exampleData) => {
+    return [
+      {
+        id: 1,
+        title: 'Embed User Query',
+        type: 'compute',
+        time: '',
+        active: false,
+        completed: false,
+        details: exampleData.step1.details,
+        tokens: exampleData.step1.tokens,
+        duration: exampleData.step1.duration,
+      },
+      {
+        id: 2,
+        title: 'Retrieve Historical Related Queries',
+        type: 'compute',
+        time: '',
+        active: false,
+        completed: false,
+        details: exampleData.step2.details,
+        tokens: exampleData.step2.tokens,
+        duration: exampleData.step2.duration,
+      },
+      {
+        id: 3,
+        title: 'Generate DSL',
+        type: 'llm',
+        time: '',
+        active: false,
+        completed: false,
+        details: exampleData.step3.details,
+        tokens: exampleData.step3.tokens,
+        duration: exampleData.step3.duration,
+      },
+    ]
+  }
+
   // 短链路步骤
-  const shortSteps = reactive([
-    {
-      id: 1,
-      title: 'Embed User Query',
-      type: 'compute',
-      time: '',
-      active: false,
-      completed: false,
-      details: [`Use ${shortChainConfig.encoder} to embed the user query`],
-      tokens: 0,
-      duration: 0.5,
-    },
-    {
-      id: 2,
-      title: 'Retrieve Historical Related Queries',
-      type: 'compute',
-      time: '',
-      active: false,
-      completed: false,
-      details: ["1. Huawei's sales in 2024", '2. Mac Pro sales in 2025'],
-      tokens: 0,
-      duration: 1.13,
-    },
-    {
-      id: 3,
-      title: 'Generate DSL',
-      type: 'llm',
-      time: '',
-      active: false,
-      completed: false,
-      details: [
-        'Table: mobile_table',
-        'dimension: []',
-        'measure: {"field":"Apple", "aggregation":"sum"}',
-        'filter: {"field":"time","type":"in", "condition":"2025"}',
-      ],
-      tokens: 1280,
-      duration: 1.54,
-    },
-  ])
+  const shortSteps = reactive(createShortSteps(defaultExample.shortSteps))
+
+  // 初始化长链路步骤模板
+  const createLongSteps = (exampleData) => {
+    return {
+      // 阶段1: 配置解析 (并行执行)
+      stage1: {
+        title: 'Query Parsing',
+        parallel: true,
+        steps: [
+          {
+            id: 'subject-recognition',
+            title: 'Subject Recognition',
+            type: 'llm',
+            time: '',
+            active: false,
+            completed: false,
+            skipped: false,
+            details: exampleData.stage1['subject-recognition'].details,
+            tokens: exampleData.stage1['subject-recognition'].tokens,
+            duration: exampleData.stage1['subject-recognition'].duration,
+          },
+          {
+            id: 'query-rewrite',
+            title: 'Query Rewrite',
+            type: 'llm',
+            time: '',
+            active: false,
+            completed: false,
+            skipped: false,
+            details: exampleData.stage1['query-rewrite'].details,
+            tokens: exampleData.stage1['query-rewrite'].tokens,
+            duration: exampleData.stage1['query-rewrite'].duration,
+          },
+          {
+            id: 'query-clarify',
+            title: 'Query Clarification',
+            type: 'llm',
+            time: '',
+            active: false,
+            completed: false,
+            skipped: false,
+            details: exampleData.stage1['query-clarify'].details,
+            tokens: exampleData.stage1['query-clarify'].tokens,
+            duration: exampleData.stage1['query-clarify'].duration,
+          },
+        ],
+      },
+      // 阶段2: 召回 (并行执行)
+      stage2: {
+        title: 'Table Retrieval',
+        parallel: true,
+        steps: [
+          {
+            id: 'main-table-recall',
+            title: 'By Entity',
+            type: 'compute',
+            time: '',
+            active: false,
+            completed: false,
+            skipped: false,
+            details: exampleData.stage2['main-table-recall'].details,
+            tokens: exampleData.stage2['main-table-recall'].tokens,
+            duration: exampleData.stage2['main-table-recall'].duration,
+          },
+          {
+            id: 'field-table-recall',
+            title: 'By Field',
+            type: 'compute',
+            time: '',
+            active: false,
+            completed: false,
+            skipped: false,
+            details: exampleData.stage2['field-table-recall'].details,
+            tokens: exampleData.stage2['field-table-recall'].tokens,
+            duration: exampleData.stage2['field-table-recall'].duration,
+          },
+          {
+            id: 'business-table-recall',
+            title: 'By Jargon',
+            type: 'compute',
+            time: '',
+            active: false,
+            completed: false,
+            skipped: false,
+            details: exampleData.stage2['business-table-recall'].details,
+            tokens: exampleData.stage2['business-table-recall'].tokens,
+            duration: exampleData.stage2['business-table-recall'].duration,
+          },
+        ],
+      },
+      // 阶段3: 选表
+      stage3: {
+        title: 'Table Selection',
+        parallel: false,
+        steps: [
+          {
+            id: 'table-selection',
+            title: 'Table(N→1)',
+            type: 'llm',
+            time: '',
+            active: false,
+            completed: false,
+            skipped: false,
+            details: exampleData.stage3['table-selection'].details,
+            tokens: exampleData.stage3['table-selection'].tokens,
+            duration: exampleData.stage3['table-selection'].duration,
+          },
+        ],
+      },
+      // 阶段4: 单表知识召回
+      stage4: {
+        title: 'In-Table Knowledge Retrieval',
+        parallel: true,
+        steps: [
+          {
+            id: 'segment-recall',
+            title: 'Field',
+            type: 'compute',
+            time: '',
+            active: false,
+            completed: false,
+            skipped: false,
+            details: exampleData.stage4['segment-recall'].details,
+            tokens: exampleData.stage4['segment-recall'].tokens,
+            duration: exampleData.stage4['segment-recall'].duration,
+          },
+          {
+            id: 'business-term',
+            title: 'Jargon',
+            type: 'compute',
+            time: '',
+            active: false,
+            completed: false,
+            skipped: false,
+            details: exampleData.stage4['business-term'].details,
+            tokens: exampleData.stage4['business-term'].tokens,
+            duration: exampleData.stage4['business-term'].duration,
+          },
+          {
+            id: 'table-rule',
+            title: 'Table Rule',
+            type: 'compute',
+            time: '',
+            active: false,
+            completed: false,
+            skipped: false,
+            details: exampleData.stage4['table-rule'].details,
+            tokens: exampleData.stage4['table-rule'].tokens,
+            duration: exampleData.stage4['table-rule'].duration,
+          },
+          {
+            id: 'dimension-value-recall',
+            title: 'Dimension Value',
+            type: 'compute',
+            time: '',
+            active: false,
+            completed: false,
+            skipped: false,
+            details: exampleData.stage4['dimension-value-recall'].details,
+            tokens: exampleData.stage4['dimension-value-recall'].tokens,
+            duration: exampleData.stage4['dimension-value-recall'].duration,
+          },
+        ],
+      },
+      // 阶段5: Rerank (并行执行)
+      stage5: {
+        title: 'Retrieval Rerank',
+        parallel: true,
+        steps: [
+          {
+            id: 'segment-rerank',
+            title: 'Field Rerank',
+            type: 'llm',
+            time: '',
+            active: false,
+            completed: false,
+            skipped: false,
+            details: exampleData.stage5['segment-rerank'].details,
+            tokens: exampleData.stage5['segment-rerank'].tokens,
+            duration: exampleData.stage5['segment-rerank'].duration,
+          },
+          {
+            id: 'dimension-rerank',
+            title: 'Dimension Rerank',
+            type: 'llm',
+            time: '',
+            active: false,
+            completed: false,
+            skipped: false,
+            details: exampleData.stage5['dimension-rerank'].details,
+            tokens: exampleData.stage5['dimension-rerank'].tokens,
+            duration: exampleData.stage5['dimension-rerank'].duration,
+          },
+        ],
+      },
+      // 阶段6: 配置解析 (并行执行)
+      stage6: {
+        title: 'DSL Configuring',
+        parallel: true,
+        steps: [
+          {
+            id: 'metric-parse',
+            title: 'Measure',
+            type: 'llm',
+            time: '',
+            active: false,
+            completed: false,
+            skipped: false,
+            details: exampleData.stage6['metric-parse'].details,
+            tokens: exampleData.stage6['metric-parse'].tokens,
+            duration: exampleData.stage6['metric-parse'].duration,
+          },
+          {
+            id: 'dimension-parse',
+            title: 'Dimension',
+            type: 'llm',
+            time: '',
+            active: false,
+            completed: false,
+            skipped: false,
+            details: exampleData.stage6['dimension-parse'].details,
+            tokens: exampleData.stage6['dimension-parse'].tokens,
+            duration: exampleData.stage6['dimension-parse'].duration,
+          },
+          {
+            id: 'filter-parse',
+            title: 'Filter',
+            type: 'llm',
+            time: '',
+            active: false,
+            completed: false,
+            skipped: false,
+            details: exampleData.stage6['filter-parse'].details,
+            tokens: exampleData.stage6['filter-parse'].tokens,
+            duration: exampleData.stage6['filter-parse'].duration,
+          },
+        ],
+      },
+      // 阶段7: DSL转换
+      stage7: {
+        title: 'Generate DSL',
+        parallel: false,
+        steps: [
+          {
+            id: 'dsl-transform',
+            title: 'Generate DSL',
+            type: 'compute',
+            time: '',
+            active: false,
+            completed: false,
+            skipped: false,
+            details: exampleData.stage7['dsl-transform'].details,
+            tokens: exampleData.stage7['dsl-transform'].tokens,
+            duration: exampleData.stage7['dsl-transform'].duration,
+          },
+        ],
+      },
+    }
+  }
 
   // 长链路步骤 - 新的复杂流程结构
-  const longSteps = ref({
-    // 阶段1: 配置解析 (并行执行)
-    stage1: {
-      title: 'Query Parsing',
-      parallel: true,
-      steps: [
-        {
-          id: 'subject-recognition',
-          title: 'Subject Recognition',
-          type: 'llm',
-          time: '',
-          active: false,
-          completed: false,
-          skipped: false,
-          details: ['Entity: Apple;2025', 'Field: time', 'Jargon: sales'],
-          tokens: 650,
-          duration: 2.5,
-        },
-        {
-          id: 'query-rewrite',
-          title: 'Query Rewrite',
-          type: 'llm',
-          time: '',
-          active: false,
-          completed: false,
-          skipped: false,
-          details: ['User wants to query sales data for [Apple] products, in [2025]'],
-          tokens: 750,
-          duration: 2.7,
-        },
-        {
-          id: 'query-clarify',
-          title: 'Query Clarification',
-          type: 'llm',
-          time: '',
-          active: false,
-          completed: false,
-          skipped: false,
-          details: ['No need to clarify the query'],
-          tokens: 850,
-          duration: 2.9,
-        },
-      ],
-    },
-    // 阶段2: 召回 (并行执行)
-    stage2: {
-      title: 'Table Retrieval',
-      parallel: true,
-      steps: [
-        {
-          id: 'main-table-recall',
-          title: 'By Entity',
-          type: 'compute',
-          time: '',
-          active: false,
-          completed: false,
-          skipped: false,
-          details: ['mobile_table', 'laptop_table', '...'],
-          tokens: 0,
-          duration: 0.1,
-        },
-        {
-          id: 'field-table-recall',
-          title: 'By Field',
-          type: 'compute',
-          time: '',
-          active: false,
-          completed: false,
-          skipped: false,
-          details: ['mobile_table', '...'],
-          tokens: 0,
-          duration: 0.1,
-        },
-        {
-          id: 'business-table-recall',
-          title: 'By Jargon',
-          type: 'compute',
-          time: '',
-          active: false,
-          completed: false,
-          skipped: false,
-          details: ['mobile_table', '...'],
-          tokens: 0,
-          duration: 0.1,
-        },
-      ],
-    },
-    // 阶段3: 选表
-    stage3: {
-      title: 'Table Selection',
-      parallel: false,
-      steps: [
-        {
-          id: 'table-selection',
-          title: 'Table(N→1)',
-          type: 'llm',
-          time: '',
-          active: false,
-          completed: false,
-          skipped: false,
-          details: ['mobile_table'],
-          tokens: 1850,
-          duration: 3.0,
-        },
-      ],
-    },
-    // 阶段4: 单表知识召回
-    stage4: {
-      title: 'In-Table Knowledge Retrieval',
-      parallel: true,
-      steps: [
-        {
-          id: 'segment-recall',
-          title: 'Field',
-          type: 'compute',
-          time: '',
-          active: false,
-          completed: false,
-          skipped: false,
-          details: ['Retrieved fields:', 'Apple;time;'],
-          tokens: 0,
-          duration: 0.1,
-        },
-        {
-          id: 'business-term',
-          title: 'Jargon',
-          type: 'compute',
-          time: '',
-          active: false,
-          completed: false,
-          skipped: false,
-          details: [
-            'Retrieved jargons:',
-            '1. Anonymized product sale volume without hot search terms',
-            '2. Anonymized number of community sale users',
-            '3. Anonymized product sale volume',
-          ],
-          tokens: 0,
-          duration: 0.1,
-        },
-        {
-          id: 'table-rule',
-          title: 'Table Rule',
-          type: 'compute',
-          time: '',
-          active: false,
-          completed: false,
-          skipped: false,
-          details: [
-            'Retrieved table rules:',
-            '"Applicable": Select this table when the parsing subject of the input is "sales term".',
-            '"Applicable": It is used to query sale trends, sale index, and other information for specific user groups or categories"',
-          ],
-          tokens: 0,
-          duration: 0.1,
-        },
-        {
-          id: 'dimension-value-recall',
-          title: 'Dimension Value',
-          type: 'compute',
-          time: '',
-          active: false,
-          completed: false,
-          skipped: false,
-          details: ['Retrieved dimension values:', '2025;2025 year;2025Y;2015;2015Y'],
-          tokens: 0,
-          duration: 0.1,
-        },
-      ],
-    },
-    // 阶段5: Rerank (并行执行)
-    stage5: {
-      title: 'Retrieval Rerank',
-      parallel: true,
-      steps: [
-        {
-          id: 'segment-rerank',
-          title: 'Field Rerank',
-          type: 'llm',
-          time: '',
-          active: false,
-          completed: false,
-          skipped: false,
-          details: ['Top-1 field after reranking: "time"'],
-          tokens: 980,
-          duration: 2.8,
-        },
-        {
-          id: 'dimension-rerank',
-          title: 'Dimension Rerank',
-          type: 'llm',
-          time: '',
-          active: false,
-          completed: false,
-          skipped: false,
-          details: ['Top-1 dimension value after reranking: "2025"'],
-          tokens: 1100,
-          duration: 3.1,
-        },
-      ],
-    },
-    // 阶段6: 配置解析 (并行执行)
-    stage6: {
-      title: 'DSL Configuring',
-      parallel: true,
-      steps: [
-        {
-          id: 'metric-parse',
-          title: 'Measure',
-          type: 'llm',
-          time: '',
-          active: false,
-          completed: false,
-          skipped: false,
-          details: ['measure: {"field":"Apple", "aggregation":"sum"}'],
-          tokens: 1200,
-          duration: 3.2,
-        },
-        {
-          id: 'dimension-parse',
-          title: 'Dimension',
-          type: 'llm',
-          time: '',
-          active: false,
-          completed: false,
-          skipped: false,
-          details: ['dimension: []'],
-          tokens: 1380,
-          duration: 3.45,
-        },
-        {
-          id: 'filter-parse',
-          title: 'Filter',
-          type: 'llm',
-          time: '',
-          active: false,
-          completed: false,
-          skipped: false,
-          details: ['filter: {"field":"time","type":"in", "condition":"2025"}'],
-          tokens: 1560,
-          duration: 3.7,
-        },
-      ],
-    },
-    // 阶段7: DSL转换
-    stage7: {
-      title: 'Generate DSL',
-      parallel: false,
-      steps: [
-        {
-          id: 'dsl-transform',
-          title: 'Generate DSL',
-          type: 'compute',
-          time: '',
-          active: false,
-          completed: false,
-          skipped: false,
-          details: [
-            'Table: mobile_table',
-            'dimension: []',
-            'measure: {"field":"Apple", "aggregation":"sum"}',
-            'filter: {"field":"time","type":"in", "condition":"2025"}',
-          ],
-          tokens: 0,
-          duration: 0.1,
-        },
-      ],
-    },
-  })
+  const longSteps = ref(createLongSteps(defaultExample.longSteps))
 
   // 进度状态
   const shortProgress = reactive([0, 0, 0])
@@ -551,6 +541,39 @@ export function useBIQuery() {
     }
   }
 
+  // 加载指定的查询示例
+  const loadQueryExample = (exampleId) => {
+    // 如果正在执行，不允许切换
+    if (isExecuting.value) {
+      return false
+    }
+
+    const example = getQueryExample(exampleId)
+    if (!example) {
+      console.error('查询示例未找到:', exampleId)
+      return false
+    }
+
+    // 重置所有状态
+    resetAll()
+
+    // 更新当前示例ID
+    currentExampleId.value = exampleId
+
+    // 更新查询文本和结果
+    queryText.value = example.queryText
+    queryResult.value = example.queryResult
+
+    // 更新短链路步骤
+    const newShortSteps = createShortSteps(example.shortSteps)
+    shortSteps.splice(0, shortSteps.length, ...newShortSteps)
+
+    // 更新长链路步骤
+    longSteps.value = createLongSteps(example.longSteps)
+
+    return true
+  }
+
   // 模拟短链路执行
   const simulateShortChain = () => {
     let timer = setInterval(() => {
@@ -710,6 +733,7 @@ export function useBIQuery() {
     shortLLMCalls,
     longLLMCalls,
     skippedStepsInfo,
+    currentExampleId,
 
     // 配置
     shortChainConfig,
@@ -727,5 +751,6 @@ export function useBIQuery() {
     executeQuery,
     resetAll,
     clearLogs,
+    loadQueryExample,
   }
 }

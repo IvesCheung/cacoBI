@@ -2,6 +2,15 @@
   <div class="query-panel">
     <h2 class="panel-title">ChronosBI</h2>
 
+    <!-- 查询示例选择器 -->
+    <div class="example-selector-section">
+      <QueryExampleSelector
+        :current-example-id="currentExampleId"
+        :is-executing="isExecuting"
+        @change="handleExampleChange"
+      />
+    </div>
+
     <!-- 查询输入 -->
     <div class="query-input-section">
       <el-input
@@ -69,6 +78,7 @@ import { computed } from 'vue'
 import { VideoPlay, CircleCheck } from '@element-plus/icons-vue'
 import ResultChart from './ResultChart.vue'
 import DualPathProgress from './DualPathProgress.vue'
+import QueryExampleSelector from './QueryExampleSelector.vue'
 
 const props = defineProps({
   queryText: {
@@ -102,10 +112,14 @@ const props = defineProps({
   queryResult: {
     type: Array,
     default: () => []
+  },
+  currentExampleId: {
+    type: String,
+    required: true
   }
 })
 
-const emit = defineEmits(['update:queryText', 'update:costAgentEnabled', 'execute', 'clearLogs'])
+const emit = defineEmits(['update:queryText', 'update:costAgentEnabled', 'execute', 'clearLogs', 'exampleChange'])
 
 const queryText = computed({
   get: () => props.queryText,
@@ -127,6 +141,10 @@ const toggleCostAgent = () => {
     emit('clearLogs')
   }
   costAgentEnabled.value = !costAgentEnabled.value
+}
+
+const handleExampleChange = (exampleId) => {
+  emit('exampleChange', exampleId)
 }
 </script>
 
@@ -157,6 +175,10 @@ const toggleCostAgent = () => {
   font-weight: 600;
   margin: 0 0 12px 0;
   transition: color 0.3s ease;
+}
+
+.example-selector-section {
+  margin-bottom: 12px;
 }
 
 .query-input-section {
