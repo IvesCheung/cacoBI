@@ -6,7 +6,7 @@ export const EMB_MODELS = [
 ]
 
 export const LLM_MODELS = ['Qwen2.5-instruct-72B', 'Qwen3-32B', 'Deepseek-v3']
-export const RERANK_MODELS = ['Qwen2.5-instruct-72B', 'Qwen3-32B', 'Deepseek-v3']
+export const RERANK_MODELS = ['BGE-reranker-large', 'Qwen3-reranker-0.6B', 'Qwen3-reranker-4B']
 
 // 默认配置
 export const DEFAULT_SHORT_CHAIN_CONFIG = {
@@ -25,7 +25,7 @@ export const DEFAULT_LONG_CHAIN_CONFIG = {
   tableRecallTopK: 10,
   tableSelectionModel: 'Deepseek-v3',
   // Rerank
-  fieldRerankModel: 'Deepseek-v3',
+  fieldRerankModel: 'Qwen3-reranker-4B',
   dimensionRerankModel: 'Deepseek-v3',
   // DSL配置
   measureParseModel: 'Deepseek-v3',

@@ -32,8 +32,8 @@
           v-model="config.tableRecallTopK"
           label="Table Top-k"
           :min="1"
-          :max="200"
-          :step="5"
+          :max="100"
+          :step="1"
         />
         <ModelSelector
           v-model="config.tableSelectionModel"
@@ -47,13 +47,8 @@
         <div class="section-title">Rerank</div>
         <ModelSelector
           v-model="config.fieldRerankModel"
-          label="Field Rerank Model"
-          :models="llmModels"
-        />
-        <ModelSelector
-          v-model="config.dimensionRerankModel"
-          label="Dimension Rerank Model"
-          :models="llmModels"
+          label="Field and Dimension Rerank Model"
+          :models="RERANK_MODELS"
         />
       </div>
 
@@ -62,10 +57,10 @@
         <div class="section-title">DSL Configuring</div>
         <ModelSelector
           v-model="config.measureParseModel"
-          label="Measure Parse Model"
+          label="Measure,Dimension,Filter Parse Model"
           :models="llmModels"
         />
-        <ModelSelector
+        <!-- <ModelSelector
           v-model="config.dimensionParseModel"
           label="Dimension Parse Model"
           :models="llmModels"
@@ -74,7 +69,7 @@
           v-model="config.filterParseModel"
           label="Filter Parse Model"
           :models="llmModels"
-        />
+        /> -->
       </div>
     </div>
   </div>
@@ -84,7 +79,7 @@
 import { reactive, watch } from 'vue'
 import ModelSelector from './ModelSelector.vue'
 import StepperInput from './StepperInput.vue'
-import { LLM_MODELS, DEFAULT_LONG_CHAIN_CONFIG } from '@/constants/config'
+import { LLM_MODELS, DEFAULT_LONG_CHAIN_CONFIG, RERANK_MODELS } from '@/constants/config'
 
 const props = defineProps({
   modelValue: {
