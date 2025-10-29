@@ -58,6 +58,9 @@ const randomChartType = () => {
   const randomIndex = Math.floor(Math.random() * chartTypes.length)
   currentChartType.value = chartTypes[randomIndex]
   chartTypeName.value = chartTypeNames[currentChartType.value]
+
+  currentChartType.value = 'line'
+  chartTypeName.value = chartTypeNames[currentChartType.value]
 }
 
 const chartRef = ref(null)
