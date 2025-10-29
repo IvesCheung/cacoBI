@@ -1,7 +1,7 @@
 <template>
-  <div class="dual-path-progress">
+  <div class="dual-path-progress" ref="containerRef">
     <svg :width="width" :height="height" class="progress-svg">
-      <!-- 定义渐变色 -->
+      <!-- 定义渐变色和滤镜 -->
       <defs>
         <!-- 短链路渐变 (绿色) -->
         <linearGradient id="shortGradient">
@@ -20,63 +20,66 @@
           <stop offset="0%" style="stop-color:#475569;stop-opacity:0.3" />
           <stop offset="100%" style="stop-color:#64748b;stop-opacity:0.3" />
         </linearGradient>
+
+        <!-- 光晕滤镜 -->
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
       </defs>
 
-      <!-- 短链路背景连线 -->
-      <g v-for="(segment, idx) in shortSegments" :key="`short-bg-${idx}`">
-        <line
-          :x1="segment.start.x"
-          :y1="segment.start.y"
-          :x2="segment.end.x"
-          :y2="segment.end.y"
-          stroke="url(#bgGradient)"
-          :stroke-width="pathWidth"
-          stroke-linecap="round"
-        />
-      </g>
+      <!-- 短链路背景路径 -->
+      <path
+        :d="shortPathD"
+        stroke="url(#bgGradient)"
+        :stroke-width="pathWidth"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none"
+        class="bg-path"
+      />
 
-      <!-- 长链路背景连线 -->
-      <g v-for="(segment, idx) in longSegments" :key="`long-bg-${idx}`">
-        <line
-          :x1="segment.start.x"
-          :y1="segment.start.y"
-          :x2="segment.end.x"
-          :y2="segment.end.y"
-          stroke="url(#bgGradient)"
-          :stroke-width="pathWidth"
-          stroke-linecap="round"
-        />
-      </g>
+      <!-- 长链路背景路径 -->
+      <path
+        :d="longPathD"
+        stroke="url(#bgGradient)"
+        :stroke-width="pathWidth"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none"
+        class="bg-path"
+      />
 
-      <!-- 短链路进度连线 -->
+      <!-- 短链路进度路径 -->
       <g v-for="(segment, idx) in shortSegments" :key="`short-progress-${idx}`">
         <line
-          v-if="shortProgress[idx] > 0"
           :x1="segment.start.x"
           :y1="segment.start.y"
-          :x2="segment.start.x + (segment.end.x - segment.start.x) * (shortProgress[idx] / 100)"
-          :y2="segment.start.y + (segment.end.y - segment.start.y) * (shortProgress[idx] / 100)"
+          :x2="segment.start.x + (segment.end.x - segment.start.x) * (props.shortProgress[idx] / 100)"
+          :y2="segment.start.y + (segment.end.y - segment.start.y+0.1) * (props.shortProgress[idx] / 100)"
           stroke="url(#shortGradient)"
-          :stroke-width="pathWidth"
+          :stroke-width="pathWidth + 1"
           stroke-linecap="round"
-          class="progress-line"
-          :class="{ 'pulsing': shortProgress[idx] > 0 && shortProgress[idx] < 100 }"
+          class="progress-line short-progress"
+          :class="{ 'pulsing': props.shortProgress[idx] > 0 && props.shortProgress[idx] < 100 }"
         />
       </g>
 
-      <!-- 长链路进度连线 -->
+      <!-- 长链路进度路径 -->
       <g v-for="(segment, idx) in longSegments" :key="`long-progress-${idx}`">
         <line
-          v-if="longProgress[idx] > 0"
           :x1="segment.start.x"
           :y1="segment.start.y"
-          :x2="segment.start.x + (segment.end.x - segment.start.x) * (longProgress[idx] / 100)"
-          :y2="segment.start.y + (segment.end.y - segment.start.y) * (longProgress[idx] / 100)"
+          :x2="segment.start.x + (segment.end.x - segment.start.x) * (props.longProgress[idx] / 100)"
+          :y2="segment.start.y + (segment.end.y - segment.start.y + 0.1) * (props.longProgress[idx] / 100)"
           stroke="url(#longGradient)"
-          :stroke-width="pathWidth"
+          :stroke-width="pathWidth + 1"
           stroke-linecap="round"
-          class="progress-line"
-          :class="{ 'pulsing': longProgress[idx] > 0 && longProgress[idx] < 100 }"
+          class="progress-line long-progress"
+          :class="{ 'pulsing': props.longProgress[idx] > 0 && props.longProgress[idx] < 100 }"
         />
       </g>
 
@@ -84,26 +87,44 @@
       <circle
         :cx="startPoint.x"
         :cy="startPoint.y"
-        :r="dotRadius"
+        :r="dotRadius + 2"
         fill="#3b82f6"
-        class="start-dot"
+        class="endpoint-dot"
       />
+      <text
+        :x="startPoint.x - 20"
+        :y="startPoint.y + 4"
+        text-anchor="end"
+        class="endpoint-label"
+      >
+        Start
+      </text>
 
       <!-- 短链路节点 -->
       <g v-for="(node, idx) in shortNodes" :key="`short-node-${idx}`">
         <circle
           :cx="node.x"
           :cy="node.y"
-          :r="dotRadius"
+          :r="idx === shortNodes.length - 1 ? dotRadius + 2 : dotRadius"
           :fill="getShortNodeColor(idx)"
-          :class="getShortNodeClass(idx)"
-          class="step-node"
+          :class="[getShortNodeClass(idx), idx === shortNodes.length - 1 ? 'endpoint-node' : 'step-node']"
         />
         <text
+          v-if="idx !== shortNodes.length - 1"
           :x="node.x"
           :y="node.y - dotRadius - 8"
           text-anchor="middle"
           class="node-label short-label"
+        >
+          {{ idx + 1 }}
+        </text>
+        <!-- 最后一个节点的标签显示在上方 -->
+        <text
+          v-else
+          :x="node.x"
+          :y="node.y - dotRadius - 10"
+          text-anchor="middle"
+          class="node-label endpoint-label-number short-label"
         >
           {{ idx + 1 }}
         </text>
@@ -114,12 +135,12 @@
         <circle
           :cx="node.x"
           :cy="node.y"
-          :r="dotRadius"
+          :r="idx === longNodes.length - 1 ? dotRadius + 2 : dotRadius"
           :fill="getLongNodeColor(idx)"
-          :class="getLongNodeClass(idx)"
-          class="step-node"
+          :class="[getLongNodeClass(idx), idx === longNodes.length - 1 ? 'endpoint-node' : 'step-node']"
         />
         <text
+          v-if="idx !== longNodes.length - 1"
           :x="node.x"
           :y="node.y + dotRadius + 18"
           text-anchor="middle"
@@ -127,21 +148,41 @@
         >
           {{ idx + 1 }}
         </text>
+        <!-- 最后一个节点的标签显示在下方 -->
+        <text
+          v-else
+          :x="node.x"
+          :y="node.y + dotRadius + 20"
+          text-anchor="middle"
+          class="node-label endpoint-label-number long-label"
+        >
+          {{ idx + 1 }}
+        </text>
       </g>
+
+      <!-- 终点标签 -->
+      <text
+        :x="endPoint.x + 20"
+        :y="endPoint.y + 4"
+        text-anchor="start"
+        class="endpoint-label"
+      >
+        End
+      </text>
 
       <!-- 路径标签 -->
       <text
-        :x="shortNodes[shortNodes.length - 1].x + 35"
-        :y="shortNodes[shortNodes.length - 1].y"
-        text-anchor="start"
+        :x="width / 2 - 20"
+        :y="shortNodes[Math.floor(shortNodes.length / 2)].y - 15"
+        text-anchor="middle"
         class="path-label short-label"
       >
         Shortcut
       </text>
       <text
-        :x="longNodes[longNodes.length - 1].x + 35"
-        :y="longNodes[longNodes.length - 1].y"
-        text-anchor="start"
+        :x="width / 2 - 20"
+        :y="longNodes[Math.floor(longNodes.length / 2)].y + 30"
+        text-anchor="middle"
         class="path-label long-label"
       >
         Long-chain
@@ -151,7 +192,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
   shortProgress: {
@@ -176,51 +217,87 @@ const props = defineProps({
   }
 })
 
-// SVG 尺寸配置
-const width = 700
-const height = 180
+// 容器引用
+const containerRef = ref(null)
+const width = ref(750)
+const height = ref(160)
+
+// SVG 其他配置
 const pathWidth = 4
 const dotRadius = 6
 
-// 关键点位置
-const startPoint = { x: 40, y: height / 2 }
-const branchPoint = { x: 120, y: height / 2 }
+// 关键点位置（使用 computed 使其响应式）
+const startPoint = computed(() => ({ x: 50, y: height.value / 2 }))
+const endPoint = computed(() => ({ x: width.value - 80, y: height.value / 2 }))
 
-// 短链路参数 (3个节点)
+// 短链路参数 (3个节点) - 上方路径
 const shortStepCount = 3
-const shortPathY = 40 // 上方路径
-const shortPathEndX = width - 100
+const shortMaxDeviation = 45 // 最大偏离中心线的距离
 
-// 长链路参数 (7个节点)
+// 长链路参数 (7个节点) - 下方路径
 const longStepCount = 7
-const longPathY = height - 40 // 下方路径
-const longPathEndX = width - 80
+const longMaxDeviation = 45 // 最大偏离中心线的距离
 
-// 计算短链路节点位置
+// 计算短链路节点位置（对称分布）
 const shortNodes = computed(() => {
   const nodes = []
-  const segmentLength = (shortPathEndX - branchPoint.x) / shortStepCount
+  const start = startPoint.value
+  const end = endPoint.value
+  const totalDistance = end.x - start.x
 
   for (let i = 0; i < shortStepCount; i++) {
+    // 均匀分布在 0 到 1 之间，包括终点
+    const progress = (i + 1) / (shortStepCount)
+
+    // 水平位置均匀分布
+    const x = start.x + totalDistance * progress
+
+    // 使用正弦函数创建平滑的对称椭圆曲线
+    // progress * Math.PI 确保从0到π，sin函数正好完成一个完整的上升和下降
+    const yOffset = Math.sin(progress * Math.PI) * shortMaxDeviation * -1 // 上方路径
+
     nodes.push({
-      x: branchPoint.x + segmentLength * (i + 1),
-      y: branchPoint.y + (shortPathY - branchPoint.y) * ((i + 1) / shortStepCount)
+      x: x,
+      y: start.y + yOffset
     })
+  }
+
+  // 最后一个节点精确设置为终点
+  nodes[nodes.length - 1] = {
+    x: end.x,
+    y: end.y
   }
 
   return nodes
 })
 
-// 计算长链路节点位置
+// 计算长链路节点位置（对称分布）
 const longNodes = computed(() => {
   const nodes = []
-  const segmentLength = (longPathEndX - branchPoint.x) / longStepCount
+  const start = startPoint.value
+  const end = endPoint.value
+  const totalDistance = end.x - start.x
 
   for (let i = 0; i < longStepCount; i++) {
+    // 均匀分布在 0 到 1 之间，包括终点
+    const progress = (i + 1) / (longStepCount)
+
+    // 水平位置均匀分布
+    const x = start.x + totalDistance * progress
+
+    // 使用正弦函数创建平滑的对称椭圆曲线
+    const yOffset = Math.sin(progress * Math.PI) * longMaxDeviation * 1 // 下方路径
+
     nodes.push({
-      x: branchPoint.x + segmentLength * (i + 1),
-      y: branchPoint.y + (longPathY - branchPoint.y) * ((i + 1) / longStepCount)
+      x: x,
+      y: start.y + yOffset
     })
+  }
+
+  // 最后一个节点精确设置为终点
+  nodes[nodes.length - 1] = {
+    x: end.x,
+    y: end.y
   }
 
   return nodes
@@ -232,7 +309,7 @@ const shortSegments = computed(() => {
 
   // 起点到第一个节点
   segments.push({
-    start: startPoint,
+    start: startPoint.value,
     end: shortNodes.value[0]
   })
 
@@ -253,7 +330,7 @@ const longSegments = computed(() => {
 
   // 起点到第一个节点
   segments.push({
-    start: startPoint,
+    start: startPoint.value,
     end: longNodes.value[0]
   })
 
@@ -267,6 +344,31 @@ const longSegments = computed(() => {
 
   return segments
 })
+
+// 生成短链路的SVG路径字符串
+const shortPathD = computed(() => {
+  const start = startPoint.value
+  let path = `M ${start.x} ${start.y}`
+
+  shortNodes.value.forEach(node => {
+    path += ` L ${node.x} ${node.y}`
+  })
+
+  return path
+})
+
+// 生成长链路的SVG路径字符串
+const longPathD = computed(() => {
+  const start = startPoint.value
+  let path = `M ${start.x} ${start.y}`
+
+  longNodes.value.forEach(node => {
+    path += ` L ${node.x} ${node.y}`
+  })
+
+  return path
+})
+
 
 // 获取短链路节点颜色
 const getShortNodeColor = (index) => {
@@ -311,6 +413,40 @@ const getLongNodeClass = (index) => {
     'inactive': progress === 0
   }
 }
+
+// 更新容器尺寸
+const updateDimensions = () => {
+  if (containerRef.value) {
+    const rect = containerRef.value.getBoundingClientRect()
+    width.value = rect.width || 750
+    // 保持固定高度或根据宽度计算高度
+    height.value = 160
+  }
+}
+
+// 防抖处理
+let resizeTimeout = null
+const handleResize = () => {
+  if (resizeTimeout) {
+    clearTimeout(resizeTimeout)
+  }
+  resizeTimeout = setTimeout(() => {
+    updateDimensions()
+  }, 150)
+}
+
+// 生命周期钩子
+onMounted(() => {
+  updateDimensions()
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+  if (resizeTimeout) {
+    clearTimeout(resizeTimeout)
+  }
+})
 </script>
 
 <style scoped>
@@ -319,10 +455,11 @@ const getLongNodeClass = (index) => {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 8px 8px;
+  padding: 12px 8px;
   background: var(--result-bg);
-  border-radius: 8px;
+  border-radius: 12px;
   margin-bottom: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .progress-svg {
@@ -330,12 +467,28 @@ const getLongNodeClass = (index) => {
   height: auto;
 }
 
+/* 背景路径样式 */
+.bg-path {
+  transition: all 0.3s ease;
+  opacity: 0.6;
+}
+
+/* 进度线条样式 */
 .progress-line {
   transition: all 0.3s ease;
+  filter: drop-shadow(0 0 3px currentColor);
 }
 
 .progress-line.pulsing {
   animation: linePulse 1.5s ease-in-out infinite;
+}
+
+.short-progress {
+  filter: drop-shadow(0 0 4px #10b981);
+}
+
+.long-progress {
+  filter: drop-shadow(0 0 4px #f59e0b);
 }
 
 @keyframes linePulse {
@@ -343,17 +496,49 @@ const getLongNodeClass = (index) => {
     opacity: 1;
   }
   50% {
-    opacity: 0.8;
+    opacity: 0.7;
   }
 }
 
-.start-dot {
-  filter: drop-shadow(0 0 4px #3b82f6);
+/* 端点样式 */
+.endpoint-dot {
+  filter: drop-shadow(0 0 6px currentColor);
   transition: all 0.3s ease;
 }
 
+.endpoint-dot.active {
+  animation: endpointPulse 2s ease-in-out infinite;
+}
+
+.endpoint-dot.completed {
+  animation: endpointComplete 0.5s ease-out;
+}
+
+@keyframes endpointPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px currentColor);
+  }
+  50% {
+    filter: drop-shadow(0 0 10px currentColor);
+  }
+}
+
+@keyframes endpointComplete {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 步骤节点样式 */
 .step-node {
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .step-node.inactive {
@@ -361,51 +546,91 @@ const getLongNodeClass = (index) => {
 }
 
 .step-node.active {
-  filter: drop-shadow(0 0 4px #3b82f6);
+  filter: drop-shadow(0 0 5px #3b82f6);
   animation: nodePulse 1.5s ease-in-out infinite;
 }
 
 .step-node.completed {
-  filter: drop-shadow(0 0 4px currentColor);
+  filter: drop-shadow(0 0 5px currentColor);
 }
 
 @keyframes nodePulse {
   0%, 100% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 4px #3b82f6);
+    filter: drop-shadow(0 0 5px #3b82f6);
   }
   50% {
-    transform: scale(1.05);
-    filter: drop-shadow(0 0 6px #3b82f6);
+    filter: drop-shadow(0 0 8px #3b82f6);
   }
 }
 
+/* 终点节点样式（节点3和节点7共享同一位置）*/
+.endpoint-node {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.endpoint-node.inactive {
+  opacity: 0.5;
+}
+
+.endpoint-node.active {
+  filter: drop-shadow(0 0 6px #3b82f6);
+  animation: endpointPulse 2s ease-in-out infinite;
+}
+
+.endpoint-node.completed {
+  filter: drop-shadow(0 0 8px currentColor);
+  animation: endpointComplete 0.5s ease-out;
+}
+
+/* 标签样式 */
 .node-label {
   font-size: 11px;
   font-weight: 600;
   transition: fill 0.3s ease;
-}
-
-.node-label.short-label {
   fill: var(--app-text-primary);
+  user-select: none;
 }
 
-.node-label.long-label {
-  fill: var(--app-text-primary);
-}
-
-.path-label {
+.endpoint-label-number {
   font-size: 12px;
   font-weight: 700;
   transition: fill 0.3s ease;
+  fill: var(--app-text-primary);
+  user-select: none;
+}
+
+.endpoint-label {
+  font-size: 12px;
+  font-weight: 700;
+  fill: var(--app-text-secondary);
+  transition: fill 0.3s ease;
+  user-select: none;
+}
+
+.path-label {
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  user-select: none;
+  letter-spacing: 0.5px;
 }
 
 .path-label.short-label {
   fill: #10b981;
+  filter: drop-shadow(0 1px 2px rgba(16, 185, 129, 0.3));
 }
 
 .path-label.long-label {
   fill: #f59e0b;
+  filter: drop-shadow(0 1px 2px rgba(245, 158, 11, 0.3));
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .dual-path-progress {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  }
 }
 </style>
 

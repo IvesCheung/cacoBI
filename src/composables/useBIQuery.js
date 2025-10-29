@@ -75,7 +75,7 @@ export function useBIQuery() {
       completed: false,
       details: ["1. Huawei's sales in 2024", '2. Mac Pro sales in 2025'],
       tokens: 0,
-      duration: 0.13,
+      duration: 1.13,
     },
     {
       id: 3,
