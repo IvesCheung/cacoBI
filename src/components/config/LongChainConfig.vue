@@ -4,7 +4,7 @@
       <h3>Long-chain Configuration</h3>
     </div>
 
-    <div class="config-content">
+    <el-scrollbar class="config-content">
       <!-- Query Parsing Stage -->
       <div class="config-section">
         <div class="section-title">Query Parsing</div>
@@ -71,7 +71,7 @@
           :models="llmModels"
         /> -->
       </div>
-    </div>
+    </el-scrollbar>
   </div>
 </template>
 
@@ -146,11 +146,13 @@ watch(() => props.modelValue, (newVal) => {
 }
 
 .config-content {
+  max-height: calc(100vh - 300px);
+}
+
+.config-content :deep(.el-scrollbar__view) {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  max-height: calc(100vh - 300px);
-  overflow-y: auto;
   padding-right: 4px;
 }
 
@@ -170,23 +172,5 @@ watch(() => props.modelValue, (newVal) => {
   padding-bottom: 6px;
   border-bottom: 1px solid var(--config-section-border);
   transition: color 0.3s ease;
-}
-
-.config-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.config-content::-webkit-scrollbar-track {
-  background: var(--progress-bg);
-  border-radius: 10px;
-}
-
-.config-content::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
-  border-radius: 10px;
-}
-
-.config-content::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
 }
 </style>

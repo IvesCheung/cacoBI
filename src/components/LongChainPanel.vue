@@ -11,9 +11,9 @@
       />
     </div>
 
-    <div class="panel-body">
+    <el-scrollbar class="panel-body">
       <LongChainFlow :steps="steps" />
-    </div>
+    </el-scrollbar>
   </div>
 </template>
 
@@ -98,34 +98,22 @@ defineProps({
 }
 
 .panel-body {
+  flex: 1;
+  min-height: 0;
+}
+
+.panel-body :deep(.el-scrollbar__wrap) {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.panel-body :deep(.el-scrollbar__view) {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  overflow-x: auto;
-  overflow-y: hidden;
-  flex: 1;
   min-height: 220px;
   padding: 20px 0;
-}
-
-/* 美化滚动条 */
-.panel-body::-webkit-scrollbar {
-  height: 8px;
-}
-
-.panel-body::-webkit-scrollbar-track {
-  background: var(--progress-bg);
-  border-radius: 10px;
-}
-
-.panel-body::-webkit-scrollbar-thumb {
-  background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
-  border-radius: 10px;
-}
-
-.panel-body::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
 }
 </style>
 

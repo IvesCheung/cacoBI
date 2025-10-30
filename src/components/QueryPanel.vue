@@ -89,7 +89,7 @@
       size="450px"
       :before-close="handleDrawerClose"
     >
-      <div class="drawer-content">
+      <el-scrollbar class="drawer-content">
         <div class="config-section">
           <h3 class="config-section-title">Short Chain Configuration</h3>
           <ShortChainConfig v-model="shortChainConfigLocal" />
@@ -99,7 +99,7 @@
           <h3 class="config-section-title">Long Chain Configuration</h3>
           <LongChainConfig v-model="longChainConfigLocal" />
         </div>
-      </div>
+      </el-scrollbar>
     </el-drawer>
   </div>
 </template>
@@ -222,9 +222,9 @@ const handleDrawerClose = (done) => {
   flex-shrink: 0;
 }
 
-.query-panel > .execution-logs,
 .query-panel > .result-container {
-  overflow-y: auto;
+  flex-shrink: 1;
+  min-height: 0;
 }
 
 .panel-header {
@@ -398,9 +398,11 @@ const handleDrawerClose = (done) => {
 }
 
 .drawer-content {
-  padding: 0;
   height: 100%;
-  overflow-y: auto;
+}
+
+.drawer-content :deep(.el-scrollbar__view) {
+  padding: 0 20px;
 }
 
 .config-section {

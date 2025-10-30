@@ -41,7 +41,8 @@
           <!-- Short Chain Path -->
           <div class="chain-path short-path">
             <div class="path-label">Short Chain</div>
-            <div class="path-flow">
+            <el-scrollbar class="path-flow">
+            <div class="path-flow-content">
             <div
               v-for="step in shortSteps"
               :key="step.id"
@@ -50,12 +51,14 @@
               <ChainNode :node="mapShortStepToNode(step)" />
             </div>
           </div>
+        </el-scrollbar>
         </div>
 
         <!-- Long Chain Path -->
         <div class="chain-path long-path">
           <div class="path-label">Long Chain (Optimized)</div>
-          <div class="path-flow">
+          <el-scrollbar class="path-flow">
+            <div class="path-flow-content">
             <!-- Stage 1: Query Parsing -->
             <div class="flow-column">
               <div class="flow-group-box">
@@ -165,6 +168,7 @@
               />
             </div>
           </div>
+          </el-scrollbar>
         </div>
         </div>
       </div>
@@ -284,8 +288,6 @@ const mapLongStepToNode = (step) => {
 .optimized-chain-flow-container {
   width: 100%;
   height: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
   padding: 12px;
 }
 
@@ -403,11 +405,20 @@ const mapLongStepToNode = (step) => {
 
 /* Path Flow */
 .path-flow {
+  height: 100%;
+}
+
+.path-flow :deep(.el-scrollbar__wrap) {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.path-flow-content {
   display: flex;
   align-items: center;
   gap: 16px;
-  overflow-x: auto;
   padding: 8px 0;
+  min-width: fit-content;
 }
 
 /* Short Chain Specific Styles */
@@ -468,38 +479,5 @@ const mapLongStepToNode = (step) => {
   width: 2px;
   height: 100%;
   background: linear-gradient(180deg, rgba(245, 158, 11, 0.3) 0%, rgba(245, 158, 11, 0.6) 50%, rgba(245, 158, 11, 0.3) 100%);
-}
-
-/* Scrollbar Styles */
-.optimized-chain-flow-container::-webkit-scrollbar {
-  height: 6px;
-}
-
-.optimized-chain-flow-container::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.4);
-  border-radius: 6px;
-}
-
-.optimized-chain-flow-container::-webkit-scrollbar-thumb {
-  background: linear-gradient(90deg, #8b5cf6, #6366f1);
-  border-radius: 6px;
-}
-
-.optimized-chain-flow-container::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(90deg, #a78bfa, #818cf8);
-}
-
-.path-flow::-webkit-scrollbar {
-  height: 4px;
-}
-
-.path-flow::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.2);
-  border-radius: 4px;
-}
-
-.path-flow::-webkit-scrollbar-thumb {
-  background: rgba(139, 92, 246, 0.5);
-  border-radius: 4px;
 }
 </style>

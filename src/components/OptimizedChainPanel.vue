@@ -11,13 +11,13 @@
       />
     </div>
 
-    <div class="panel-body">
+    <el-scrollbar class="panel-body">
       <OptimizedChainFlow
         :short-steps="shortSteps"
         :long-steps="longSteps"
         :hit-cache="hitCache"
       />
-    </div>
+    </el-scrollbar>
   </div>
 </template>
 
@@ -143,9 +143,10 @@ const longProgress = computed(() => {
 
 .panel-body {
   flex: 1;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
   min-height: 0;
+}
+
+.panel-body :deep(.el-scrollbar__view) {
+  height: 100%;
 }
 </style>

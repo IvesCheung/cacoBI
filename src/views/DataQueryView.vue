@@ -143,26 +143,6 @@ const handleExampleChange = (exampleId) => {
   grid-area: query;
   min-width: 0;
   min-height: 0;
-  overflow: auto;
-}
-
-/* 滚动条样式 */
-.chain-panel-wrapper::-webkit-scrollbar {
-  width: 4px;
-}
-
-.chain-panel-wrapper::-webkit-scrollbar-track {
-  background: rgba(30, 41, 59, 0.5);
-  border-radius: 2px;
-}
-
-.chain-panel-wrapper::-webkit-scrollbar-thumb {
-  background: rgba(71, 85, 105, 0.8);
-  border-radius: 2px;
-}
-
-.chain-panel-wrapper::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.9);
 }
 
 /* 响应式设计 */

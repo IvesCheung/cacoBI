@@ -11,9 +11,11 @@
       />
     </div>
 
-    <div class="panel-body short-flow-wrapper">
-      <ShortChainFlow :steps="steps" />
-    </div>
+    <el-scrollbar class="panel-body">
+      <div class="short-flow-wrapper">
+        <ShortChainFlow :steps="steps" />
+      </div>
+    </el-scrollbar>
   </div>
 </template>
 
@@ -98,13 +100,12 @@ defineProps({
 }
 
 .panel-body {
-  display: flex;
-  flex-direction: column;
-  overflow: visible;
   flex: 1;
-  min-height: 220px;
-  /* 为内部的短链路流提供垂直居中空间 */
-  position: relative;
+  min-height: 0;
+}
+
+.panel-body :deep(.el-scrollbar__view) {
+  height: 100%;
 }
 
 .short-flow-wrapper {
@@ -113,26 +114,8 @@ defineProps({
   align-items: center;
   justify-content: center;
   height: 100%;
+  min-height: 220px;
   padding: 4px 0; /* 减少额外上下留白 */
-}
-
-/* 美化滚动条 */
-.panel-body::-webkit-scrollbar {
-  width: 6px;
-}
-
-.panel-body::-webkit-scrollbar-track {
-  background: var(--progress-bg);
-  border-radius: 10px;
-}
-
-.panel-body::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #10b981 0%, #059669 100%);
-  border-radius: 10px;
-}
-
-.panel-body::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
 }
 </style>
 

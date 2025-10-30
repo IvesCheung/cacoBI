@@ -286,7 +286,6 @@ const mapStepToNode = (step) => {
 </script><style scoped>
 .long-chain-flow-container {
   width: 100%;
-  overflow-x: auto;
   padding: 16px;
 }
 
