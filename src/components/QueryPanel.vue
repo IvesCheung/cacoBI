@@ -69,16 +69,45 @@
       :is-executing="isExecuting"
     />
 
-    <!-- 优化链路结果 -->
-    <div v-if="optimizedCompleted" class="result-container short-result">
-      <h3 class="result-title short-title">🔀 Optimized Chain Result</h3>
-      <ResultChart key="optimized-chart" :data="queryResult" />
-    </div>
+    <!-- 链路结果 -->
+    <div v-if="optimizedCompleted || longCompleted" class="results-section">
+      <el-collapse
+        v-model="activeResults"
+        class="results-collapse"
+        @change="handleCollapseChange"
+      >
+        <!-- 优化链路结果 -->
+        <el-collapse-item
+          v-if="optimizedCompleted"
+          name="optimized"
+          class="result-collapse-item short-result"
+        >
+          <template #title>
+            <div class="collapse-title">
+              <span class="result-title short-title">🔀 Optimized Chain Result</span>
+            </div>
+          </template>
+          <div class="result-content">
+            <ResultChart key="optimized-chart" :data="queryResult" />
+          </div>
+        </el-collapse-item>
 
-    <!-- 原始长链路结果 -->
-    <div v-if="longCompleted" class="result-container long-result">
-      <h3 class="result-title long-title">🟠 Long-chain Result</h3>
-      <ResultChart key="long-chart" :data="queryResult" />
+        <!-- 原始长链路结果 -->
+        <el-collapse-item
+          v-if="longCompleted"
+          name="long"
+          class="result-collapse-item long-result"
+        >
+          <template #title>
+            <div class="collapse-title">
+              <span class="result-title long-title">🟠 Long-chain Result</span>
+            </div>
+          </template>
+          <div class="result-content">
+            <ResultChart key="long-chart" :data="queryResult" />
+          </div>
+        </el-collapse-item>
+      </el-collapse>
     </div>
 
     <!-- 配置抽屉 -->
@@ -165,6 +194,17 @@ const emit = defineEmits(['update:queryText', 'update:costAgentEnabled', 'update
 // Drawer visibility
 const drawerVisible = ref(false)
 
+// Collapse control - 优化链路默认展开，长链路默认折叠
+const activeResults = ref(['optimized'])
+
+// 监听折叠状态变化，触发图表重新渲染
+const handleCollapseChange = () => {
+  // 延迟触发resize，确保DOM已经完成动画
+  setTimeout(() => {
+    window.dispatchEvent(new Event('resize'))
+  }, 350) // Element Plus 的折叠动画时长是 300ms
+}
+
 const queryText = computed({
   get: () => props.queryText,
   set: (val) => emit('update:queryText', val)
@@ -222,7 +262,7 @@ const handleDrawerClose = (done) => {
   flex-shrink: 0;
 }
 
-.query-panel > .result-container {
+.query-panel > .results-section {
   flex-shrink: 1;
   min-height: 0;
 }
@@ -299,22 +339,47 @@ const handleDrawerClose = (done) => {
   flex-shrink: 0;
 }
 
-.result-container {
-  background: var(--result-bg);
-  border-radius: 6px;
-  padding: 10px;
+.results-section {
   margin-bottom: 12px;
-  transition: all 0.3s ease;
+  flex-shrink: 1;
+  min-height: 0;
 }
 
-.result-container:last-child {
+.results-collapse {
+  border: none;
+  background: transparent;
+}
+
+.results-collapse :deep(.el-collapse-item) {
+  border-bottom: none;
+}
+
+.result-collapse-item {
+  background: var(--result-bg);
+  border-radius: 6px;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+  border: 1px solid var(--input-border);
+}
+
+.result-collapse-item:last-child {
   margin-bottom: 0;
+}
+
+.collapse-title {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.result-content {
+  padding: 0 10px 10px 10px;
 }
 
 .result-title {
   font-size: 14px;
   font-weight: 600;
-  margin: 0 0 12px 0;
+  margin: 0;
 }
 
 .short-title {
@@ -323,6 +388,39 @@ const handleDrawerClose = (done) => {
 
 .long-title {
   color: #f59e0b;
+}
+
+:deep(.el-collapse-item__header) {
+  background: transparent;
+  border: none;
+  padding: 12px 16px;
+  font-weight: 600;
+  color: var(--app-text-primary);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+:deep(.el-collapse-item__header:hover) {
+  background: var(--input-bg);
+}
+
+:deep(.el-collapse-item__wrap) {
+  background: transparent;
+  border: none;
+}
+
+:deep(.el-collapse-item__content) {
+  padding: 0;
+}
+
+:deep(.el-collapse-item__arrow) {
+  margin-right: 8px;
+  color: var(--app-text-primary);
+  transition: transform 0.3s ease;
+}
+
+:deep(.el-collapse-item__arrow.is-active) {
+  transform: rotate(90deg);
 }
 
 :deep(.el-textarea__inner) {
