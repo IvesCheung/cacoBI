@@ -76,43 +76,45 @@
 
     <!-- 链路结果 -->
     <div v-if="optimizedCompleted || longCompleted" class="results-section">
-      <el-collapse
-        v-model="activeResults"
-        class="results-collapse"
-        @change="handleCollapseChange"
-      >
-        <!-- 优化链路结果 -->
-        <el-collapse-item
-          v-if="optimizedCompleted"
-          name="optimized"
-          class="result-collapse-item short-result"
+      <el-scrollbar class="results-scrollbar">
+        <el-collapse
+          v-model="activeResults"
+          class="results-collapse"
+          @change="handleCollapseChange"
         >
-          <template #title>
-            <div class="collapse-title">
-              <span class="result-title short-title">🔀 Optimized Chain Result</span>
+          <!-- 优化链路结果 -->
+          <el-collapse-item
+            v-if="optimizedCompleted"
+            name="optimized"
+            class="result-collapse-item short-result"
+          >
+            <template #title>
+              <div class="collapse-title">
+                <span class="result-title short-title">🔀 Optimized Chain Result</span>
+              </div>
+            </template>
+            <div class="result-content">
+              <ResultChart key="optimized-chart" :data="queryResult" />
             </div>
-          </template>
-          <div class="result-content">
-            <ResultChart key="optimized-chart" :data="queryResult" />
-          </div>
-        </el-collapse-item>
+          </el-collapse-item>
 
-        <!-- 原始长链路结果 -->
-        <el-collapse-item
-          v-if="longCompleted"
-          name="long"
-          class="result-collapse-item long-result"
-        >
-          <template #title>
-            <div class="collapse-title">
-              <span class="result-title long-title">🟠 Long-chain Result</span>
+          <!-- 原始长链路结果 -->
+          <el-collapse-item
+            v-if="longCompleted"
+            name="long"
+            class="result-collapse-item long-result"
+          >
+            <template #title>
+              <div class="collapse-title">
+                <span class="result-title long-title">🟠 Long-chain Result</span>
+              </div>
+            </template>
+            <div class="result-content">
+              <ResultChart key="long-chart" :data="queryResult" />
             </div>
-          </template>
-          <div class="result-content">
-            <ResultChart key="long-chart" :data="queryResult" />
-          </div>
-        </el-collapse-item>
-      </el-collapse>
+          </el-collapse-item>
+        </el-collapse>
+      </el-scrollbar>
     </div>
 
     <!-- 配置抽屉 -->
@@ -353,6 +355,19 @@ const handleDrawerClose = (done) => {
   margin-bottom: 12px;
   flex-shrink: 1;
   min-height: 0;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.results-scrollbar {
+  flex: 1;
+  height: 100%;
+}
+
+.results-scrollbar :deep(.el-scrollbar__view) {
+  padding: 0 4px;
 }
 
 .results-collapse {
