@@ -16,6 +16,8 @@
         :short-steps="shortSteps"
         :long-steps="longSteps"
         :hit-cache="hitCache"
+        :query-analyze-status="queryAnalyzeStatus"
+        :analyze-node="analyzeNode"
       />
     </el-scrollbar>
   </div>
@@ -38,6 +40,14 @@ const props = defineProps({
   hitCache: {
     type: Boolean,
     default: false
+  },
+  queryAnalyzeStatus: {
+    type: String,
+    default: 'pending'
+  },
+  analyzeNode: {
+    type: Object,
+    required: true
   },
   shortTime: {
     type: Number,

@@ -7,6 +7,8 @@
           :short-steps="shortSteps"
           :long-steps="longOptimizeSteps"
           :hit-cache="hitCache"
+          :query-analyze-status="queryAnalyzeStatus"
+          :analyze-node="analyzeNode"
           :short-time="shortOptimizeChainTime"
           :long-time="longOptimizeChainTime"
           :short-tokens="shortOptimizeChainTokens"
@@ -60,6 +62,8 @@ const {
   isExecuting,
   costAgentEnabled,
   hitCache,
+  queryAnalyzeStatus,
+  analyzeNode,
 
   // 优化链路
   shortOptimizeChainTime,

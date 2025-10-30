@@ -1,7 +1,7 @@
-import { ref, reactive } from 'vue'
-import { ElNotification } from 'element-plus'
+import { ref, reactive, computed } from 'vue'
 import { LOG_MESSAGES, LOG_TYPES } from '@/constants/logMessages'
 import { getDefaultQueryExample, getQueryExample } from '@/data/queryExamples'
+import { getCurrentTime, getRandomComputeDuration, showLogNotification } from '@/utils/utils'
 
 export function useBIQuery() {
   // 加载默认查询示例
@@ -37,6 +37,27 @@ export function useBIQuery() {
   // Cost Agent 跳过的步骤信息
   const skippedStepsInfo = ref([])
 
+  // Query Analyze 节点状态
+  const queryAnalyzeStatus = ref('pending') // 'pending', 'running', 'completed'
+  const queryAnalyzeTime = ref(getRandomComputeDuration()) // 随机耗时 0.05-0.15s
+  const queryAnalyzeCompleted = ref(false)
+
+  // Query Analyze 节点数据
+  const analyzeNode = computed(() => ({
+    id: 'query-analyze',
+    title: 'Query Analyze',
+    status: queryAnalyzeStatus.value,
+    isLLM: false,
+    time: queryAnalyzeTime.value,
+    tokens: 0,
+    error: null,
+    details: [
+      'Analyze query complexity',
+      'Determine optimal chain path',
+      hitCache.value ? '✓ Hit cache - use short chain' : '✗ No cache - use long chain',
+    ],
+  }))
+
   // 查询输入
   const queryText = ref(defaultExample.queryText)
   const queryResult = ref(defaultExample.queryResult)
@@ -59,11 +80,6 @@ export function useBIQuery() {
     dimensionModel: 'Deepseek-v3',
     filterModel: 'Deepseek-v3',
   })
-
-  // 生成随机的compute节点duration (0.05-0.15秒)
-  const getRandomComputeDuration = () => {
-    return Math.random() * (0.15 - 0.05) + 0.05
-  }
 
   // 初始化短链路步骤模板
   const createShortSteps = (exampleData) => {
@@ -382,55 +398,6 @@ export function useBIQuery() {
   // 原始长链路进度 (不带 cost planner)
   const longProgress = reactive([0, 0, 0, 0, 0, 0, 0])
 
-  // 获取当前时间字符串 (HH:MM:SS)
-  const getCurrentTime = () => {
-    const now = new Date()
-    const hours = String(now.getHours()).padStart(2, '0')
-    const minutes = String(now.getMinutes()).padStart(2, '0')
-    const seconds = String(now.getSeconds()).padStart(2, '0')
-    return `${hours}:${minutes}:${seconds}`
-  }
-
-  // 显示日志通知的辅助函数
-  const showLogNotification = (message, logType = LOG_TYPES.REGULAR) => {
-    const currentTime = getCurrentTime()
-
-    // 根据日志类型配置通知样式
-    const notificationConfig = {
-      title: currentTime,
-      message: message,
-      position: 'top-right',
-      duration: 2000,
-      offset: 50,
-    }
-
-    // 根据日志类型设置不同的样式
-    if (logType === LOG_TYPES.REGULAR) {
-      ElNotification({
-        ...notificationConfig,
-        type: 'info',
-        customClass: 'regular-log-notification',
-      })
-    } else if (logType === LOG_TYPES.COST_AGENT) {
-      ElNotification({
-        ...notificationConfig,
-        duration: 4000,
-        type: 'success',
-        customClass: 'cost-agent-log-notification',
-      })
-    } else if (logType === LOG_TYPES.SUCCESS) {
-      ElNotification({
-        ...notificationConfig,
-        type: 'success',
-      })
-    } else if (logType === LOG_TYPES.ERROR) {
-      ElNotification({
-        ...notificationConfig,
-        type: 'error',
-      })
-    }
-  }
-
   // 选择要跳过的步骤（Cost Agent功能）
   const selectRandomStepsToSkip = () => {
     // 可跳过的阶段：stage1-stage6（不包括最后一个stage7）
@@ -496,6 +463,11 @@ export function useBIQuery() {
 
     skippedStepsInfo.value = []
 
+    // 重置 Query Analyze 状态
+    queryAnalyzeStatus.value = 'pending'
+    queryAnalyzeCompleted.value = false
+    queryAnalyzeTime.value = getRandomComputeDuration() // 重新生成随机耗时
+
     // 重置短链路步骤
     shortSteps.forEach((step) => {
       step.active = false
@@ -531,6 +503,26 @@ export function useBIQuery() {
     longProgress.fill(0)
   }
 
+  // 模拟 Query Analyze 节点执行
+  const simulateQueryAnalyze = () => {
+    return new Promise((resolve) => {
+      // 开始执行
+      setTimeout(() => {
+        queryAnalyzeStatus.value = 'running'
+      }, 100)
+
+      // 完成执行
+      setTimeout(
+        () => {
+          queryAnalyzeStatus.value = 'completed'
+          queryAnalyzeCompleted.value = true
+          resolve()
+        },
+        100 + queryAnalyzeTime.value * 1000,
+      )
+    })
+  }
+
   // 执行查询
   const executeQuery = () => {
     return new Promise((resolve) => {
@@ -541,34 +533,35 @@ export function useBIQuery() {
       // 显示常规日志通知
       showLogNotification(LOG_MESSAGES.RETRIEVING_DATA, LOG_TYPES.REGULAR)
 
-      setTimeout(() => {
+      // 首先执行 Query Analyze 步骤
+      simulateQueryAnalyze().then(() => {
         showLogNotification(LOG_MESSAGES.ANALYZING_DATA, LOG_TYPES.REGULAR)
-      }, 500)
 
-      // 如果启用了 Cost Agent，显示相关通知
-      if (costAgentEnabled.value) {
-        setTimeout(() => {
-          showLogNotification(LOG_MESSAGES.COST_PLANER_ANALYZING, LOG_TYPES.COST_AGENT)
-        }, 700)
-        setTimeout(() => {
-          showLogNotification(
-            LOG_MESSAGES.COST_PLANER_SKIPPED(skippedStepsInfo.value),
-            LOG_TYPES.COST_AGENT,
-          )
-        }, 1000)
-      }
+        // 如果启用了 Cost Agent，显示相关通知
+        if (costAgentEnabled.value) {
+          setTimeout(() => {
+            showLogNotification(LOG_MESSAGES.COST_PLANER_ANALYZING, LOG_TYPES.COST_AGENT)
+          }, 200)
+          setTimeout(() => {
+            showLogNotification(
+              LOG_MESSAGES.COST_PLANER_SKIPPED(skippedStepsInfo.value),
+              LOG_TYPES.COST_AGENT,
+            )
+          }, 500)
+        }
 
-      // 根据 hit_cache 决定执行哪条优化链路
-      if (hitCache.value) {
-        // 执行优化短链路
-        simulateShortOptimizeChain()
-      } else {
-        // 执行优化长链路 (带 cost planner)
-        simulateLongOptimizeChain()
-      }
+        // 根据 hit_cache 决定执行哪条优化链路
+        if (hitCache.value) {
+          // 执行优化短链路
+          simulateShortOptimizeChain()
+        } else {
+          // 执行优化长链路 (带 cost planner)
+          simulateLongOptimizeChain()
+        }
 
-      // 始终执行原始长链路
-      simulateLongChain()
+        // 始终执行原始长链路
+        simulateLongChain()
+      })
 
       // 等待链路完成
       const checkInterval = setInterval(() => {
@@ -670,7 +663,10 @@ export function useBIQuery() {
           shortOptimizeChainTokens.value += shortSteps[2].tokens
           clearInterval(timer)
           shortOptimizeChainTime.value =
-            shortSteps[0].duration + shortSteps[1].duration + shortSteps[2].duration
+            queryAnalyzeTime.value +
+            shortSteps[0].duration +
+            shortSteps[1].duration +
+            shortSteps[2].duration
           shortOptimizeCompleted.value = true
           shortOptimizeLLMCalls.value += 1
         })
@@ -730,7 +726,9 @@ export function useBIQuery() {
 
             if (isLastStage(stageIndex) && stepIdx === stageSteps.length - 1) {
               clearInterval(timer)
-              longOptimizeChainTime.value = parseFloat((accumulatedTime / 1000).toFixed(2))
+              longOptimizeChainTime.value = parseFloat(
+                (accumulatedTime / 1000 + queryAnalyzeTime.value).toFixed(2),
+              )
               longOptimizeCompleted.value = true
               console.log('优化长链路执行完成')
             }
@@ -841,6 +839,12 @@ export function useBIQuery() {
     isExecuting,
     costAgentEnabled,
     hitCache,
+    queryAnalyzeStatus,
+    queryAnalyzeCompleted,
+    queryAnalyzeTime,
+
+    // Analyze 节点
+    analyzeNode,
 
     // 优化链路的短链路
     shortOptimizeChainTime,
@@ -884,5 +888,6 @@ export function useBIQuery() {
     resetAll,
     clearLogs,
     loadQueryExample,
+    simulateQueryAnalyze,
   }
 }

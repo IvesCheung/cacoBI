@@ -183,24 +183,13 @@ import ChainNode from './ChainNode.vue'
 const props = defineProps({
   shortSteps: { type: Array, required: true },
   longSteps: { type: Object, required: true },
-  hitCache: { type: Boolean, default: false }
+  hitCache: { type: Boolean, default: false },
+  queryAnalyzeStatus: { type: String, default: 'pending' },
+  analyzeNode: { type: Object, required: true }
 })
 
-// Query Analyze Node - 决定走哪条链路
-const analyzeNode = computed(() => ({
-  id: 'query-analyze',
-  title: 'Query Analyze',
-  status: 'completed', // 分析节点始终完成
-  isLLM: false,
-  time: 0.08,
-  tokens: 0,
-  error: null,
-  details: [
-    'Analyze query complexity',
-    'Determine optimal chain path',
-    props.hitCache ? '✓ Hit cache - use short chain' : '✗ No cache - use long chain'
-  ]
-}))
+// Query Analyze Node - 使用从 useBIQuery 传来的数据
+const analyzeNode = computed(() => props.analyzeNode)
 
 // // 检查短链路是否有任何活动
 // const shortChainActive = computed(() => {
