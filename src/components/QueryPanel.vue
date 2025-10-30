@@ -61,21 +61,21 @@
 
     <!-- 双路径进度条 -->
     <DualPathProgress
-      v-if="isExecuting || shortCompleted || longCompleted"
-      :short-progress="shortProgress"
+      v-if="isExecuting || optimizedCompleted || longCompleted"
+      :short-progress="optimizedProgress"
       :long-progress="longProgress"
-      :short-completed="shortCompleted"
+      :short-completed="optimizedCompleted"
       :long-completed="longCompleted"
       :is-executing="isExecuting"
     />
 
-    <!-- 短链路结果 -->
-    <div v-if="shortCompleted" class="result-container short-result">
-      <h3 class="result-title short-title">✅ Shortcut Result</h3>
-      <ResultChart key="short-chart" :data="queryResult" />
+    <!-- 优化链路结果 -->
+    <div v-if="optimizedCompleted" class="result-container short-result">
+      <h3 class="result-title short-title">🔀 Optimized Chain Result</h3>
+      <ResultChart key="optimized-chart" :data="queryResult" />
     </div>
 
-    <!-- 长链路结果 -->
+    <!-- 原始长链路结果 -->
     <div v-if="longCompleted" class="result-container long-result">
       <h3 class="result-title long-title">🟠 Long-chain Result</h3>
       <ResultChart key="long-chart" :data="queryResult" />
@@ -126,7 +126,7 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  shortCompleted: {
+  optimizedCompleted: {
     type: Boolean,
     default: false
   },
@@ -134,7 +134,7 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  shortProgress: {
+  optimizedProgress: {
     type: Array,
     default: () => [0, 0, 0]
   },

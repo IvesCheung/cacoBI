@@ -7,7 +7,7 @@
         :time="hitCache ? shortTime : longTime"
         :total-tokens="hitCache ? shortTokens : longTokens"
         :llm-calls="hitCache ? shortLLMCalls : longLLMCalls"
-        :start-color="hitCache ? '#10b981' : '#f59e0b'"
+        :start-color="'#10b981'"
       />
     </div>
 

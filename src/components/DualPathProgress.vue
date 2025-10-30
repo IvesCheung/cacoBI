@@ -177,7 +177,7 @@
         text-anchor="middle"
         class="path-label short-label"
       >
-        Shortcut
+        Optimized
       </text>
       <text
         :x="width / 2 - 20"
@@ -230,12 +230,12 @@ const dotRadius = 6
 const startPoint = computed(() => ({ x: 50, y: height.value / 2 }))
 const endPoint = computed(() => ({ x: width.value - 80, y: height.value / 2 }))
 
-// 短链路参数 (3个节点) - 上方路径
-const shortStepCount = 3
+// 短链路参数 - 上方路径（根据传入的 progress 数组长度动态计算）
+const shortStepCount = computed(() => props.shortProgress.length)
 const shortMaxDeviation = 45 // 最大偏离中心线的距离
 
-// 长链路参数 (7个节点) - 下方路径
-const longStepCount = 7
+// 长链路参数 - 下方路径（根据传入的 progress 数组长度动态计算）
+const longStepCount = computed(() => props.longProgress.length)
 const longMaxDeviation = 45 // 最大偏离中心线的距离
 
 // 计算短链路节点位置（对称分布）
@@ -245,9 +245,9 @@ const shortNodes = computed(() => {
   const end = endPoint.value
   const totalDistance = end.x - start.x
 
-  for (let i = 0; i < shortStepCount; i++) {
+  for (let i = 0; i < shortStepCount.value; i++) {
     // 均匀分布在 0 到 1 之间，包括终点
-    const progress = (i + 1) / (shortStepCount)
+    const progress = (i + 1) / (shortStepCount.value)
 
     // 水平位置均匀分布
     const x = start.x + totalDistance * progress
@@ -278,9 +278,9 @@ const longNodes = computed(() => {
   const end = endPoint.value
   const totalDistance = end.x - start.x
 
-  for (let i = 0; i < longStepCount; i++) {
+  for (let i = 0; i < longStepCount.value; i++) {
     // 均匀分布在 0 到 1 之间，包括终点
-    const progress = (i + 1) / (longStepCount)
+    const progress = (i + 1) / (longStepCount.value)
 
     // 水平位置均匀分布
     const x = start.x + totalDistance * progress
