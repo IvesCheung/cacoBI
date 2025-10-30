@@ -12,51 +12,63 @@
       />
     </div>
 
-    <!-- 查询示例选择器 -->
-    <div class="example-selector-section">
-      <QueryExampleSelector
-        :current-example-id="currentExampleId"
-        :is-executing="isExecuting"
-        @change="handleExampleChange"
-      />
-    </div>
-
-    <!-- 查询输入 -->
-    <div class="query-input-section">
+    <!-- 查询输入区域 - 重新设计 -->
+    <div class="query-input-container">
+      <!-- 文本输入框 -->
       <el-input
         v-model="queryText"
         type="textarea"
         :rows="2"
-        placeholder="Please enter your query..."
+        placeholder="Enter your query here..."
         class="query-textarea"
-        :autosize="{ minRows: 2, maxRows: 4 }"
+        :autosize="{ minRows: 1, maxRows: 4 }"
+        :disabled="isExecuting"
+        @keydown.enter.exact="handleKeyboardExecute"
       />
-    </div>
 
-    <!-- 执行按钮和开关 -->
-    <div class="query-actions">
-      <el-button
-        type="primary"
-        :loading="isExecuting"
-        :disabled="isExecuting"
-        @click="handleExecute"
-        size="large"
-        class="execute-btn"
-      >
-        <el-icon v-if="!isExecuting"><VideoPlay /></el-icon>
-        {{ isExecuting ? 'Executing...' : 'Execute' }}
-      </el-button>
+      <!-- 操作按钮栏 -->
+      <div class="action-bar">
+        <!-- 左侧按钮组 -->
+        <div class="left-actions">
+          <!-- Cost Planer 按钮 -->
+          <el-button
+            :type="costAgentEnabled ? 'success' : 'default'"
+            :disabled="isExecuting"
+            @click="toggleCostAgent"
+            class="cost-planer-btn"
+            round
+          >
+            <el-icon class="btn-icon">
+              <CircleCheck v-if="costAgentEnabled" />
+              <CircleClose v-else />
+            </el-icon>
+            <span>Cost Planer</span>
+          </el-button>
 
-      <el-button
-        :type="costAgentEnabled ? 'success' : 'info'"
-        :disabled="isExecuting"
-        @click="toggleCostAgent"
-        size="large"
-        class="cost-agent-btn"
-      >
-        <el-icon v-if="costAgentEnabled"><CircleCheck /></el-icon>
-        {{ costAgentEnabled ? 'Cost Planer (Enabled)' : 'Cost Planer' }}
-      </el-button>
+          <!-- Sample 选择器 -->
+          <div v-if="showSampleSelector" class="sample-selector-wrapper">
+            <QueryExampleSelector
+              :current-example-id="currentExampleId"
+              :is-executing="isExecuting"
+              @change="handleExampleChange"
+            />
+          </div>
+        </div>
+
+        <!-- 右侧执行按钮 -->
+        <el-button
+          type="primary"
+          :disabled="isExecuting || !queryText.trim()"
+          :loading="isExecuting"
+          @click="handleExecute"
+          class="execute-btn"
+          circle
+        >
+          <el-icon v-if="!isExecuting">
+            <Top />
+          </el-icon>
+        </el-button>
+      </div>
     </div>
 
     <!-- 日志面板 -->
@@ -142,7 +154,7 @@
 
 <script setup>
 import { computed, ref } from 'vue'
-import { VideoPlay, CircleCheck, Setting } from '@element-plus/icons-vue'
+import { CircleCheck, CircleClose, Setting, Top } from '@element-plus/icons-vue'
 import ResultChart from './ResultChart.vue'
 import DualPathProgress from './DualPathProgress.vue'
 import QueryExampleSelector from './QueryExampleSelector.vue'
@@ -161,7 +173,11 @@ const props = defineProps({
   },
   costAgentEnabled: {
     type: Boolean,
-    default: false
+    default: true
+  },
+  showSampleSelector: {
+    type: Boolean,
+    default: true
   },
   optimizedCompleted: {
     type: Boolean,
@@ -234,7 +250,18 @@ const longChainConfigLocal = computed({
 })
 
 const handleExecute = () => {
+  if (!props.queryText.trim() || props.isExecuting) {
+    return
+  }
   emit('execute')
+}
+
+const handleKeyboardExecute = (event) => {
+  // 只有单独按 Enter 键时触发，Shift+Enter 用于换行
+  if (!event.shiftKey && !props.isExecuting && props.queryText.trim()) {
+    event.preventDefault()
+    emit('execute')
+  }
 }
 
 const toggleCostAgent = () => {
@@ -310,41 +337,170 @@ const handleDrawerClose = (done) => {
   transform: rotate(90deg);
 }
 
-.example-selector-section {
+/* 查询输入容器 - 整体外框 */
+.query-input-container {
   margin-bottom: 12px;
+  background: var(--input-bg);
+  border: 2px solid var(--input-border);
+  border-radius: 16px;
+  padding: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px var(--app-shadow);
 }
 
-.query-input-section {
-  margin-bottom: 12px;
+.query-input-container:hover {
+  border-color: var(--input-border-hover);
+  box-shadow: 0 4px 12px var(--app-shadow);
 }
 
-.input-label {
-  display: block;
-  color: var(--app-text-primary);
-  font-size: 13px;
-  margin-bottom: 8px;
-  transition: color 0.3s ease;
+.query-input-container:focus-within {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .query-textarea {
   width: 100%;
-  height: fit-content;
+  margin-bottom: 8px;
 }
 
-.query-actions {
+.query-textarea :deep(.el-textarea__inner) {
+  background: transparent;
+  border: none;
+  color: var(--app-text-primary);
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 4px 8px;
+  transition: all 0.3s ease;
+  box-shadow: none;
+  resize: none;
+}
+
+.query-textarea :deep(.el-textarea__inner::placeholder) {
+  color: var(--input-placeholder);
+}
+
+.query-textarea :deep(.el-textarea__inner:focus) {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+/* 操作按钮栏 */
+.action-bar {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
+  padding-top: 4px;
 }
 
+.left-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.btn-icon {
+  margin-right: 4px;
+}
+
+/* Cost Planer 按钮 */
+.cost-planer-btn {
+  font-weight: 500;
+  padding: 6px 16px;
+  height: 36px;
+  transition: all 0.3s ease;
+  border: 1.5px solid transparent;
+}
+
+.cost-planer-btn.el-button--success {
+  background: #10b981;
+  border-color: #10b981;
+  color: white;
+}
+
+.cost-planer-btn.el-button--success:hover {
+  background: #059669;
+  border-color: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.cost-planer-btn.el-button--default {
+  background: transparent;
+  border-color: var(--input-border);
+  color: var(--app-text-primary);
+}
+
+.cost-planer-btn.el-button--default:hover {
+  border-color: #64748b;
+  color: #64748b;
+  background: rgba(100, 116, 139, 0.05);
+}
+
+/* Sample 选择器包装器 */
+.sample-selector-wrapper {
+  flex: 1;
+  max-width: 300px;
+}
+
+.sample-selector-wrapper :deep(.example-selector) {
+  width: 100%;
+}
+
+.sample-selector-wrapper :deep(.el-select) {
+  width: 100%;
+}
+
+.sample-selector-wrapper :deep(.el-select .el-input__wrapper) {
+  background: transparent;
+  border: 1.5px solid var(--input-border);
+  border-radius: 18px;
+  padding: 0 14px;
+  height: 36px;
+  transition: all 0.3s ease;
+  box-shadow: none;
+}
+
+.sample-selector-wrapper :deep(.el-select .el-input__wrapper:hover) {
+  border-color: var(--input-border-hover);
+  background: rgba(59, 130, 246, 0.02);
+}
+
+.sample-selector-wrapper :deep(.el-select.is-focus .el-input__wrapper) {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* 执行按钮 - 圆形图标按钮 */
 .execute-btn {
-  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: #2563eb;
+  border-color: #2563eb;
+  transition: all 0.3s ease;
+  font-size: 20px;
 }
 
-.cost-agent-btn {
-  flex-shrink: 0;
+.execute-btn:hover:not(.is-disabled) {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
+}
+
+.execute-btn.is-disabled {
+  background: #93c5fd;
+  border-color: #93c5fd;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.execute-btn .el-icon {
+  font-size: 20px;
 }
 
 .log-section {
@@ -446,33 +602,6 @@ const handleDrawerClose = (done) => {
 
 :deep(.el-collapse-item__arrow.is-active) {
   transform: rotate(90deg);
-}
-
-:deep(.el-textarea__inner) {
-  background: var(--input-bg);
-  border: 2px solid var(--input-border);
-  border-radius: 8px;
-  color: var(--app-text-primary);
-  font-size: 14px;
-  line-height: 1.6;
-  padding: 12px;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px var(--app-shadow);
-}
-
-:deep(.el-textarea__inner::placeholder) {
-  color: var(--input-placeholder);
-}
-
-:deep(.el-textarea__inner:hover) {
-  border-color: var(--input-border-hover);
-  box-shadow: 0 4px 8px var(--app-shadow);
-}
-
-:deep(.el-textarea__inner:focus) {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  background: var(--input-bg-focus);
 }
 
 :deep(.el-button--primary) {

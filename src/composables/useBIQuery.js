@@ -15,7 +15,7 @@ export function useBIQuery() {
 
   // 执行状态
   const isExecuting = ref(false)
-  const costAgentEnabled = ref(false)
+  const costAgentEnabled = ref(true)
 
   // 优化链路的短链路时间和tokens
   const shortOptimizeChainTime = ref(0)

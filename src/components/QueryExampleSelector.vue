@@ -2,10 +2,11 @@
   <div class="query-example-selector">
     <el-select
       v-model="selectedExampleId"
-      placeholder="select query example"
+      placeholder="Select a query sample..."
       @change="handleExampleChange"
       :disabled="isExecuting"
       class="example-selector"
+      size="default"
     >
       <el-option
         v-for="example in exampleList"
@@ -65,24 +66,32 @@ onMounted(() => {
 .query-example-selector {
   display: flex;
   align-items: center;
-  gap: 10px;
+  width: 100%;
 }
 
 .example-selector {
-  min-width: 200px;
+  width: 100%;
 }
 
-:deep(.el-select__wrapper) {
+:deep(.el-input__wrapper) {
   transition: all 0.3s ease;
 }
 
-:deep(.el-select__wrapper:hover) {
+:deep(.el-input__wrapper:hover) {
+  border-color: var(--el-color-primary);
+}
+
+:deep(.el-input__wrapper.is-focus) {
   border-color: var(--el-color-primary);
 }
 
 :deep(.el-select__wrapper.is-disabled) {
   cursor: not-allowed;
   opacity: 0.6;
+}
+
+:deep(.el-input__inner) {
+  font-size: 14px;
 }
 </style>
 
