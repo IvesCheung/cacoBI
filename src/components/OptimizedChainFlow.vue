@@ -12,10 +12,29 @@
       <!-- Right side: Two parallel chains with branch arrows -->
       <div class="chains-section">
         <!-- Branch connection lines -->
-        <div class="branch-connections">
-          <div class="connection-line connection-to-short"></div>
-          <div class="connection-line connection-to-long"></div>
-        </div>
+        <svg class="branch-connections" viewBox="0 0 100 200" preserveAspectRatio="none">
+          <!-- Line to Short Chain -->
+          <path
+            d="M 0 100 L 30 100 L 60 50"
+            class="connection-path connection-to-short"
+            fill="none"
+          />
+          <polygon
+            points="60,50 55,54 58,50 55,46"
+            class="arrow-head arrow-short"
+          />
+
+          <!-- Line to Long Chain -->
+          <path
+            d="M 0 100 L 30 100 L 60 150"
+            class="connection-path connection-to-long"
+            fill="none"
+          />
+          <polygon
+            points="60,150 55,154 58,150 55,146"
+            class="arrow-head arrow-long"
+          />
+        </svg>
 
         <!-- Two parallel chains -->
         <div class="parallel-chains">
@@ -307,35 +326,40 @@ const mapLongStepToNode = (step) => {
   flex: 1;
   min-width: 0;
   position: relative;
+  padding-left: 80px;
 }
 
 /* Branch Connection Lines */
 .branch-connections {
-  position: relative;
-  width: 50px;
-  height: 100%;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.connection-line {
   position: absolute;
-  background: linear-gradient(90deg, rgba(16, 185, 129, 0.4) 0%, rgba(16, 185, 129, 0.6) 50%, rgba(16, 185, 129, 0.2) 100%);
-  height: 2px;
+  width: 80px;
+  height: 100%;
   left: 0;
-  right: 0;
+  top: 0;
+  z-index: 1;
+  pointer-events: none;
 }
 
-.connection-to-short {
-  top: 25%;
-  transform: translateY(-50%);
+.connection-path {
+  stroke: rgba(16, 185, 129, 0.5);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.3s ease;
 }
 
-.connection-to-long {
-  top: 75%;
-  transform: translateY(-50%);
+.arrow-head {
+  fill: rgba(16, 185, 129, 0.6);
+  transition: fill 0.3s ease;
+}
+
+/* Hover effect for connection lines */
+.chains-section:hover .connection-path {
+  stroke: rgba(16, 185, 129, 0.7);
+}
+
+.chains-section:hover .arrow-head {
+  fill: rgba(16, 185, 129, 0.8);
 }
 
 /* Parallel Chains Container */
