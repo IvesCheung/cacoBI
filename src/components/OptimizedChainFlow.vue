@@ -298,7 +298,7 @@ const mapLongStepToNode = (step) => {
 
 .analyze-node {
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.15) 100%);
-  border: 2px solid rgba(16, 185, 129, 0.3);
+  /* border: 2px solid rgba(16, 185, 129, 0.3); */
   box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
   transition: all 0.3s ease;
 }
@@ -410,21 +410,49 @@ const mapLongStepToNode = (step) => {
   min-width: fit-content;
 }
 
+/* 短链路特定的流程内容样式 */
+.short-path .path-flow-content {
+  gap: 32px; /* 增加间距以便连接线更明显 */
+}
+
 /* Short Chain Specific Styles */
+.short-path .flow-column {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .short-path .flow-column:not(:last-child)::after {
   content: '';
   position: absolute;
   top: 50%;
-  right: -8px;
+  right: -32px;
   transform: translateY(-50%);
-  width: 16px;
+  width: 32px;
   height: 2px;
-  background: linear-gradient(90deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.7) 100%);
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.3) 0%, rgba(16, 185, 129, 0.8) 100%);
   box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+  z-index: 1;
+}
+
+/* 添加箭头 */
+.short-path .flow-column:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -16px;
+  transform: translateY(-50%) translateX(22px);
+  width: 0;
+  height: 0;
+  border-left: 5px solid rgba(16, 185, 129, 0.8);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  z-index: 2;
 }
 
 /* Long Chain Group Styles */
-.flow-column {
+.long-path .flow-column {
   display: flex;
   flex-direction: column;
   gap: 10px;
