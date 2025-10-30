@@ -1,33 +1,28 @@
 <template>
   <div class="optimized-chain-flow-container">
     <div class="optimized-chain-flow">
-      <!-- Query Analyze Node -->
-      <div class="flow-column analyze-column">
+      <!-- Left side: Query Analyze Node -->
+      <div class="analyze-section">
         <ChainNode
           :node="analyzeNode"
           class="analyze-node"
         />
       </div>
 
-      <!-- Branch Arrow -->
-      <div class="branch-arrow">
-        <div class="arrow-line-horizontal"></div>
-        <div class="arrow-split">
-          <div class="arrow-branch arrow-short">
-            <div class="arrow-line-vertical"></div>
-          </div>
-          <div class="arrow-branch arrow-long">
-            <div class="arrow-line-vertical"></div>
-          </div>
+      <!-- Right side: Two parallel chains with branch arrows -->
+      <div class="chains-section">
+        <!-- Branch connection lines -->
+        <div class="branch-connections">
+          <div class="connection-line connection-to-short"></div>
+          <div class="connection-line connection-to-long"></div>
         </div>
-      </div>
 
-      <!-- Two parallel chains -->
-      <div class="parallel-chains">
-        <!-- Short Chain Path -->
-        <div class="chain-path short-path">
-          <div class="path-label">Short Chain</div>
-          <div class="path-flow">
+        <!-- Two parallel chains -->
+        <div class="parallel-chains">
+          <!-- Short Chain Path -->
+          <div class="chain-path short-path">
+            <div class="path-label">Short Chain</div>
+            <div class="path-flow">
             <div
               v-for="step in shortSteps"
               :key="step.id"
@@ -151,6 +146,7 @@
               />
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>
@@ -276,64 +272,70 @@ const mapLongStepToNode = (step) => {
 
 .optimized-chain-flow {
   display: flex;
-  align-items: flex-start;
-  gap: 24px;
+  align-items: center;
+  gap: 32px;
   min-width: fit-content;
   height: 100%;
 }
 
-/* Query Analyze Node */
-.analyze-column {
+/* Left side: Query Analyze Section */
+.analyze-section {
   display: flex;
   align-items: center;
-  padding-top: 40px;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .analyze-node {
-  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
-  border: 2px solid rgba(139, 92, 246, 0.5);
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.15) 100%);
+  border: 2px solid rgba(16, 185, 129, 0.3);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+  transition: all 0.3s ease;
 }
 
-/* Branch Arrow */
-.branch-arrow {
+.analyze-node:hover {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.2) 100%);
+  border-color: rgba(16, 185, 129, 0.4);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+/* Right side: Chains Section */
+.chains-section {
   display: flex;
   align-items: center;
-  position: relative;
-  padding-top: 40px;
-}
-
-.arrow-line-horizontal {
-  width: 20px;
-  height: 2px;
-  background: linear-gradient(90deg, rgba(139, 92, 246, 0.3) 0%, rgba(139, 92, 246, 0.7) 100%);
-}
-
-.arrow-split {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
   position: relative;
 }
 
-.arrow-branch {
+/* Branch Connection Lines */
+.branch-connections {
+  position: relative;
+  width: 50px;
+  height: 100%;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  position: relative;
+  justify-content: center;
 }
 
-.arrow-short {
-  padding-bottom: 80px;
-}
-
-.arrow-long {
-  padding-top: 80px;
-}
-
-.arrow-line-vertical {
-  width: 40px;
+.connection-line {
+  position: absolute;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.4) 0%, rgba(16, 185, 129, 0.6) 50%, rgba(16, 185, 129, 0.2) 100%);
   height: 2px;
-  background: linear-gradient(90deg, rgba(139, 92, 246, 0.7) 0%, rgba(139, 92, 246, 0.3) 100%);
+  left: 0;
+  right: 0;
+}
+
+.connection-to-short {
+  top: 25%;
+  transform: translateY(-50%);
+}
+
+.connection-to-long {
+  top: 75%;
+  transform: translateY(-50%);
 }
 
 /* Parallel Chains Container */
@@ -401,7 +403,7 @@ const mapLongStepToNode = (step) => {
 .flow-column {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
   justify-content: center;
   position: relative;
