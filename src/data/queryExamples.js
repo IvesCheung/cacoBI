@@ -14,6 +14,7 @@ export const queryExamples = [
   {
     id: 'apple-sales-2025',
     name: 'Apple sales query',
+    hit_cache: true,
     queryText: "Apple's sales in 2025",
     queryResult: [
       { name: 'Macbook', value: 3335 },
@@ -165,6 +166,7 @@ export const queryExamples = [
   {
     id: 'huawei-revenue-2024',
     name: 'Huawei revenue query',
+    hit_cache: true,
     queryText: "Show Huawei's revenue in 2024 Q4",
     queryResult: [
       { name: 'Mate Series', value: 4520 },
@@ -316,6 +318,7 @@ export const queryExamples = [
   {
     id: 'tesla-market-share',
     name: 'Tesla market share query',
+    hit_cache: false,
     queryText: 'What is Tesla market share in North America?',
     queryResult: [
       { name: 'Model 3', value: 4280 },

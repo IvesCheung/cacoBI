@@ -123,6 +123,7 @@ const mappedStatus = computed(() => {
   return 'pending'
 })
 
+const mouseActivate = ref(false)
 const showDetails = ref(false)
 const isLocked = ref(false)
 let hideTimeout = null
@@ -143,15 +144,19 @@ const computePopupPosition = () => {
 }
 
 const handleMouseEnter = () => {
-  if (hideTimeout) {
-    clearTimeout(hideTimeout)
-    hideTimeout = null
+  if (mouseActivate.value) {
+    if (hideTimeout) {
+      clearTimeout(hideTimeout)
+      hideTimeout = null
+    }
+
+    if (!isLocked.value && (mappedStatus.value === 'running' || mappedStatus.value === 'completed' || mappedStatus.value === 'skipped')) {
+      showDetails.value = true
+      nextTick(() => computePopupPosition())
+    }
   }
 
-  if (!isLocked.value && (mappedStatus.value === 'running' || mappedStatus.value === 'completed' || mappedStatus.value === 'skipped')) {
-    showDetails.value = true
-    nextTick(() => computePopupPosition())
-  }
+
 }
 
 const handleMouseLeave = () => {
