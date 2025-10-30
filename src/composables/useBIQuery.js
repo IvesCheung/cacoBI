@@ -9,21 +9,29 @@ export function useBIQuery() {
 
   // 当前选中的查询示例ID
   const currentExampleId = ref(defaultExample.id)
+  // 当前示例的 hit_cache 状态
+  const hitCache = ref(defaultExample.hit_cache || false)
+
   // 执行状态
   const isExecuting = ref(false)
   const costAgentEnabled = ref(false)
 
-  // 链路时间
-  const shortChainTime = ref(0)
+  // 优化链路的短链路时间和tokens
+  const shortOptimizeChainTime = ref(0)
+  const shortOptimizeChainTokens = ref(0)
+  const shortOptimizeLLMCalls = ref(0)
+  const shortOptimizeCompleted = ref(false)
+
+  // 优化链路的长链路时间和tokens (带 cost planner)
+  const longOptimizeChainTime = ref(0)
+  const longOptimizeChainTokens = ref(0)
+  const longOptimizeLLMCalls = ref(0)
+  const longOptimizeCompleted = ref(false)
+
+  // 原始长链路时间和tokens (不带 cost planner)
   const longChainTime = ref(0)
-  // Token消耗统计
-  const shortChainTokens = ref(0)
   const longChainTokens = ref(0)
-  // LLM调用次数
-  const shortLLMCalls = ref(0)
   const longLLMCalls = ref(0)
-  // 链路完成状态
-  const shortCompleted = ref(false)
   const longCompleted = ref(false)
 
   // Cost Agent 跳过的步骤信息
@@ -96,7 +104,7 @@ export function useBIQuery() {
     ]
   }
 
-  // 短链路步骤
+  // 短链路步骤（用于优化链路显示）
   const shortSteps = reactive(createShortSteps(defaultExample.shortSteps))
 
   // 初始化长链路步骤模板
@@ -358,12 +366,20 @@ export function useBIQuery() {
     }
   }
 
-  // 长链路步骤 - 新的复杂流程结构
+  // 长链路步骤 - 用于原始长链路面板
   const longSteps = ref(createLongSteps(defaultExample.longSteps))
 
-  // 进度状态
-  const shortProgress = reactive([0, 0, 0])
-  // 长链路进度 (7个进度条，对应7个阶段)
+  // 为优化链路创建独立的长链路步骤副本
+  const longOptimizeSteps = ref(
+    JSON.parse(JSON.stringify(createLongSteps(defaultExample.longSteps))),
+  )
+
+  // 进度数组
+  // 优化链路中的短链路进度
+  const shortOptimizeProgress = reactive([0, 0, 0])
+  // 优化链路中的长链路进度 (带 cost planner)
+  const longOptimizeProgress = reactive([0, 0, 0, 0, 0, 0, 0])
+  // 原始长链路进度 (不带 cost planner)
   const longProgress = reactive([0, 0, 0, 0, 0, 0, 0])
 
   // 获取当前时间字符串 (HH:MM:SS)
@@ -431,7 +447,7 @@ export function useBIQuery() {
       // 随机选择一个阶段
       const randomStageIndex = Math.floor(Math.random() * skippableStages.length)
       const stageName = skippableStages[randomStageIndex]
-      const stage = longSteps.value[stageName]
+      const stage = longOptimizeSteps.value[stageName]
 
       if (stage && stage.steps.length > 0) {
         // 随机选择该阶段中的一个步骤
@@ -459,14 +475,25 @@ export function useBIQuery() {
   // 重置所有状态
   const resetAll = () => {
     isExecuting.value = false
-    shortCompleted.value = false
+
+    // 重置优化链路的短链路
+    shortOptimizeCompleted.value = false
+    shortOptimizeChainTime.value = 0
+    shortOptimizeChainTokens.value = 0
+    shortOptimizeLLMCalls.value = 0
+
+    // 重置优化链路的长链路
+    longOptimizeCompleted.value = false
+    longOptimizeChainTime.value = 0
+    longOptimizeChainTokens.value = 0
+    longOptimizeLLMCalls.value = 0
+
+    // 重置原始长链路
     longCompleted.value = false
-    shortChainTime.value = 0
     longChainTime.value = 0
-    shortChainTokens.value = 0
     longChainTokens.value = 0
-    shortLLMCalls.value = 0
     longLLMCalls.value = 0
+
     skippedStepsInfo.value = []
 
     // 重置短链路步骤
@@ -487,8 +514,20 @@ export function useBIQuery() {
       })
     })
 
+    // 重置优化长链路步骤
+    Object.keys(longOptimizeSteps.value).forEach((stageKey) => {
+      const stage = longOptimizeSteps.value[stageKey]
+      stage.steps.forEach((step) => {
+        step.active = false
+        step.completed = false
+        step.skipped = false
+        step.time = ''
+      })
+    })
+
     // 重置进度
-    shortProgress.fill(0)
+    shortOptimizeProgress.fill(0)
+    longOptimizeProgress.fill(0)
     longProgress.fill(0)
   }
 
@@ -519,18 +558,28 @@ export function useBIQuery() {
         }, 1000)
       }
 
-      // 模拟链路执行
-      simulateShortChain()
+      // 根据 hit_cache 决定执行哪条优化链路
+      if (hitCache.value) {
+        // 执行优化短链路
+        simulateShortOptimizeChain()
+      } else {
+        // 执行优化长链路 (带 cost planner)
+        simulateLongOptimizeChain()
+      }
+
+      // 始终执行原始长链路
       simulateLongChain()
 
-      // 等待所有链路完成
+      // 等待链路完成
       const checkInterval = setInterval(() => {
-        if (shortCompleted.value && longCompleted.value) {
+        const optimizeCompleted = hitCache.value
+          ? shortOptimizeCompleted.value
+          : longOptimizeCompleted.value
+        if (optimizeCompleted && longCompleted.value) {
           clearInterval(checkInterval)
           isExecuting.value = false
           // 显示完成通知
           showLogNotification(LOG_MESSAGES.EXECUTION_COMPLETED, LOG_TYPES.SUCCESS)
-
           resolve()
         }
       }, 100)
@@ -540,7 +589,8 @@ export function useBIQuery() {
   // 清除执行日志（在完成状态下切换选项时使用）
   const clearLogs = () => {
     if (!isExecuting.value) {
-      shortCompleted.value = false
+      shortOptimizeCompleted.value = false
+      longOptimizeCompleted.value = false
       longCompleted.value = false
       skippedStepsInfo.value = []
     }
@@ -562,8 +612,9 @@ export function useBIQuery() {
     // 重置所有状态
     resetAll()
 
-    // 更新当前示例ID
+    // 更新当前示例ID和hit_cache状态
     currentExampleId.value = exampleId
+    hitCache.value = example.hit_cache || false
 
     // 更新查询文本和结果
     queryText.value = example.queryText
@@ -575,14 +626,15 @@ export function useBIQuery() {
 
     // 更新长链路步骤
     longSteps.value = createLongSteps(example.longSteps)
+    longOptimizeSteps.value = JSON.parse(JSON.stringify(createLongSteps(example.longSteps)))
 
     return true
   }
 
-  // 模拟短链路执行
-  const simulateShortChain = () => {
+  // 模拟优化短链路执行
+  const simulateShortOptimizeChain = () => {
     let timer = setInterval(() => {
-      shortChainTime.value += 0.01
+      shortOptimizeChainTime.value += 0.01
     }, 10)
 
     // 步骤1 - 向量化用户问题
@@ -590,20 +642,20 @@ export function useBIQuery() {
       shortSteps[0].time = getCurrentTime()
       shortSteps[0].active = true
     }, 0)
-    animateProgress(shortProgress, 0, shortSteps[0].duration * 1000, () => {
+    animateProgress(shortOptimizeProgress, 0, shortSteps[0].duration * 1000, () => {
       shortSteps[0].active = false
       shortSteps[0].completed = true
-      shortChainTokens.value += shortSteps[0].tokens
+      shortOptimizeChainTokens.value += shortSteps[0].tokens
     })
 
     // 步骤2 - 检索历史相关问题
     setTimeout(() => {
       shortSteps[1].time = getCurrentTime()
       shortSteps[1].active = true
-      animateProgress(shortProgress, 1, shortSteps[1].duration * 1000, () => {
+      animateProgress(shortOptimizeProgress, 1, shortSteps[1].duration * 1000, () => {
         shortSteps[1].active = false
         shortSteps[1].completed = true
-        shortChainTokens.value += shortSteps[1].tokens
+        shortOptimizeChainTokens.value += shortSteps[1].tokens
       })
     }, shortSteps[0].duration * 1000)
 
@@ -612,35 +664,96 @@ export function useBIQuery() {
       () => {
         shortSteps[2].time = getCurrentTime()
         shortSteps[2].active = true
-        animateProgress(shortProgress, 2, shortSteps[2].duration * 1000, () => {
+        animateProgress(shortOptimizeProgress, 2, shortSteps[2].duration * 1000, () => {
           shortSteps[2].active = false
           shortSteps[2].completed = true
-          shortChainTokens.value += shortSteps[2].tokens
+          shortOptimizeChainTokens.value += shortSteps[2].tokens
           clearInterval(timer)
-          shortChainTime.value =
+          shortOptimizeChainTime.value =
             shortSteps[0].duration + shortSteps[1].duration + shortSteps[2].duration
-          shortCompleted.value = true
-          shortLLMCalls.value += 1
+          shortOptimizeCompleted.value = true
+          shortOptimizeLLMCalls.value += 1
         })
       },
       (shortSteps[0].duration + shortSteps[1].duration) * 1000,
     )
   }
 
-  // 模拟长链路执行
+  // 模拟优化长链路执行 (带 cost planner)
+  const simulateLongOptimizeChain = () => {
+    console.log('开始执行优化长链路 (带 cost planner)')
+
+    let timer = setInterval(() => {
+      longOptimizeChainTime.value += 0.01
+    }, 10)
+
+    // 启用Cost Agent时，增加200ms前摇，并随机选择步骤跳过
+    let accumulatedTime = costAgentEnabled.value ? 700 : 500
+    const skippedSteps = costAgentEnabled.value ? selectRandomStepsToSkip() : []
+
+    // 遍历所有阶段
+    const stageKeys = Object.keys(longOptimizeSteps.value)
+    const isLastStage = (index) => index === stageKeys.length - 1
+
+    stageKeys.forEach((stageKey, stageIndex) => {
+      setTimeout(() => {
+        const stage = longOptimizeSteps.value[stageKey]
+        const stageSteps = stage.steps
+        console.log(`优化长链路阶段${stageIndex + 1}开始: ${stage.title}`)
+
+        const allSkipped = stageSteps.every((step) => skippedSteps.includes(step.id))
+        const maxDuration = allSkipped ? 100 : Math.max(...stageSteps.map((s) => s.duration)) * 1000
+
+        animateProgress(longOptimizeProgress, stageIndex, maxDuration, () => {
+          console.log(`优化长链路阶段${stageIndex + 1}进度完成`)
+        })
+
+        // 执行该阶段的所有步骤
+        stageSteps.forEach((step, stepIdx) => {
+          if (skippedSteps.includes(step.id)) {
+            console.log(`优化长链路阶段${stageIndex + 1}-步骤${stepIdx} 被跳过:`, step.id)
+            step.skipped = true
+            return
+          }
+
+          step.time = getCurrentTime()
+          step.active = true
+
+          setTimeout(() => {
+            console.log(`优化长链路阶段${stageIndex + 1}-步骤${stepIdx} 完成:`, step.id)
+            step.active = false
+            step.completed = true
+            longOptimizeChainTokens.value += step.tokens
+            if (step.type === 'llm') {
+              longOptimizeLLMCalls.value += 1
+            }
+
+            if (isLastStage(stageIndex) && stepIdx === stageSteps.length - 1) {
+              clearInterval(timer)
+              longOptimizeChainTime.value = parseFloat((accumulatedTime / 1000).toFixed(2))
+              longOptimizeCompleted.value = true
+              console.log('优化长链路执行完成')
+            }
+          }, step.duration * 1000)
+        })
+      }, accumulatedTime)
+
+      const stageSteps = longOptimizeSteps.value[stageKey].steps
+      const allSkipped = stageSteps.every((step) => skippedSteps.includes(step.id))
+      accumulatedTime += allSkipped ? 100 : Math.max(...stageSteps.map((s) => s.duration)) * 1000
+    })
+  }
+
+  // 模拟原始长链路执行 (不带 cost planner)
   const simulateLongChain = () => {
-    console.log('开始执行长链路')
+    console.log('开始执行原始长链路 (不带 cost planner)')
 
     let timer = setInterval(() => {
       longChainTime.value += 0.01
     }, 10)
 
-    // 如果启用Cost Agent，增加200ms前摇，并随机选择1-2个步骤跳过
-    let accumulatedTime = costAgentEnabled.value ? 700 : 500 // 初始延迟
-    const skippedSteps = costAgentEnabled.value ? selectRandomStepsToSkip() : []
-
-    console.log('Cost Agent enabled:', costAgentEnabled.value)
-    console.log('Skipped steps:', skippedSteps)
+    let accumulatedTime = 500 // 初始延迟
+    const skippedSteps = [] // 原始长链路不跳过任何步骤
 
     // 获取所有阶段
     const stageKeys = ['stage1', 'stage2', 'stage3', 'stage4', 'stage5', 'stage6', 'stage7']
@@ -651,7 +764,7 @@ export function useBIQuery() {
       setTimeout(() => {
         const stage = longSteps.value[stageKey]
         const stageSteps = stage.steps
-        console.log(`阶段${stageIndex + 1}开始: ${stage.title}`)
+        console.log(`原始长链路阶段${stageIndex + 1}开始: ${stage.title}`)
 
         // 检查该阶段所有步骤是否都被跳过
         const allSkipped = stageSteps.every((step) => skippedSteps.includes(step.id))
@@ -661,16 +774,16 @@ export function useBIQuery() {
 
         // 开始阶段进度动画
         animateProgress(longProgress, stageIndex, maxDuration, () => {
-          console.log(`阶段${stageIndex + 1}进度完成`)
+          console.log(`原始长链路阶段${stageIndex + 1}进度完成`)
         })
 
         // 执行该阶段的所有步骤
         stageSteps.forEach((step, stepIdx) => {
-          console.log(`阶段${stageIndex + 1}-步骤${stepIdx} 开始执行:`, step.id)
+          console.log(`原始长链路阶段${stageIndex + 1}-步骤${stepIdx} 开始执行:`, step.id)
 
           // 检查是否被跳过
           if (skippedSteps.includes(step.id)) {
-            console.log(`阶段${stageIndex + 1}-步骤${stepIdx} 被跳过:`, step.id)
+            console.log(`原始长链路阶段${stageIndex + 1}-步骤${stepIdx} 被跳过:`, step.id)
             step.skipped = true
             return
           }
@@ -679,7 +792,7 @@ export function useBIQuery() {
           step.active = true
 
           setTimeout(() => {
-            console.log(`阶段${stageIndex + 1}-步骤${stepIdx} 完成:`, step.id)
+            console.log(`原始长链路阶段${stageIndex + 1}-步骤${stepIdx} 完成:`, step.id)
             step.active = false
             step.completed = true
             longChainTokens.value += step.tokens
@@ -693,7 +806,7 @@ export function useBIQuery() {
               clearInterval(timer)
               longChainTime.value = parseFloat((accumulatedTime / 1000).toFixed(2))
               longCompleted.value = true
-              console.log('长链路执行完成')
+              console.log('原始长链路执行完成')
             }
           }, step.duration * 1000)
         })
@@ -727,16 +840,28 @@ export function useBIQuery() {
     // 状态
     isExecuting,
     costAgentEnabled,
-    shortChainTime,
+    hitCache,
+
+    // 优化链路的短链路
+    shortOptimizeChainTime,
+    shortOptimizeChainTokens,
+    shortOptimizeLLMCalls,
+    shortOptimizeCompleted,
+
+    // 优化链路的长链路
+    longOptimizeChainTime,
+    longOptimizeChainTokens,
+    longOptimizeLLMCalls,
+    longOptimizeCompleted,
+
+    // 原始长链路
     longChainTime,
-    shortCompleted,
+    longChainTokens,
+    longLLMCalls,
     longCompleted,
+
     queryText,
     queryResult,
-    shortChainTokens,
-    longChainTokens,
-    shortLLMCalls,
-    longLLMCalls,
     skippedStepsInfo,
     currentExampleId,
 
@@ -747,9 +872,11 @@ export function useBIQuery() {
     // 步骤
     shortSteps,
     longSteps,
+    longOptimizeSteps,
 
     // 进度
-    shortProgress,
+    shortOptimizeProgress,
+    longOptimizeProgress,
     longProgress,
 
     // 方法

@@ -3,12 +3,16 @@
     <div class="container">
       <!-- 左侧：链路展示区 -->
       <div class="left-section">
-        <ShortChainPanel
-          :steps="shortSteps"
-          :progress="shortProgress"
-          :time="shortChainTime"
-          :total-tokens="shortChainTokens"
-          :llm-calls="shortLLMCalls"
+        <OptimizedChainPanel
+          :short-steps="shortSteps"
+          :long-steps="longOptimizeSteps"
+          :hit-cache="hitCache"
+          :short-time="shortOptimizeChainTime"
+          :long-time="longOptimizeChainTime"
+          :short-tokens="shortOptimizeChainTokens"
+          :long-tokens="longOptimizeChainTokens"
+          :short-l-l-m-calls="shortOptimizeLLMCalls"
+          :long-l-l-m-calls="longOptimizeLLMCalls"
           class="chain-panel-wrapper"
         />
 
@@ -30,10 +34,10 @@
           v-model:short-chain-config="shortChainConfig"
           v-model:long-chain-config="longChainConfig"
           :is-executing="isExecuting"
-          :short-completed="shortCompleted"
-          :long-completed="longCompleted"
-          :short-progress="shortProgress"
-          :long-progress="longProgress"
+          :short-completed="shortOptimizeCompleted"
+          :long-completed="longOptimizeCompleted"
+          :short-progress="shortOptimizeProgress"
+          :long-progress="longOptimizeProgress"
           :query-result="queryResult"
           :current-example-id="currentExampleId"
           @execute="handleExecute"
@@ -46,7 +50,7 @@
 </template>
 
 <script setup>
-import ShortChainPanel from '@/components/ShortChainPanel.vue'
+import OptimizedChainPanel from '@/components/OptimizedChainPanel.vue'
 import LongChainPanel from '@/components/LongChainPanel.vue'
 import QueryPanel from '@/components/QueryPanel.vue'
 import { useBIQuery } from '@/composables/useBIQuery'
@@ -55,22 +59,34 @@ import { useBIQuery } from '@/composables/useBIQuery'
 const {
   isExecuting,
   costAgentEnabled,
-  shortChainTime,
+  hitCache,
+
+  // 优化链路
+  shortOptimizeChainTime,
+  shortOptimizeChainTokens,
+  shortOptimizeLLMCalls,
+  shortOptimizeCompleted,
+  longOptimizeChainTime,
+  longOptimizeChainTokens,
+  longOptimizeLLMCalls,
+  longOptimizeCompleted,
+
+  // 原始长链路
   longChainTime,
-  shortCompleted,
+  longChainTokens,
+  longLLMCalls,
   longCompleted,
+
   queryText,
   queryResult,
   shortChainConfig,
   longChainConfig,
   shortSteps,
   longSteps,
-  shortProgress,
+  longOptimizeSteps,
+  shortOptimizeProgress,
+  longOptimizeProgress,
   longProgress,
-  shortChainTokens,
-  longChainTokens,
-  shortLLMCalls,
-  longLLMCalls,
   currentExampleId,
   executeQuery,
   clearLogs,
@@ -99,13 +115,13 @@ const handleExampleChange = (exampleId) => {
 
 .container {
   display: grid;
-  grid-template-columns: 1.8fr 0.9fr;
+  grid-template-columns: 2.1fr 1fr;
   gap: 12px;
   height: 100%;
-  max-width: 1920px;
+  max-width: 95%;
   margin: 0 auto;
   grid-template-areas:
-    "short-chain query"
+    "optimized-chain query"
     "long-chain query";
 }
 
@@ -115,7 +131,7 @@ const handleExampleChange = (exampleId) => {
 }
 
 .chain-panel-wrapper:first-child {
-  grid-area: short-chain;
+  grid-area: optimized-chain;
 }
 
 .chain-panel-wrapper:last-child {

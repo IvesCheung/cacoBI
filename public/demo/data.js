@@ -1,9 +1,9 @@
-// CACOBI 网站数据配置文件
+// CHRONOSBI 网站数据配置文件
 const siteData = {
   // 网站基本信息
   site: {
-    title: 'Demonstration CACOBI: Accelerating BI Pipeline through Caching and Cost Planner',
-    logoText: 'CACOBI',
+    title: 'CHRONOSBI: A Demonstration of Supercharging LLM-Powered Business Intelligence Pipelines with Semantic Caching and Cost Planning',
+    logoText: 'CHRONOSBI',
   },
 
   // 导航栏
@@ -21,9 +21,9 @@ const siteData = {
       text: 'Research Project',
       icon: 'fas fa-flask',
     },
-    title: 'CACOBI',
+    title: 'CHRONOSBI',
     subtitle: ' Accelerating BI Pipeline through Caching and Cost Planner',
-    codeSnippet: '包含洗衣液成分关键词的笔记作者ip属地分布，近30天',
+    codeSnippet: 'Show Huawei\'s revenue in 2024 Q4.',
     buttons: [
       {
         href: '#demo',
@@ -41,34 +41,34 @@ const siteData = {
     image: {
       // 可以切换图片
       src: 'assets/demo_teaser.png',
-      alt: 'CACOBI Interface',
-      badge: 'CACOBI',
+      alt: 'CHRONOSBI Interface',
+      badge: 'CHRONOSBI',
     },
   },
 
   // About Section
   about: {
-    title: 'About CACOBI',
+    title: 'About CHRONOSBI',
     paragraphs: [
-      'To address these issues, we present CACOBI, \
+      'We present CHRONOSBI, \
             an efficiency-oriented BI system equipped with a cost planner and a semantic cache.',
-      'The cost planner, trained via reinforcement learning, \
-            can dynamically determine execution plans that skip redundant steps without compromising accuracy.',
-      'Meanwhile, we propose a cache-based shortcut that retrieves semantically similar queries and their DSLs from a carefully designed cache during inference, \
-            thereby enabling the LLM to directly synthesize the target DSL rather than generating it from scratch.',
+      'The long-chain pipeline with cost planner, trained via reinforcement learning, \
+            can dynamically plan execution steps that skip redundant ones without compromising accuracy.',
+      'The shortcut with semantic cache, retrieves semantically similar queries and their DSLs from a carefully designed cache during inference, \
+            thereby enabling the LLM to directly construct the target DSL rather than generating it from scratch.',
     ],
     stats: [
       {
         number: 'Cost Planner',
-        text: 'Dynamically determine execution plans',
+        text: 'Dynamically plan execution steps for the long-chain pipeline',
       },
       {
-        number: 'Caching',
-        text: 'Retrieves semantically similar queries to synthesize the target DSL',
+        number: 'Semantic Caching',
+        text: 'Stores semantically similar queries for LLM to construct the target DSL',
       },
       {
-        number: 'RL',
-        text: 'Leveraging RL for Enhanced Decision Making',
+        number: 'CHRONOSBI',
+        text: 'An end-to-end, efficiency-driven BI system that showcases a new execution paradigm for LLM-powered analytics',
       },
     ],
   },
@@ -76,25 +76,25 @@ const siteData = {
   // Features Section
   features: {
     title: 'Key Features',
-    subtitle: 'Discover what makes CACOBI powerful and intuitive',
+    subtitle: 'Discover what makes CHRONOSBI powerful and intuitive',
     items: [
       {
         icon: 'fas fa-bolt',
-        title: 'Cache-based Shortcut Inference',
+        title: 'Semantic Cache-based Shortcut',
         description:
-          'Leverages a skeleton-based cache to find semantically similar historical queries, enabling direct, few-shot DSL generation. This significantly reduces latency and token consumption for recurring query patterns.',
+          'Leverages a skeleton-based cache to find semantically similar historical queries, enabling direct, one-step DSL generation. This significantly reduces latency and token consumption.',
       },
       {
         icon: 'fas fa-route',
-        title: 'Reinforcement Learning-based Cost Planner',
+        title: 'Cost Planner-based Long-chain Pipeline',
         description:
-          'For complex queries, an RL-trained agent dynamically prunes redundant steps from the long-chain pipeline, creating an optimal execution path that balances processing cost and accuracy.',
+          'Leverages an RL-trained planner dynamically prunes redundant steps from the long-chain pipeline, creating an optimal execution plan that balances processing cost and accuracy.',
       },
       {
         icon: 'fas fa-brain',
-        title: 'Hybrid Execution Engine',
+        title: 'Hybrid Execution Routing',
         description:
-          'Intelligently determines whether to use the fast cache-based shortcut or the optimized long-chain pipeline, automatically selecting the most resource-efficient path for any given user query.',
+          'Intelligently determines whether to use the semantic cache-based shortcut or the planned long-chain pipeline, automatically selecting the most resource-efficient path for any given user query.',
       },
       {
         icon: 'fas fa-comments',
@@ -108,7 +108,7 @@ const siteData = {
   // Demo Section
   demo: {
     title: 'Research Demonstration',
-    subtitle: 'See CACOBI in action',
+    subtitle: 'See CHRONOSBI in action',
     video: {
       src: 'video.mp4',
       type: 'video/mp4',
@@ -125,10 +125,10 @@ const siteData = {
     subtitle: 'How we address the challenge of BI',
     image: {
       src: 'assets/demo_page.png',
-      alt: 'CACOBI Architecture',
+      alt: 'CHRONOSBI Architecture',
     },
     intro:
-      'We propose CACOBI, a system that optimizes long-chain BI workflows by introducing a hybrid execution engine. Our approach intelligently routes queries to the most resource-efficient path:',
+      'We propose CHRONOSBI, a system that optimizes long-chain BI workflows by introducing a hybrid execution engine. Our approach intelligently routes queries to the most resource-efficient path:',
     points: [
       {
         highlight: 'Cache-based Shortcut:',
@@ -156,15 +156,15 @@ const siteData = {
     items: [
       {
         icon: 'fas fa-envelope',
-        text: 'cuilingxi.cs@zju.edu.cn',
+        text: 'cuilingxi.cs@zju.edu.cn\njianfeng.zhang@zju.edu.cn',
       },
       {
         icon: 'fas fa-map-marker-alt',
-        text: 'College of Computer Science and Technology, Zhejiang University',
+        text: 'College of Computer Science and Technology,\nZhejiang University',
       },
       {
         icon: 'fas fa-map-marker-alt',
-        text: 'XiaoHongShu',
+        text: 'Xiaohongshu',
       },
     ],
     social: {
