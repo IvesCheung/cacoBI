@@ -22,24 +22,13 @@
         />
       </div>
 
-      <!-- 中间：配置面板 -->
-      <div class="middle-section">
-        <ShortChainConfig
-          v-model="shortChainConfig"
-          class="config-wrapper"
-        />
-
-        <LongChainConfig
-          v-model="longChainConfig"
-          class="config-wrapper"
-        />
-      </div>
-
       <!-- 右侧：查询面板 -->
       <div class="right-section">
         <QueryPanel
           v-model:query-text="queryText"
           v-model:cost-agent-enabled="costAgentEnabled"
+          v-model:short-chain-config="shortChainConfig"
+          v-model:long-chain-config="longChainConfig"
           :is-executing="isExecuting"
           :short-completed="shortCompleted"
           :long-completed="longCompleted"
@@ -59,8 +48,6 @@
 <script setup>
 import ShortChainPanel from '@/components/ShortChainPanel.vue'
 import LongChainPanel from '@/components/LongChainPanel.vue'
-import ShortChainConfig from '@/components/config/ShortChainConfig.vue'
-import LongChainConfig from '@/components/config/LongChainConfig.vue'
 import QueryPanel from '@/components/QueryPanel.vue'
 import { useBIQuery } from '@/composables/useBIQuery'
 
@@ -112,15 +99,14 @@ const handleExampleChange = (exampleId) => {
 
 .container {
   display: grid;
-  grid-template-columns: 1.1fr 400px 0.9fr;
-  grid-template-rows: auto auto;
+  grid-template-columns: 1.8fr 0.9fr;
   gap: 12px;
   height: 100%;
   max-width: 1920px;
   margin: 0 auto;
   grid-template-areas:
-    "short-chain short-config query"
-    "long-chain long-config query";
+    "short-chain query"
+    "long-chain query";
 }
 
 /* 左侧：链路展示区 */
@@ -136,19 +122,6 @@ const handleExampleChange = (exampleId) => {
   grid-area: long-chain;
 }
 
-/* 中间：配置面板 */
-.middle-section {
-  display: contents;
-}
-
-.config-wrapper:first-child {
-  grid-area: short-config;
-}
-
-.config-wrapper:last-child {
-  grid-area: long-config;
-}
-
 /* 右侧：查询面板 */
 .right-section {
   grid-area: query;
@@ -158,25 +131,21 @@ const handleExampleChange = (exampleId) => {
 }
 
 /* 滚动条样式 */
-.chain-panel-wrapper::-webkit-scrollbar,
-.middle-section::-webkit-scrollbar {
+.chain-panel-wrapper::-webkit-scrollbar {
   width: 4px;
 }
 
-.chain-panel-wrapper::-webkit-scrollbar-track,
-.middle-section::-webkit-scrollbar-track {
+.chain-panel-wrapper::-webkit-scrollbar-track {
   background: rgba(30, 41, 59, 0.5);
   border-radius: 2px;
 }
 
-.chain-panel-wrapper::-webkit-scrollbar-thumb,
-.middle-section::-webkit-scrollbar-thumb {
+.chain-panel-wrapper::-webkit-scrollbar-thumb {
   background: rgba(71, 85, 105, 0.8);
   border-radius: 2px;
 }
 
-.chain-panel-wrapper::-webkit-scrollbar-thumb:hover,
-.middle-section::-webkit-scrollbar-thumb:hover {
+.chain-panel-wrapper::-webkit-scrollbar-thumb:hover {
   background: rgba(100, 116, 139, 0.9);
 }
 

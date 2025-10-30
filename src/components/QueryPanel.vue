@@ -1,6 +1,16 @@
 <template>
   <div class="query-panel">
-    <h2 class="panel-title">ChronosBI</h2>
+    <div class="panel-header">
+      <h2 class="panel-title">ChronosBI</h2>
+      <el-button
+        type="default"
+        :icon="Setting"
+        circle
+        @click="drawerVisible = true"
+        class="settings-btn"
+        title="Settings"
+      />
+    </div>
 
     <!-- 查询示例选择器 -->
     <div class="example-selector-section">
@@ -70,15 +80,38 @@
       <h3 class="result-title long-title">🟠 Long-chain Result</h3>
       <ResultChart key="long-chart" :data="queryResult" />
     </div>
+
+    <!-- 配置抽屉 -->
+    <el-drawer
+      v-model="drawerVisible"
+      title="Configuration Settings"
+      direction="rtl"
+      size="450px"
+      :before-close="handleDrawerClose"
+    >
+      <div class="drawer-content">
+        <div class="config-section">
+          <h3 class="config-section-title">Short Chain Configuration</h3>
+          <ShortChainConfig v-model="shortChainConfigLocal" />
+        </div>
+
+        <div class="config-section">
+          <h3 class="config-section-title">Long Chain Configuration</h3>
+          <LongChainConfig v-model="longChainConfigLocal" />
+        </div>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { VideoPlay, CircleCheck } from '@element-plus/icons-vue'
+import { computed, ref } from 'vue'
+import { VideoPlay, CircleCheck, Setting } from '@element-plus/icons-vue'
 import ResultChart from './ResultChart.vue'
 import DualPathProgress from './DualPathProgress.vue'
 import QueryExampleSelector from './QueryExampleSelector.vue'
+import ShortChainConfig from './config/ShortChainConfig.vue'
+import LongChainConfig from './config/LongChainConfig.vue'
 
 const props = defineProps({
   queryText: {
@@ -116,10 +149,21 @@ const props = defineProps({
   currentExampleId: {
     type: String,
     required: true
+  },
+  shortChainConfig: {
+    type: Object,
+    required: true
+  },
+  longChainConfig: {
+    type: Object,
+    required: true
   }
 })
 
-const emit = defineEmits(['update:queryText', 'update:costAgentEnabled', 'execute', 'clearLogs', 'exampleChange'])
+const emit = defineEmits(['update:queryText', 'update:costAgentEnabled', 'update:shortChainConfig', 'update:longChainConfig', 'execute', 'clearLogs', 'exampleChange'])
+
+// Drawer visibility
+const drawerVisible = ref(false)
 
 const queryText = computed({
   get: () => props.queryText,
@@ -129,6 +173,16 @@ const queryText = computed({
 const costAgentEnabled = computed({
   get: () => props.costAgentEnabled,
   set: (val) => emit('update:costAgentEnabled', val)
+})
+
+const shortChainConfigLocal = computed({
+  get: () => props.shortChainConfig,
+  set: (val) => emit('update:shortChainConfig', val)
+})
+
+const longChainConfigLocal = computed({
+  get: () => props.longChainConfig,
+  set: (val) => emit('update:longChainConfig', val)
 })
 
 const handleExecute = () => {
@@ -145,6 +199,10 @@ const toggleCostAgent = () => {
 
 const handleExampleChange = (exampleId) => {
   emit('exampleChange', exampleId)
+}
+
+const handleDrawerClose = (done) => {
+  done()
 }
 </script>
 
@@ -169,12 +227,39 @@ const handleExampleChange = (exampleId) => {
   overflow-y: auto;
 }
 
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
 .panel-title {
   color: var(--query-panel-title);
   font-size: 16px;
   font-weight: 600;
-  margin: 0 0 12px 0;
+  margin: 0;
   transition: color 0.3s ease;
+}
+
+.settings-btn {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--app-text-primary);
+  transition: all 0.3s ease;
+}
+
+.settings-btn:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
+  transform: rotate(90deg);
 }
 
 .example-selector-section {
@@ -310,6 +395,47 @@ const handleExampleChange = (exampleId) => {
 :deep(.el-button--info.is-disabled) {
   background: #94a3b8;
   border-color: #94a3b8;
+}
+
+.drawer-content {
+  padding: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.config-section {
+  margin-bottom: 24px;
+}
+
+.config-section:last-child {
+  margin-bottom: 0;
+}
+
+.config-section-title {
+  color: var(--app-text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--input-border);
+}
+
+:deep(.el-drawer__header) {
+  margin-bottom: 20px;
+  padding: 20px;
+  border-bottom: 1px solid var(--input-border);
+  color: var(--app-text-primary);
+  font-weight: 600;
+}
+
+:deep(.el-drawer__body) {
+  padding: 20px;
+  background: var(--app-bg-color);
+}
+
+:deep(.el-drawer__title) {
+  color: var(--app-text-primary);
+  font-size: 16px;
 }
 </style>
 
