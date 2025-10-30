@@ -48,7 +48,11 @@
               :key="step.id"
               class="flow-column"
             >
-              <ChainNode :node="mapShortStepToNode(step)" />
+              <ChainNode
+                :node="mapShortStepToNode(step)"
+                :enable-compare="step.title === 'Generate DSL' && step.completed"
+                :compare-data="getCompareDataForShort(step)"
+              />
             </div>
           </div>
         </el-scrollbar>
@@ -164,6 +168,8 @@
                 v-for="step in stage7Steps"
                 :key="step.id"
                 :node="mapLongStepToNode(step)"
+                :enable-compare="step.title === 'Generate DSL' && step.completed"
+                :compare-data="getCompareDataForLong(step)"
                 class="flow-node"
               />
             </div>
@@ -185,7 +191,8 @@ const props = defineProps({
   longSteps: { type: Object, required: true },
   hitCache: { type: Boolean, default: false },
   queryAnalyzeStatus: { type: String, default: 'pending' },
-  analyzeNode: { type: Object, required: true }
+  analyzeNode: { type: Object, required: true },
+  originalLongSteps: { type: Object, default: () => ({}) }
 })
 
 // Query Analyze Node - 使用从 useBIQuery 传来的数据
@@ -269,6 +276,34 @@ const mapLongStepToNode = (step) => {
     tokens: step.tokens || 0,
     error: step.error || null,
     details: details
+  }
+}
+
+// Get compare data for short chain (compare with original long chain)
+const getCompareDataForShort = (step) => {
+  if (step.title !== 'Generate DSL') return null
+
+  // Find the corresponding "Generate DSL" step in original long chain (stage7)
+  const longDSLStep = props.originalLongSteps?.stage7?.steps?.find(s => s.title === 'Generate DSL')
+  if (!longDSLStep || !longDSLStep.completed) return null
+
+  return {
+    chainName: 'Long Chain',
+    details: longDSLStep.details || []
+  }
+}
+
+// Get compare data for long chain (compare with original long chain, not short chain)
+const getCompareDataForLong = (step) => {
+  if (step.title !== 'Generate DSL') return null
+
+  // Find the corresponding "Generate DSL" step in original long chain (stage7)
+  const originalLongDSLStep = props.originalLongSteps?.stage7?.steps?.find(s => s.title === 'Generate DSL')
+  if (!originalLongDSLStep || !originalLongDSLStep.completed) return null
+
+  return {
+    chainName: 'Long Chain (Original)',
+    details: originalLongDSLStep.details || []
   }
 }
 </script>

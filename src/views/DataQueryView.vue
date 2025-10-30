@@ -15,6 +15,7 @@
           :long-tokens="longOptimizeChainTokens"
           :short-l-l-m-calls="shortOptimizeLLMCalls"
           :long-l-l-m-calls="longOptimizeLLMCalls"
+          :original-long-steps="longSteps"
           class="chain-panel-wrapper"
         />
 
@@ -24,6 +25,8 @@
           :time="longChainTime"
           :total-tokens="longChainTokens"
           :llm-calls="longLLMCalls"
+          :short-steps="shortSteps"
+          :optimized-long-steps="longOptimizeSteps"
           class="chain-panel-wrapper"
         />
       </div>

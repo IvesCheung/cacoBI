@@ -12,7 +12,7 @@
     </div>
 
     <el-scrollbar class="panel-body">
-      <LongChainFlow :steps="steps" />
+      <LongChainFlow :steps="steps" :short-steps="shortSteps" :optimized-long-steps="optimizedLongSteps" />
     </el-scrollbar>
   </div>
 </template>
@@ -41,6 +41,14 @@ defineProps({
   llmCalls: {
     type: Number,
     default: 0
+  },
+  shortSteps: {
+    type: Array,
+    default: () => []
+  },
+  optimizedLongSteps: {
+    type: Object,
+    default: () => ({})
   }
 })
 </script><style scoped>

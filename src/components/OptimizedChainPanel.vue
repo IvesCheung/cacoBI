@@ -18,6 +18,7 @@
         :hit-cache="hitCache"
         :query-analyze-status="queryAnalyzeStatus"
         :analyze-node="analyzeNode"
+        :original-long-steps="originalLongSteps"
       />
     </el-scrollbar>
   </div>
@@ -72,6 +73,10 @@ const props = defineProps({
   longLLMCalls: {
     type: Number,
     default: 0
+  },
+  originalLongSteps: {
+    type: Object,
+    default: () => ({})
   }
 })
 

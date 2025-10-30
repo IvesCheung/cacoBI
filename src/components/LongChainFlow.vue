@@ -107,6 +107,8 @@
           v-for="step in stage7Steps"
           :key="step.id"
           :node="mapStepToNode(step)"
+          :enable-compare="step.title === 'Generate DSL' && step.completed"
+          :compare-data="getCompareData(step)"
           class="flow-node"
         />
       </div>
@@ -122,6 +124,14 @@ const props = defineProps({
   steps: {
     type: Object,
     required: true
+  },
+  shortSteps: {
+    type: Array,
+    default: () => []
+  },
+  optimizedLongSteps: {
+    type: Object,
+    default: () => ({})
   }
 });
 
@@ -283,6 +293,31 @@ const mapStepToNode = (step) => {
 
   return mapped;
 };
+
+// Get compare data for long chain (compare with optimized long chain first, then short chain)
+const getCompareData = (step) => {
+  if (step.title !== 'Generate DSL') return null
+
+  // First try to find the corresponding "Generate DSL" step in optimized long chain (stage7)
+  const optimizedLongDSLStep = props.optimizedLongSteps?.stage7?.steps?.find(s => s.title === 'Generate DSL')
+  if (optimizedLongDSLStep && optimizedLongDSLStep.completed) {
+    return {
+      chainName: 'Long Chain (Optimized)',
+      details: optimizedLongDSLStep.details || []
+    }
+  }
+
+  // Fallback to short chain if optimized long chain is not available
+  const shortDSLStep = props.shortSteps.find(s => s.title === 'Generate DSL')
+  if (shortDSLStep && shortDSLStep.completed) {
+    return {
+      chainName: 'Short Chain',
+      details: shortDSLStep.details || []
+    }
+  }
+
+  return null
+}
 </script><style scoped>
 .long-chain-flow-container {
   width: 100%;
