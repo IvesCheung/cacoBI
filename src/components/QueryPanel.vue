@@ -59,6 +59,11 @@
       </el-button>
     </div>
 
+    <!-- 日志面板 -->
+    <div class="log-section">
+      <LogPanel />
+    </div>
+
     <!-- 双路径进度条 -->
     <DualPathProgress
       v-if="isExecuting || optimizedCompleted || longCompleted"
@@ -141,6 +146,7 @@ import DualPathProgress from './DualPathProgress.vue'
 import QueryExampleSelector from './QueryExampleSelector.vue'
 import ShortChainConfig from './config/ShortChainConfig.vue'
 import LongChainConfig from './config/LongChainConfig.vue'
+import LogPanel from './LogPanel.vue'
 
 const props = defineProps({
   queryText: {
@@ -337,6 +343,10 @@ const handleDrawerClose = (done) => {
 
 .cost-agent-btn {
   flex-shrink: 0;
+}
+
+.log-section {
+  margin-bottom: 12px;
 }
 
 .results-section {

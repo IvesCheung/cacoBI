@@ -1,7 +1,8 @@
 import { ref, reactive, computed } from 'vue'
 import { LOG_MESSAGES, LOG_TYPES } from '@/constants/logMessages'
 import { getDefaultQueryExample, getQueryExample } from '@/data/queryExamples'
-import { getCurrentTime, getRandomComputeDuration, showLogNotification } from '@/utils/utils'
+import { getCurrentTime, getRandomComputeDuration } from '@/utils/utils'
+import { addLog, clearLogs as clearLogData } from '@/utils/logger'
 
 export function useBIQuery() {
   // 加载默认查询示例
@@ -531,22 +532,19 @@ export function useBIQuery() {
       isExecuting.value = true
 
       // 显示常规日志通知
-      showLogNotification(LOG_MESSAGES.RETRIEVING_DATA, LOG_TYPES.REGULAR)
+      addLog(LOG_MESSAGES.RETRIEVING_DATA, LOG_TYPES.REGULAR)
 
       // 首先执行 Query Analyze 步骤
       simulateQueryAnalyze().then(() => {
-        showLogNotification(LOG_MESSAGES.ANALYZING_DATA, LOG_TYPES.REGULAR)
+        addLog(LOG_MESSAGES.ANALYZING_DATA, LOG_TYPES.REGULAR)
 
         // 如果启用了 Cost Agent，显示相关通知
         if (costAgentEnabled.value) {
           setTimeout(() => {
-            showLogNotification(LOG_MESSAGES.COST_PLANER_ANALYZING, LOG_TYPES.COST_AGENT)
+            addLog(LOG_MESSAGES.COST_PLANER_ANALYZING, LOG_TYPES.COST_AGENT)
           }, 200)
           setTimeout(() => {
-            showLogNotification(
-              LOG_MESSAGES.COST_PLANER_SKIPPED(skippedStepsInfo.value),
-              LOG_TYPES.COST_AGENT,
-            )
+            addLog(LOG_MESSAGES.COST_PLANER_SKIPPED(skippedStepsInfo.value), LOG_TYPES.COST_AGENT)
           }, 500)
         }
 
@@ -572,7 +570,7 @@ export function useBIQuery() {
           clearInterval(checkInterval)
           isExecuting.value = false
           // 显示完成通知
-          showLogNotification(LOG_MESSAGES.EXECUTION_COMPLETED, LOG_TYPES.SUCCESS)
+          addLog(LOG_MESSAGES.EXECUTION_COMPLETED, LOG_TYPES.SUCCESS)
           resolve()
         }
       }, 100)
@@ -586,6 +584,8 @@ export function useBIQuery() {
       longOptimizeCompleted.value = false
       longCompleted.value = false
       skippedStepsInfo.value = []
+      // 清除日志面板的数据
+      clearLogData()
     }
   }
 
