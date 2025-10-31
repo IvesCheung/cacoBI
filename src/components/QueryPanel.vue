@@ -106,7 +106,7 @@
           >
             <template #title>
               <div class="collapse-title">
-                <span class="result-title short-title">🔀 Optimized Chain Result</span>
+                <span class="result-title short-title">🔀 ChronosBI Result</span>
               </div>
             </template>
             <div class="result-content">

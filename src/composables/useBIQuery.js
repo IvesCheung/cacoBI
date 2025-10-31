@@ -1,6 +1,11 @@
 import { ref, reactive, computed } from 'vue'
 import { LOG_MESSAGES, LOG_TYPES } from '@/constants/logMessages'
-import { getDefaultQueryExample, getQueryExample, getSkipSteps } from '@/data/queryExamples'
+import {
+  getDefaultQueryExample,
+  getQueryExample,
+  getSkipSteps,
+  getExampleIdByQueryText,
+} from '@/data/queryExamples'
 import { getCurrentTime, getRandomComputeDuration } from '@/utils/utils'
 import { addLog, clearLogs as clearLogData } from '@/utils/logger'
 
@@ -544,6 +549,12 @@ export function useBIQuery() {
   // 执行查询
   const executeQuery = () => {
     return new Promise((resolve) => {
+      // 执行前：根据 queryText 匹配并加载对应的 example
+      const matchedExampleId = getExampleIdByQueryText(queryText.value)
+      if (matchedExampleId && matchedExampleId !== currentExampleId.value) {
+        loadQueryExample(matchedExampleId)
+      }
+
       isExecuting.value = true
       resetAll()
       isExecuting.value = true

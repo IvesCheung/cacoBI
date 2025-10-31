@@ -507,6 +507,18 @@ export function getDefaultQueryExample() {
 }
 
 /**
+ * 根据查询文本获取示例ID
+ * @param {string} queryText - 查询文本
+ * @returns {string|null} 匹配的示例ID，如果未找到则返回null
+ */
+export function getExampleIdByQueryText(queryText) {
+  if (!queryText) return null
+  const normalizedQuery = queryText.trim().toLowerCase()
+  const example = queryExamples.find((ex) => ex.queryText.toLowerCase() === normalizedQuery)
+  return example ? example.id : null
+}
+
+/**
  * 获取指定示例的跳过步骤列表
  * @param {string} exampleId - 示例ID
  * @returns {Array} 跳过步骤ID数组，如果示例未找到则返回空数组

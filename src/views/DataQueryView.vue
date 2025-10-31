@@ -46,6 +46,7 @@
           :skipped-stage-indices="skippedStageIndices"
           :query-result="queryResult"
           :current-example-id="currentExampleId"
+          :show-sample-selector="false"
           @execute="handleExecute"
           @clear-logs="clearLogs"
           @example-change="handleExampleChange"
