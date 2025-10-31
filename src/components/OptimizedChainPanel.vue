@@ -1,7 +1,7 @@
 <template>
   <div class="chain-panel">
     <div class="panel-header">
-      <h2 class="panel-title optimized-title">🔀 Optimized Chain</h2>
+      <h2 class="panel-title optimized-title">🔀 NL-to-DSL using ChronosBI</h2>
       <ProgressBar
         :progress-array="hitCache ? shortProgress : longProgress"
         :time="hitCache ? shortTime : longTime"

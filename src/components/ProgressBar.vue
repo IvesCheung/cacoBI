@@ -67,11 +67,11 @@ const props = defineProps({
 })
 
 // 根据进度条数量动态计算宽度
-const progressBarWidth = computed(() => {
-  const count = props.progressArray.length
-  // 短链路3个: 40px, 长链路7个: 28px
-  return count <= 3 ? '40px' : '28px'
-})
+// const progressBarWidth = computed(() => {
+//   const count = props.progressArray.length
+//   // 短链路3个: 40px, 长链路7个: 28px
+//   return count <= 3 ? '40px' : '28px'
+// })
 
 // 根据startColor计算badge样式
 const badgeStyle = computed(() => {

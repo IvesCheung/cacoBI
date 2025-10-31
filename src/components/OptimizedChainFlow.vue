@@ -3,6 +3,14 @@
     <div class="optimized-chain-flow">
       <!-- Left side: Query Analyze Node -->
       <div class="analyze-section">
+        <!-- Cache Status Indicator -->
+        <div v-if="queryAnalyzeStatus !== 'pending'" class="cache-status-indicator">
+          <div :class="['cache-status', hitCache ? 'cache-hit' : 'cache-miss']">
+            <i :class="[hitCache ? 'el-icon-success' : 'el-icon-warning']"></i>
+            {{ hitCache ? 'Cache Hit' : 'Cache Miss' }}
+          </div>
+        </div>
+
         <ChainNode
           :node="analyzeNode"
           class="analyze-node"
@@ -326,9 +334,61 @@ const getCompareDataForLong = (step) => {
 /* Left side: Query Analyze Section */
 .analyze-section {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  gap: 12px;
+}
+
+/* Cache Status Indicator */
+.cache-status-indicator {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.cache-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  animation: slideDown 0.5s ease-out;
+}
+
+.cache-hit {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.cache-miss {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.cache-status:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .analyze-node {

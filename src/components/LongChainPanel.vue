@@ -1,7 +1,7 @@
 <template>
   <div class="chain-panel">
     <div class="panel-header">
-      <h2 class="panel-title long-title">🟠 Long-chain</h2>
+      <h2 class="panel-title long-title">🟠 NL-to-DSL using Long-chain</h2>
       <ProgressBar
         :progress-array="progress"
         :time="time"
