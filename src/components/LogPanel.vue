@@ -19,7 +19,7 @@
       <el-empty
         v-if="logs.length === 0"
         description="No logs yet"
-        :image-size="40"
+        :image-size="30"
         class="no-logs"
       />
       <div
@@ -121,10 +121,10 @@ watch(() => logs.value.length, async () => {
 }
 
 .no-logs {
-  height: 100%;
+  height: 60%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
 }
 
 :deep(.el-empty__description) {

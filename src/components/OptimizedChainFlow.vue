@@ -48,7 +48,7 @@
         <div class="parallel-chains">
           <!-- Short Chain Path -->
           <div class="chain-path short-path">
-            <div class="path-label">Shortcut with Semantic Cache</div>
+            <div class="path-label">Shortcut with Semantic Caching</div>
             <el-scrollbar class="path-flow">
             <div class="path-flow-content">
             <div

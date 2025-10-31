@@ -14,7 +14,7 @@
 
     <!-- 查询输入区域 - 重新设计 -->
     <div class="query-input-container">
-      <h3 class="query-title">Query</h3>
+      <!-- <h3 class="query-title">Query</h3> -->
       <!-- 文本输入框 -->
       <el-input
         v-model="queryText"
@@ -22,7 +22,7 @@
         :rows="2"
         placeholder="Enter your query here..."
         class="query-textarea"
-        :autosize="{ minRows: 1, maxRows: 4 }"
+        :autosize="{ minRows: 2, maxRows: 4 }"
         :disabled="isExecuting"
         @keydown.enter.exact="handleKeyboardExecute"
       />
@@ -349,7 +349,7 @@ const handleDrawerClose = (done) => {
 .query-input-container {
   margin-bottom: 12px;
   background: var(--input-bg);
-  border: 2px solid var(--input-border);
+  border: 2px solid #3b82f6;
   border-radius: 16px;
   padding: 12px;
   transition: all 0.3s ease;
@@ -377,6 +377,7 @@ const handleDrawerClose = (done) => {
 .query-textarea {
   width: 100%;
   margin-bottom: 8px;
+  background: #eff1f4;
 }
 
 .query-textarea :deep(.el-textarea__inner) {
