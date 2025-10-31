@@ -1,6 +1,6 @@
 import { ref, reactive, computed } from 'vue'
 import { LOG_MESSAGES, LOG_TYPES } from '@/constants/logMessages'
-import { getDefaultQueryExample, getQueryExample } from '@/data/queryExamples'
+import { getDefaultQueryExample, getQueryExample, getSkipSteps } from '@/data/queryExamples'
 import { getCurrentTime, getRandomComputeDuration } from '@/utils/utils'
 import { addLog, clearLogs as clearLogData } from '@/utils/logger'
 
@@ -401,49 +401,44 @@ export function useBIQuery() {
   // 原始长链路进度 (不带 cost planner)
   const longProgress = reactive([0, 0, 0, 0, 0, 0, 0])
 
-  // 选择要跳过的步骤（Cost Agent功能）
-  const selectRandomStepsToSkip = () => {
-    // 可跳过的阶段：stage1-stage6（不包括最后一个stage7）
-    const skippableStages = ['stage1', 'stage2', 'stage3', 'stage4', 'stage5', 'stage6']
+  // 选择要跳过的步骤（Cost Agent功能）- 从示例配置获取
+  const selectStepsToSkip = () => {
+    // 从当前示例获取预配置的跳过步骤
+    const predefinedSkipSteps = getSkipSteps(currentExampleId.value)
 
-    // 随机选择跳过1-2个步骤
-    // const numToSkip = Math.random() < 0.5 ? 1 : 2
-    // 固定跳过三个
-    const numToSkip = 3
+    if (!predefinedSkipSteps || predefinedSkipSteps.length === 0) {
+      return []
+    }
+
     const skipped = []
     const skippedInfo = []
 
-    for (let i = 0; i < numToSkip; i++) {
-      // 随机选择一个阶段
-      const randomStageIndex = Math.floor(Math.random() * skippableStages.length)
-      const stageName = skippableStages[randomStageIndex]
-      const stage = longOptimizeSteps.value[stageName]
-
-      if (stage && stage.steps.length > 0) {
-        // 随机选择该阶段中的一个步骤
-        const randomStepIndex = Math.floor(Math.random() * stage.steps.length)
-        const step = stage.steps[randomStepIndex]
-        const stepId = step.id
-
-        // 避免重复
-        if (!skipped.includes(stepId)) {
-          skipped.push(stepId)
-          skippedInfo.push({
-            id: stepId,
-            title: step.title,
-            stage: stage.title,
-          })
-
-          // 立即标记步骤为跳过状态
-          step.skipped = true
+    // 遍历预配置的跳过步骤
+    predefinedSkipSteps.forEach((stepId) => {
+      // 在所有阶段中查找该步骤
+      Object.keys(longOptimizeSteps.value).forEach((stageName) => {
+        const stage = longOptimizeSteps.value[stageName]
+        if (stage && stage.steps) {
+          const step = stage.steps.find((s) => s.id === stepId)
+          if (step) {
+            skipped.push(stepId)
+            skippedInfo.push({
+              id: stepId,
+              title: step.title,
+              stage: stage.title,
+            })
+            // 立即标记步骤为跳过状态
+            step.skipped = true
+          }
         }
-      }
-    }
+      })
+    })
 
     // 保存跳过步骤的详细信息
     skippedStepsInfo.value = skippedInfo
 
     // 计算哪些stage被完全跳过
+    const skippableStages = ['stage1', 'stage2', 'stage3', 'stage4', 'stage5', 'stage6']
     const fullySkippedIndices = []
     skippableStages.forEach((stageName, index) => {
       const stage = longOptimizeSteps.value[stageName]
@@ -559,7 +554,7 @@ export function useBIQuery() {
       // 如果不命中缓存且启用了Cost Agent,提前选择要跳过的步骤
       let skippedSteps = []
       if (!hitCache.value && costAgentEnabled.value) {
-        skippedSteps = selectRandomStepsToSkip()
+        skippedSteps = selectStepsToSkip()
       }
 
       // 首先执行 Query Analyze 步骤
@@ -917,5 +912,6 @@ export function useBIQuery() {
     clearLogs,
     loadQueryExample,
     simulateQueryAnalyze,
+    selectStepsToSkip,
   }
 }

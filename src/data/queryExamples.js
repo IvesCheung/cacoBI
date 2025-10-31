@@ -8,6 +8,7 @@
  * - queryResult: 查询结果数据（柱状图数据）
  * - shortSteps: 短链路步骤配置（只需配置details, tokens, duration）
  * - longSteps: 长链路步骤配置（只需配置details, tokens, duration）
+ * - skipSteps: Cost Agent要跳过的步骤ID列表（可选，仅在hit_cache为false时生效）
  */
 
 export const queryExamples = [
@@ -24,6 +25,7 @@ export const queryExamples = [
       { name: 'iPad', value: 2685 },
       { name: 'Others', value: 1078 },
     ],
+    skipSteps: [], // hit_cache为true时不跳过任何步骤
     shortSteps: {
       step1: {
         details: [`Use Entity-agnostic Qwen3-0.6B to embed the user query`],
@@ -31,7 +33,7 @@ export const queryExamples = [
         duration: 0.5,
       },
       step2: {
-        details: ["1. Huawei's sales in 2024", '2. Mac Pro sales in 2025'],
+        details: ["1. 2024's sales of Huawei", '2. Mac Pro sales in 2025'],
         tokens: 0,
         duration: 1.13,
       },
@@ -176,6 +178,7 @@ export const queryExamples = [
       { name: 'Watch', value: 980 },
       { name: 'Others', value: 1250 },
     ],
+    skipSteps: [], // hit_cache为true时不跳过任何步骤
     shortSteps: {
       step1: {
         details: [`Use Entity-agnostic Qwen3-0.6B to embed the user query`],
@@ -327,6 +330,7 @@ export const queryExamples = [
       { name: 'Model X', value: 2340 },
       { name: 'Cybertruck', value: 980 },
     ],
+    skipSteps: ['query-clarify', 'business-table-recall', 'dimension-rerank'], // Cost Agent跳过的步骤
     shortSteps: {
       step1: {
         details: [`Use Entity-agnostic Qwen3-0.6B to embed the user query`],
@@ -493,4 +497,24 @@ export function getQueryExampleList() {
  */
 export function getDefaultQueryExample() {
   return queryExamples[0]
+}
+
+/**
+ * 获取指定示例的跳过步骤列表
+ * @param {string} exampleId - 示例ID
+ * @returns {Array} 跳过步骤ID数组，如果示例未找到则返回空数组
+ */
+export function getSkipSteps(exampleId) {
+  const example = getQueryExample(exampleId)
+  return example?.skipSteps || []
+}
+
+/**
+ * 检查指定示例是否有跳过步骤配置
+ * @param {string} exampleId - 示例ID
+ * @returns {boolean} 是否有跳过步骤配置
+ */
+export function hasSkipSteps(exampleId) {
+  const skipSteps = getSkipSteps(exampleId)
+  return skipSteps.length > 0
 }
