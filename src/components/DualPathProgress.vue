@@ -177,7 +177,7 @@
         text-anchor="middle"
         class="path-label short-label"
       >
-        Optimized
+        ChronosBI
       </text>
       <text
         :x="width / 2 - 20"

@@ -330,7 +330,14 @@ export const queryExamples = [
       { name: 'Model X', value: 2340 },
       { name: 'Cybertruck', value: 980 },
     ],
-    skipSteps: ['query-clarify', 'business-table-recall', 'dimension-rerank'], // Cost Agent跳过的步骤
+    skipSteps: [
+      'query-clarify',
+      'query-rewrite',
+      'table-selection',
+      'table-rule',
+      'dimension-rerank',
+      'dimension-parse',
+    ], // Cost Agent跳过的步骤
     shortSteps: {
       step1: {
         details: [`Use Entity-agnostic Qwen3-0.6B to embed the user query`],

@@ -48,7 +48,7 @@
         <div class="parallel-chains">
           <!-- Short Chain Path -->
           <div class="chain-path short-path">
-            <div class="path-label">Short Chain</div>
+            <div class="path-label">Shortcut with Semantic Cache</div>
             <el-scrollbar class="path-flow">
             <div class="path-flow-content">
             <div
@@ -68,7 +68,7 @@
 
         <!-- Long Chain Path -->
         <div class="chain-path long-path">
-          <div class="path-label">Long Chain (Optimized)</div>
+          <div class="path-label">Long-chain Pipeline with Cost Planner</div>
           <el-scrollbar class="path-flow">
             <div class="path-flow-content">
             <!-- Stage 1: Query Parsing -->
