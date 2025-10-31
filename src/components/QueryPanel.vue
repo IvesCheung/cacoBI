@@ -14,6 +14,7 @@
 
     <!-- 查询输入区域 - 重新设计 -->
     <div class="query-input-container">
+      <h3 class="query-title">Query</h3>
       <!-- 文本输入框 -->
       <el-input
         v-model="queryText"
@@ -363,6 +364,14 @@ const handleDrawerClose = (done) => {
 .query-input-container:focus-within {
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.query-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--app-text-primary);
+  margin: 0 0 8px 0;
+  padding: 0;
 }
 
 .query-textarea {
