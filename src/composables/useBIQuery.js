@@ -595,16 +595,34 @@ export function useBIQuery() {
         simulateLongChain()
       })
 
-      // 等待链路完成
-      const checkInterval = setInterval(() => {
+      const checkOptimizedInterval = setInterval(() => {
         const optimizeCompleted = hitCache.value
           ? shortOptimizeCompleted.value
           : longOptimizeCompleted.value
-        if (optimizeCompleted && longCompleted.value) {
-          clearInterval(checkInterval)
+        if (optimizeCompleted) {
+          clearInterval(checkOptimizedInterval)
           isExecuting.value = false
           // 显示完成通知
-          addLog(LOG_MESSAGES.EXECUTION_COMPLETED, LOG_TYPES.SUCCESS)
+          addLog(
+            hitCache.value
+              ? 'ChronosBI: Shortcut execution completed'
+              : 'ChronosBI: Long-chain(cost planner) execution completed',
+            LOG_TYPES.SUCCESS,
+          )
+          resolve()
+        }
+      }, 100)
+
+      // 等待链路完成
+      const checkAllCompletedInterval = setInterval(() => {
+        // const optimizeCompleted = hitCache.value
+        //   ? shortOptimizeCompleted.value
+        //   : longOptimizeCompleted.value
+        if (longCompleted.value) {
+          clearInterval(checkAllCompletedInterval)
+          // isExecuting.value = false
+          // 显示完成通知
+          addLog('Long-chain(Baseline) execution completed', LOG_TYPES.SUCCESS)
           resolve()
         }
       }, 100)
