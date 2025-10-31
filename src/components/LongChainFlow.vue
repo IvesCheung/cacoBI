@@ -322,6 +322,10 @@ const getCompareData = (step) => {
 .long-chain-flow-container {
   width: 100%;
   padding: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%;
 }
 
 .long-chain-flow {
