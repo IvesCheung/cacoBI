@@ -14,11 +14,13 @@ export const getCurrentTime = () => {
 }
 
 /**
- * 生成随机的compute节点duration (0.05-0.15秒)
+ * 生成随机的compute节点duration
+ * @param {number} min - 最小值，默认0.05秒
+ * @param {number} max - 最大值，默认0.15秒
  * @returns {number} 随机duration值
  */
-export const getRandomComputeDuration = () => {
-  return Math.random() * (0.15 - 0.05) + 0.05
+export const getRandomComputeDuration = (min = 0.05, max = 0.15) => {
+  return Math.random() * (max - min) + min
 }
 
 /**
