@@ -37,6 +37,8 @@ export function useBIQuery() {
 
   // Cost Agent 跳过的步骤信息
   const skippedStepsInfo = ref([])
+  // 被完全跳过的stage索引列表 (用于DualPathProgress)
+  const skippedStageIndices = ref([])
 
   // Query Analyze 节点状态
   const queryAnalyzeStatus = ref('pending') // 'pending', 'running', 'completed'
@@ -431,12 +433,29 @@ export function useBIQuery() {
             title: step.title,
             stage: stage.title,
           })
+
+          // 立即标记步骤为跳过状态
+          step.skipped = true
         }
       }
     }
 
     // 保存跳过步骤的详细信息
     skippedStepsInfo.value = skippedInfo
+
+    // 计算哪些stage被完全跳过
+    const fullySkippedIndices = []
+    skippableStages.forEach((stageName, index) => {
+      const stage = longOptimizeSteps.value[stageName]
+      if (stage && stage.steps.length > 0) {
+        const allSkipped = stage.steps.every((step) => skipped.includes(step.id))
+        if (allSkipped) {
+          fullySkippedIndices.push(index)
+        }
+      }
+    })
+    skippedStageIndices.value = fullySkippedIndices
+
     return skipped
   }
 
@@ -463,6 +482,9 @@ export function useBIQuery() {
     longLLMCalls.value = 0
 
     skippedStepsInfo.value = []
+
+    // 重置被跳过的stage索引
+    skippedStageIndices.value = []
 
     // 重置 Query Analyze 状态
     queryAnalyzeStatus.value = 'pending'
@@ -534,12 +556,18 @@ export function useBIQuery() {
       // 显示常规日志通知
       addLog(LOG_MESSAGES.RETRIEVING_DATA, LOG_TYPES.REGULAR)
 
+      // 如果不命中缓存且启用了Cost Agent,提前选择要跳过的步骤
+      let skippedSteps = []
+      if (!hitCache.value && costAgentEnabled.value) {
+        skippedSteps = selectRandomStepsToSkip()
+      }
+
       // 首先执行 Query Analyze 步骤
       simulateQueryAnalyze().then(() => {
         addLog(LOG_MESSAGES.ANALYZING_DATA, LOG_TYPES.REGULAR)
 
         // 如果启用了 Cost Agent，显示相关通知
-        if (costAgentEnabled.value) {
+        if (costAgentEnabled.value && !hitCache.value) {
           setTimeout(() => {
             addLog(LOG_MESSAGES.COST_PLANER_ANALYZING, LOG_TYPES.COST_AGENT)
           }, 200)
@@ -553,8 +581,8 @@ export function useBIQuery() {
           // 执行优化短链路
           simulateShortOptimizeChain()
         } else {
-          // 执行优化长链路 (带 cost planner)
-          simulateLongOptimizeChain()
+          // 执行优化长链路 (带 cost planner) - 传递已选择的跳过步骤
+          simulateLongOptimizeChain(skippedSteps)
         }
 
         // 始终执行原始长链路
@@ -676,16 +704,15 @@ export function useBIQuery() {
   }
 
   // 模拟优化长链路执行 (带 cost planner)
-  const simulateLongOptimizeChain = () => {
-    console.log('开始执行优化长链路 (带 cost planner)')
+  const simulateLongOptimizeChain = (skippedSteps = []) => {
+    console.log('开始执行优化长链路 (带 cost planner)', '跳过步骤:', skippedSteps)
 
     let timer = setInterval(() => {
       longOptimizeChainTime.value += 0.01
     }, 10)
 
-    // 启用Cost Agent时，增加200ms前摇，并随机选择步骤跳过
+    // 启用Cost Agent时，增加200ms前摇
     let accumulatedTime = costAgentEnabled.value ? 700 : 500
-    const skippedSteps = costAgentEnabled.value ? selectRandomStepsToSkip() : []
 
     // 遍历所有阶段
     const stageKeys = Object.keys(longOptimizeSteps.value)
@@ -707,8 +734,8 @@ export function useBIQuery() {
         // 执行该阶段的所有步骤
         stageSteps.forEach((step, stepIdx) => {
           if (skippedSteps.includes(step.id)) {
-            console.log(`优化长链路阶段${stageIndex + 1}-步骤${stepIdx} 被跳过:`, step.id)
-            step.skipped = true
+            console.log(`优化长链路阶段${stageIndex + 1}-步骤${stepIdx} 已跳过:`, step.id)
+            // skipped状态已经在selectRandomStepsToSkip中设置了
             return
           }
 
@@ -867,6 +894,7 @@ export function useBIQuery() {
     queryText,
     queryResult,
     skippedStepsInfo,
+    skippedStageIndices,
     currentExampleId,
 
     // 配置

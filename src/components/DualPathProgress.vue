@@ -214,6 +214,10 @@ const props = defineProps({
   isExecuting: {
     type: Boolean,
     default: false
+  },
+  skippedStageIndices: {
+    type: Array,
+    default: () => []
   }
 })
 
@@ -234,9 +238,17 @@ const endPoint = computed(() => ({ x: width.value - 80, y: height.value / 2 }))
 const shortStepCount = computed(() => props.shortProgress.length)
 const shortMaxDeviation = 45 // 最大偏离中心线的距离
 
-// 长链路参数 - 下方路径（根据传入的 progress 数组长度动态计算）
-const longStepCount = computed(() => props.longProgress.length)
+// 长链路参数 - 下方路径（根据传入的 progress 数组长度动态计算，排除被完全跳过的stage）
+const longStepCount = computed(() => {
+  // 原始长度减去被完全跳过的stage数量
+  return props.longProgress.length - props.skippedStageIndices.length
+})
 const longMaxDeviation = 45 // 最大偏离中心线的距离
+
+// 过滤出未被跳过的longProgress
+const filteredLongProgress = computed(() => {
+  return props.longProgress.filter((_, index) => !props.skippedStageIndices.includes(index))
+})
 
 // 计算短链路节点位置（对称分布）
 const shortNodes = computed(() => {
@@ -384,7 +396,8 @@ const getShortNodeColor = (index) => {
 
 // 获取长链路节点颜色
 const getLongNodeColor = (index) => {
-  const progress = props.longProgress[index] || 0
+  // 使用过滤后的进度数组
+  const progress = filteredLongProgress.value[index] || 0
   if (progress >= 100) {
     return '#f59e0b' // 完成 - 橙色
   } else if (progress > 0) {
@@ -406,7 +419,8 @@ const getShortNodeClass = (index) => {
 
 // 获取长链路节点样式类
 const getLongNodeClass = (index) => {
-  const progress = props.longProgress[index] || 0
+  // 使用过滤后的进度数组
+  const progress = filteredLongProgress.value[index] || 0
   return {
     'completed': progress >= 100,
     'active': progress > 0 && progress < 100,

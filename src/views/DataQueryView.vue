@@ -43,6 +43,7 @@
           :long-completed="longCompleted"
           :optimized-progress="hitCache ? shortOptimizeProgress : longOptimizeProgress"
           :long-progress="longProgress"
+          :skipped-stage-indices="skippedStageIndices"
           :query-result="queryResult"
           :current-example-id="currentExampleId"
           @execute="handleExecute"
@@ -86,6 +87,7 @@ const {
 
   queryText,
   queryResult,
+  skippedStageIndices,
   shortChainConfig,
   longChainConfig,
   shortSteps,

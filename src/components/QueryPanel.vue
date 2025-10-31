@@ -86,6 +86,7 @@
       :short-completed="optimizedCompleted"
       :long-completed="longCompleted"
       :is-executing="isExecuting"
+      :skipped-stage-indices="skippedStageIndices"
     />
 
     <!-- 链路结果 -->
@@ -196,6 +197,10 @@ const props = defineProps({
   longProgress: {
     type: Array,
     default: () => [0, 0, 0, 0, 0, 0, 0]
+  },
+  skippedStageIndices: {
+    type: Array,
+    default: () => []
   },
   queryResult: {
     type: Array,
