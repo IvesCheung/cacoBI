@@ -59,13 +59,15 @@
         <el-button
           type="primary"
           :disabled="isExecuting || !queryText.trim()"
-          :loading="isExecuting"
           @click="handleExecute"
           class="execute-btn"
           circle
         >
-          <el-icon v-if="!isExecuting">
-            <Top />
+          <el-icon v-if="isExecuting" class="is-loading">
+            <Loading />
+          </el-icon>
+          <el-icon v-else>
+            <Right />
           </el-icon>
         </el-button>
       </div>
@@ -154,7 +156,7 @@
 
 <script setup>
 import { computed, ref } from 'vue'
-import { CircleCheck, CircleClose, Setting, Top } from '@element-plus/icons-vue'
+import { CircleCheck, CircleClose, Setting, Right, Loading } from '@element-plus/icons-vue'
 import ResultChart from './ResultChart.vue'
 import DualPathProgress from './DualPathProgress.vue'
 import QueryExampleSelector from './QueryExampleSelector.vue'
@@ -367,7 +369,7 @@ const handleDrawerClose = (done) => {
   background: transparent;
   border: none;
   color: var(--app-text-primary);
-  font-size: 14px;
+  font-size: 18px;
   line-height: 1.6;
   padding: 4px 8px;
   transition: all 0.3s ease;
@@ -476,13 +478,36 @@ const handleDrawerClose = (done) => {
 
 /* 执行按钮 - 圆形图标按钮 */
 .execute-btn {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   padding: 0;
   background: #2563eb;
   border-color: #2563eb;
   transition: all 0.3s ease;
-  font-size: 20px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.execute-btn :deep(.el-icon) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.execute-btn :deep(.el-icon.is-loading) {
+  animation: rotating 2s linear infinite;
+}
+
+@keyframes rotating {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .execute-btn:hover:not(.is-disabled) {
