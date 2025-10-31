@@ -43,7 +43,7 @@
               <CircleCheck v-if="costAgentEnabled" />
               <CircleClose v-else />
             </el-icon>
-            <span>Cost Planer</span>
+            <span>Cost Planner</span>
           </el-button>
 
           <!-- Sample 选择器 -->
