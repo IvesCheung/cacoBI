@@ -302,7 +302,7 @@ const getCompareData = (step) => {
   const optimizedLongDSLStep = props.optimizedLongSteps?.stage7?.steps?.find(s => s.title === 'Generate DSL')
   if (optimizedLongDSLStep && optimizedLongDSLStep.completed) {
     return {
-      chainName: 'DSL Produced by ChronosBI',
+      chainName: 'ChronosBI(Cost Planner)',
       details: optimizedLongDSLStep.details || []
     }
   }
@@ -311,7 +311,7 @@ const getCompareData = (step) => {
   const shortDSLStep = props.shortSteps.find(s => s.title === 'Generate DSL')
   if (shortDSLStep && shortDSLStep.completed) {
     return {
-      chainName: 'DSL Produced by ChronosBI',
+      chainName: 'ChronosBI(Shortcut)',
       details: shortDSLStep.details || []
     }
   }

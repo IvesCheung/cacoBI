@@ -121,9 +121,11 @@
           <div class="header-column current-header">
             <span class="chain-label">Current Chain DSL</span>
           </div>
-          <div class="header-spacer"></div>
+          <div class="header-spacer">
+            <div class="vs-icon">VS</div>
+          </div>
           <div class="header-column other-header">
-            <span class="chain-label">{{ compareData?.chainName || 'Other Chain' }}</span>
+            <span class="chain-label">DSL Produced by {{ compareData?.chainName || 'Other Chain' }}</span>
           </div>
         </div>
 
@@ -865,6 +867,27 @@ const comparisonResult = computed(() => {
 .header-spacer {
   width: 40px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vs-icon {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--popup-title-color);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.4) 0%, rgba(245, 158, 11, 0.4) 100%);
+  border: 2px solid rgba(16, 185, 129, 0.5);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
 }
 
 .chain-label {
