@@ -1,11 +1,11 @@
+<!-- eslint-disable no-unused-vars -->
 <template>
   <div class="progress-container">
     <!-- 起始点 -->
-    <div class="progress-dot" :style="{ backgroundColor: startColor }"></div>
+    <!-- <div class="progress-dot" :style="{ backgroundColor: startColor }"></div> -->
 
     <!-- 进度条组 -->
-    <template v-for="(progress, index) in progressArray" :key="index">
-      <!-- 进度条 -->
+    <!-- <template v-for="(progress, index) in progressArray" :key="index">
       <div class="progress-wrapper" :style="{ width: progressBarWidth }">
         <div class="progress-bg">
           <div
@@ -14,8 +14,6 @@
           ></div>
         </div>
       </div>
-
-      <!-- 连接点 -->
       <div
         class="progress-dot connector"
         :class="{
@@ -23,7 +21,7 @@
           'connector-inactive': progress < 100
         }"
       ></div>
-    </template>
+    </template> -->
 
     <!-- 时间显示 -->
     <div class="time-badge" :style="badgeStyle">
@@ -133,7 +131,7 @@ const badgeStyle = computed(() => {
   color: white;
   padding: 3px 6px;
   border-radius: 3px;
-  font-size: 11px;
+  font-size: 14px;
   white-space: nowrap;
   margin-left: 6px;
 }
@@ -146,7 +144,7 @@ const badgeStyle = computed(() => {
   color: white;
   padding: 3px 6px;
   border-radius: 3px;
-  font-size: 11px;
+  font-size: 14px;
   white-space: nowrap;
   margin-left: 3px;
 }
