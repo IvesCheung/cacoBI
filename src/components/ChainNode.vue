@@ -123,7 +123,7 @@
           </div>
           <div class="header-spacer"></div>
           <div class="header-column other-header">
-            <span class="chain-label">{{ compareData?.chainName || 'Other Chain' }} DSL</span>
+            <span class="chain-label">{{ compareData?.chainName || 'Other Chain' }}</span>
           </div>
         </div>
 

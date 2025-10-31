@@ -296,7 +296,7 @@ const getCompareDataForShort = (step) => {
   if (!longDSLStep || !longDSLStep.completed) return null
 
   return {
-    chainName: 'Long Chain',
+    chainName: 'DSL Produced by Long-chain(Baseline)',
     details: longDSLStep.details || []
   }
 }
@@ -310,7 +310,7 @@ const getCompareDataForLong = (step) => {
   if (!originalLongDSLStep || !originalLongDSLStep.completed) return null
 
   return {
-    chainName: 'Long Chain (Original)',
+    chainName: 'DSL Produced by Long-chain(Baseline)',
     details: originalLongDSLStep.details || []
   }
 }
