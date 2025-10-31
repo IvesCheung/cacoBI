@@ -13,7 +13,7 @@ const logTypeStyles = {
   },
   [LOG_TYPES.COST_AGENT]: {
     type: 'success',
-    icon: '💰',
+    icon: '✨',
   },
   [LOG_TYPES.SUCCESS]: {
     type: 'success',
