@@ -6,7 +6,7 @@ import {
   getSkipSteps,
   getExampleIdByQueryText,
 } from '@/data/queryExamples'
-import { getCurrentTime, getRandomComputeDuration } from '@/utils/utils'
+import { getCurrentTime, getRandomComputeDuration, addJitter } from '@/utils/utils'
 import { addLog, clearLogs as clearLogData } from '@/utils/logger'
 
 export function useBIQuery() {
@@ -100,7 +100,7 @@ export function useBIQuery() {
         active: false,
         completed: false,
         details: exampleData.step1.details,
-        tokens: exampleData.step1.tokens,
+        tokens: addJitter(exampleData.step1.tokens),
         duration: getRandomComputeDuration(),
       },
       {
@@ -111,7 +111,7 @@ export function useBIQuery() {
         active: false,
         completed: false,
         details: exampleData.step2.details,
-        tokens: exampleData.step2.tokens,
+        tokens: addJitter(exampleData.step2.tokens),
         duration: getRandomComputeDuration(),
       },
       {
@@ -122,8 +122,8 @@ export function useBIQuery() {
         active: false,
         completed: false,
         details: exampleData.step3.details,
-        tokens: exampleData.step3.tokens,
-        duration: exampleData.step3.duration,
+        tokens: addJitter(exampleData.step3.tokens),
+        duration: addJitter(exampleData.step3.duration),
       },
     ]
   }
@@ -148,8 +148,8 @@ export function useBIQuery() {
             completed: false,
             skipped: false,
             details: exampleData.stage1['subject-recognition'].details,
-            tokens: exampleData.stage1['subject-recognition'].tokens,
-            duration: exampleData.stage1['subject-recognition'].duration,
+            tokens: addJitter(exampleData.stage1['subject-recognition'].tokens),
+            duration: addJitter(exampleData.stage1['subject-recognition'].duration),
           },
           {
             id: 'query-rewrite',
@@ -160,8 +160,8 @@ export function useBIQuery() {
             completed: false,
             skipped: false,
             details: exampleData.stage1['query-rewrite'].details,
-            tokens: exampleData.stage1['query-rewrite'].tokens,
-            duration: exampleData.stage1['query-rewrite'].duration,
+            tokens: addJitter(exampleData.stage1['query-rewrite'].tokens),
+            duration: addJitter(exampleData.stage1['query-rewrite'].duration),
           },
           {
             id: 'query-clarify',
@@ -172,8 +172,8 @@ export function useBIQuery() {
             completed: false,
             skipped: false,
             details: exampleData.stage1['query-clarify'].details,
-            tokens: exampleData.stage1['query-clarify'].tokens,
-            duration: exampleData.stage1['query-clarify'].duration,
+            tokens: addJitter(exampleData.stage1['query-clarify'].tokens),
+            duration: addJitter(exampleData.stage1['query-clarify'].duration),
           },
         ],
       },
@@ -191,7 +191,7 @@ export function useBIQuery() {
             completed: false,
             skipped: false,
             details: exampleData.stage2['main-table-recall'].details,
-            tokens: exampleData.stage2['main-table-recall'].tokens,
+            tokens: addJitter(exampleData.stage2['main-table-recall'].tokens),
             duration: getRandomComputeDuration(),
           },
           {
@@ -203,7 +203,7 @@ export function useBIQuery() {
             completed: false,
             skipped: false,
             details: exampleData.stage2['field-table-recall'].details,
-            tokens: exampleData.stage2['field-table-recall'].tokens,
+            tokens: addJitter(exampleData.stage2['field-table-recall'].tokens),
             duration: getRandomComputeDuration(),
           },
           {
@@ -215,7 +215,7 @@ export function useBIQuery() {
             completed: false,
             skipped: false,
             details: exampleData.stage2['business-table-recall'].details,
-            tokens: exampleData.stage2['business-table-recall'].tokens,
+            tokens: addJitter(exampleData.stage2['business-table-recall'].tokens),
             duration: getRandomComputeDuration(),
           },
         ],
@@ -234,8 +234,8 @@ export function useBIQuery() {
             completed: false,
             skipped: false,
             details: exampleData.stage3['table-selection'].details,
-            tokens: exampleData.stage3['table-selection'].tokens,
-            duration: exampleData.stage3['table-selection'].duration,
+            tokens: addJitter(exampleData.stage3['table-selection'].tokens),
+            duration: addJitter(exampleData.stage3['table-selection'].duration),
           },
         ],
       },
@@ -253,7 +253,7 @@ export function useBIQuery() {
             completed: false,
             skipped: false,
             details: exampleData.stage4['segment-recall'].details,
-            tokens: exampleData.stage4['segment-recall'].tokens,
+            tokens: addJitter(exampleData.stage4['segment-recall'].tokens),
             duration: getRandomComputeDuration(),
           },
           {
@@ -265,7 +265,7 @@ export function useBIQuery() {
             completed: false,
             skipped: false,
             details: exampleData.stage4['business-term'].details,
-            tokens: exampleData.stage4['business-term'].tokens,
+            tokens: addJitter(exampleData.stage4['business-term'].tokens),
             duration: getRandomComputeDuration(),
           },
           {
@@ -277,7 +277,7 @@ export function useBIQuery() {
             completed: false,
             skipped: false,
             details: exampleData.stage4['table-rule'].details,
-            tokens: exampleData.stage4['table-rule'].tokens,
+            tokens: addJitter(exampleData.stage4['table-rule'].tokens),
             duration: getRandomComputeDuration(),
           },
           {
@@ -289,7 +289,7 @@ export function useBIQuery() {
             completed: false,
             skipped: false,
             details: exampleData.stage4['dimension-value-recall'].details,
-            tokens: exampleData.stage4['dimension-value-recall'].tokens,
+            tokens: addJitter(exampleData.stage4['dimension-value-recall'].tokens),
             duration: getRandomComputeDuration(),
           },
         ],
@@ -308,8 +308,8 @@ export function useBIQuery() {
             completed: false,
             skipped: false,
             details: exampleData.stage5['segment-rerank'].details,
-            tokens: exampleData.stage5['segment-rerank'].tokens,
-            duration: exampleData.stage5['segment-rerank'].duration,
+            tokens: addJitter(exampleData.stage5['segment-rerank'].tokens),
+            duration: addJitter(exampleData.stage5['segment-rerank'].duration),
           },
           {
             id: 'dimension-rerank',
@@ -320,8 +320,8 @@ export function useBIQuery() {
             completed: false,
             skipped: false,
             details: exampleData.stage5['dimension-rerank'].details,
-            tokens: exampleData.stage5['dimension-rerank'].tokens,
-            duration: exampleData.stage5['dimension-rerank'].duration,
+            tokens: addJitter(exampleData.stage5['dimension-rerank'].tokens),
+            duration: addJitter(exampleData.stage5['dimension-rerank'].duration),
           },
         ],
       },
@@ -339,8 +339,8 @@ export function useBIQuery() {
             completed: false,
             skipped: false,
             details: exampleData.stage6['metric-parse'].details,
-            tokens: exampleData.stage6['metric-parse'].tokens,
-            duration: exampleData.stage6['metric-parse'].duration,
+            tokens: addJitter(exampleData.stage6['metric-parse'].tokens),
+            duration: addJitter(exampleData.stage6['metric-parse'].duration),
           },
           {
             id: 'dimension-parse',
@@ -351,8 +351,8 @@ export function useBIQuery() {
             completed: false,
             skipped: false,
             details: exampleData.stage6['dimension-parse'].details,
-            tokens: exampleData.stage6['dimension-parse'].tokens,
-            duration: exampleData.stage6['dimension-parse'].duration,
+            tokens: addJitter(exampleData.stage6['dimension-parse'].tokens),
+            duration: addJitter(exampleData.stage6['dimension-parse'].duration),
           },
           {
             id: 'filter-parse',
@@ -363,8 +363,8 @@ export function useBIQuery() {
             completed: false,
             skipped: false,
             details: exampleData.stage6['filter-parse'].details,
-            tokens: exampleData.stage6['filter-parse'].tokens,
-            duration: exampleData.stage6['filter-parse'].duration,
+            tokens: addJitter(exampleData.stage6['filter-parse'].tokens),
+            duration: addJitter(exampleData.stage6['filter-parse'].duration),
           },
         ],
       },
@@ -382,7 +382,7 @@ export function useBIQuery() {
             completed: false,
             skipped: false,
             details: exampleData.stage7['dsl-transform'].details,
-            tokens: exampleData.stage7['dsl-transform'].tokens,
+            tokens: addJitter(exampleData.stage7['dsl-transform'].tokens),
             duration: getRandomComputeDuration(),
           },
         ],

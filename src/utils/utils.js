@@ -22,6 +22,22 @@ export const getRandomComputeDuration = () => {
 }
 
 /**
+ * 为数值添加随机抖动，使数据更真实
+ * @param {number} value - 原始数值
+ * @param {number} ratio - 抖动比例，默认2%
+ * @returns {number} 抖动后的数值（整数会返回整数，小数会保留原精度）
+ */
+export const addJitter = (value, ratio = 0.02) => {
+  if (value === 0) return 0
+
+  const jitterAmount = value * ratio
+  const jitteredValue = value + (Math.random() * 2 - 1) * jitterAmount
+
+  // 如果原始值是整数，返回整数；否则返回小数
+  return Number.isInteger(value) ? Math.round(jitteredValue) : jitteredValue
+}
+
+/**
  * 显示日志通知的辅助函数
  * @param {string} message - 通知消息
  * @param {string} logType - 日志类型

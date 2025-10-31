@@ -125,10 +125,10 @@ const handleExampleChange = (exampleId) => {
 
 .container {
   display: grid;
-  grid-template-columns: 2.1fr 1fr;
+  grid-template-columns: 2.2fr 1fr;
   gap: 12px;
   height: 100%;
-  max-width: 95%;
+  max-width: 96%;
   margin: 0 auto;
   grid-template-areas:
     "optimized-chain query"

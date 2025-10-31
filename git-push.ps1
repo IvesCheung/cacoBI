@@ -22,12 +22,12 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # Git push
-Write-Host "Pushing to remote..." -ForegroundColor Cyan
-git push
+# Write-Host "Pushing to remote..." -ForegroundColor Cyan
+# git push
 
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "Error: Failed to push changes" -ForegroundColor Red
-    exit 1
-}
+# if ($LASTEXITCODE -ne 0) {
+#     Write-Host "Error: Failed to push changes" -ForegroundColor Red
+#     exit 1
+# }
 
-Write-Host "Successfully pushed changes!" -ForegroundColor Green
+# Write-Host "Successfully pushed changes!" -ForegroundColor Green
