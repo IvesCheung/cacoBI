@@ -268,14 +268,6 @@ document.addEventListener('DOMContentLoaded', function () {
   // 代码片段动画效果
   const dataSnippet = document.querySelector('.data-snippet')
   if (dataSnippet) {
-    // 光标闪烁效果
-    const cursor = document.createElement('span')
-    cursor.className = 'typing-cursor'
-    cursor.innerHTML = '|'
-    cursor.style.marginLeft = '2px'
-    cursor.style.animation = 'blink 1s infinite'
-    dataSnippet.appendChild(cursor)
-
     // 添加打字效果样式
     const style = document.createElement('style')
     style.innerHTML = `
@@ -284,14 +276,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 50% { opacity: 0; }
             }
             .typing-effect {
+                display: inline-block;
                 overflow: hidden;
                 white-space: nowrap;
                 border-right: 2px solid transparent;
                 animation: typing 3s steps(40, end), blink-caret .75s step-end infinite;
+                max-width: fit-content;
             }
             @keyframes typing {
-                from { width: 0 }
-                to { width: 100% }
+                from { max-width: 0 }
+                to { max-width: 100% }
             }
             @keyframes blink-caret {
                 from, to { border-color: transparent }
@@ -308,7 +302,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const windowHeight = window.innerHeight
 
         if (elementPosition < windowHeight - 100) {
-          dataSnippet.classList.add('typing-effect')
+          // 获取原始文本内容
+          const originalText = dataSnippet.textContent
+
+          // 包装文本内容以应用打字效果
+          dataSnippet.innerHTML = `<span class="typing-effect">${originalText}</span>`
+
           window.removeEventListener('scroll', handleScroll)
         }
       }

@@ -2,7 +2,8 @@
 const siteData = {
   // 网站基本信息
   site: {
-    title: 'CHRONOSBI: A Demonstration of Supercharging LLM-Powered Business Intelligence Pipelines with Semantic Caching and Cost Planning',
+    title:
+      'CHRONOSBI: A Demonstration of Supercharging LLM-Powered Business Intelligence Pipelines with Semantic Caching and Cost Planning',
     logoText: 'CHRONOSBI',
   },
 
@@ -23,7 +24,7 @@ const siteData = {
     },
     title: 'CHRONOSBI',
     subtitle: ' Accelerating BI Pipeline through Caching and Cost Planner',
-    codeSnippet: 'Show Huawei\'s revenue in 2024 Q4.',
+    codeSnippet: "Show Huawei's revenue in 2024 Q4.",
     buttons: [
       {
         href: '#demo',
@@ -110,7 +111,7 @@ const siteData = {
     title: 'Research Demonstration',
     subtitle: 'See CHRONOSBI in action',
     video: {
-      src: 'video.mp4',
+      src: 'v2.mp4',
       type: 'video/mp4',
     },
     description:
@@ -156,7 +157,7 @@ const siteData = {
     items: [
       {
         icon: 'fas fa-envelope',
-        text: 'cuilingxi.cs@zju.edu.cn\njianfeng.zhang@zju.edu.cn',
+        text: 'cuilingxi.cs@zju.edu.cn',
       },
       {
         icon: 'fas fa-map-marker-alt',
@@ -164,7 +165,7 @@ const siteData = {
       },
       {
         icon: 'fas fa-map-marker-alt',
-        text: 'Xiaohongshu',
+        text: 'Xiaohongshu, Hangzhou, China',
       },
     ],
     social: {
