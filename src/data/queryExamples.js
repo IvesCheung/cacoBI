@@ -337,6 +337,7 @@ export const queryExamples = [
       'table-rule',
       'dimension-rerank',
       'dimension-parse',
+      'segment-rerank',
     ], // Cost Agent跳过的步骤
     shortSteps: {
       step1: {
